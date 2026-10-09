@@ -2,7 +2,7 @@
 
 CAS-dokument til matematik i gymnasiet: formler, grafer, tabeller, statistik og regression – og en færdig PDF til aflevering.
 
-**Åbn appen:** https://jonathanniemann.github.io/vismat-app/
+**Åbn appen:** https://jonathanniemann.dk/vismat-app/
 
 - **Computer (Chrome eller Edge):** åbn linket, og klik på installér-ikonet i adresselinjen. VisMat åbner så i sit eget vindue.
 - **iPad/iPhone (Safari):** Del → "Føj til hjemmeskærm".

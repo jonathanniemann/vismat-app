@@ -315,6 +315,9 @@ p.bar-room,li.bar-room{padding-bottom:calc(var(--bar-h,40px) + 10px);margin-bott
 .opgave:last-child .opg-end:not(.mid){padding-bottom:72px}
 /* (kun når man peger på selve rækken: ved blokken over står håndtaget i margenen, og der står aldrig to ting dér) */
 .opg-end:hover,.opg-end:focus-within{opacity:1}
+/* mens man skriver, er margenen tom; + og håndtaget kommer igen, når musen flyttes */
+body.typing .opg-end{opacity:0!important}
+body.typing .gutter{opacity:0!important;pointer-events:none!important}
 /* efter en delopgave: en smal række, så afstanden til næste delopgave er som før */
 /* før en delopgave: "+" står tæt under det, den hører til, med luft ned til næste delopgave */
 .opg-end.mid{margin-top:-14px;padding:0;min-height:28px;align-items:center}
@@ -5526,23 +5529,27 @@ print(1 + 1)`, out: null } : {};
     let target = null, dragging = null, ours = () => {
       let a = currentPop() && currentPop()._anchor;
       return a instanceof window.Node && gut.contains(a);
-    }, hide = () => {
+    }, editing = (el2) => el2.classList.contains("blk") && el2.contains(document.activeElement), hide = () => {
       dragging || ours() || (gut.classList.remove("on"), target = null);
     }, show = (el2) => {
       target = el2;
       let pr = paper.getBoundingClientRect(), r = el2.getBoundingClientRect(), lh = el2.matches("p, .delopg, .opg-title") ? Math.min(r.height, parseFloat(getComputedStyle(el2).lineHeight) || 28) : el2.classList.contains("blk-math_line") ? r.height : 32, chip = el2.classList.contains("blk") && el2.querySelector(":scope .cas-chip:not(.im-chip)"), right = 100, mid = r.top + lh / 2;
       if (chip) {
         let cr = chip.getBoundingClientRect();
-        cr.width && cr.height && (right = Math.min(right, cr.left - pr.left - 2), el2.classList.contains("blk-math_line") || (mid = cr.top + cr.height / 2));
+        cr.width && cr.height && (right = Math.min(right, cr.left - pr.left - 4), mid = cr.top + cr.height / 2);
       }
       gut.style.left = right - 20 + "px", gut.style.top = mid - pr.top - 12 + "px", gut.classList.toggle("whole", el2.classList.contains("opg-title"));
       let blank3 = el2.tagName === "P" && !el2.textContent.trim() && !el2.querySelector(".im");
       gut.classList.toggle("blank", blank3), grip.title = blank3 ? "Inds\xE6t formel, graf, tabel \u2026" : "Klik: inds\xE6t, flyt eller slet \xB7 tr\xE6k: flyt", grip.setAttribute("aria-label", blank3 ? "Inds\xE6t her" : "Inds\xE6t, flyt eller slet"), gut.classList.add("on");
     }, away = () => {
       dragging || (gut.classList.remove("on"), target = null);
-    };
-    paper.addEventListener("mousemove", (e) => {
-      if (gut.contains(e.target) || dragging || app.mode !== "write" || ours()) return;
+    }, mx = -1, my = -1;
+    document.addEventListener("keydown", (e) => {
+      e.ctrlKey || e.metaKey || e.altKey || /^(Shift|Control|Alt|Meta|CapsLock|Tab|Escape)$/.test(e.key) || document.body.classList.contains("typing") || (document.body.classList.add("typing"), away());
+    }, !0), document.addEventListener("mousemove", (e) => {
+      e.clientX === mx && e.clientY === my || (mx = e.clientX, my = e.clientY, document.body.classList.remove("typing"));
+    }, !0), paper.addEventListener("mousemove", (e) => {
+      if (document.body.classList.contains("typing") || gut.contains(e.target) || dragging || app.mode !== "write" || ours()) return;
       if (currentPop()) {
         away();
         return;
@@ -5552,8 +5559,14 @@ print(1 + 1)`, out: null } : {};
         hide();
         return;
       }
+      if (editing(el2)) {
+        away();
+        return;
+      }
       el2 !== target && show(el2);
-    }), paper.addEventListener("mouseleave", hide), paper.addEventListener("click", () => {
+    }), paper.addEventListener("mouseleave", hide), paper.addEventListener("focusin", () => {
+      target && editing(target) && away();
+    }), paper.addEventListener("click", () => {
       currentPop() && !ours() && away();
     });
     let insertMenu = (el2, anchor = grip) => showPalette(anchor, { owner: "gutter", q: "", where: "text", search: !0, onPick: (it) => insertBelow(el2, it), onClose: () => {
@@ -5990,7 +6003,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
           stop(), this.convert();
           return;
         }
-        (e.key === "Enter" || e.key === "Escape" || e.key === "$") && (stop(), commit(1));
+        e.key === "Enter" || e.key === "Escape" || e.key === "$" ? (stop(), commit(1)) : (e.key === "Backspace" || e.key === "Delete") && !mf.value.trim() && (stop(), commit(-1));
       }, !0), mf.addEventListener("move-out", (e) => {
         let d = e.detail && e.detail.direction;
         e.preventDefault(), commit(d === "backward" || d === "upward" ? -1 : 1);

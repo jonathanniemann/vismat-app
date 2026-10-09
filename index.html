@@ -353,6 +353,7 @@ body.typing .gutter{opacity:0!important;pointer-events:none!important}
 .im.editing{cursor:text}
 .cas-chip.im-chip{position:static;transform:none;display:inline-flex;height:22px;padding:0 5px;font-size:11.5px;margin:0 0 0 2px;vertical-align:middle;background:var(--cas-soft)}
 .cas-chip.im-chip .cas-chip-c{opacity:.7;width:auto}
+.cas-chip.im-chip.none{opacity:1;pointer-events:auto;background:none;color:var(--ink-3);font-weight:500;border:1px dashed var(--field)}
 .im-empty{font:italic 13px var(--ui);color:var(--ink-3)}
 math-field.mf-inline{display:inline-block;font-size:17px;min-width:40px;border:0;background:transparent;padding:0 2px;outline:none;--caret-color:var(--accent);--selection-background-color:var(--accent-soft);--contains-highlight-background-color:transparent;vertical-align:baseline}
 
@@ -361,7 +362,8 @@ math-field.mf-inline{display:inline-block;font-size:17px;min-width:40px;border:0
 .blk.flash{background:var(--accent-soft)}
 .im.flash{background:var(--accent-soft);border-radius:4px;box-shadow:0 0 0 3px var(--accent-soft)}
 .blk-math_line{margin:8px -12px 14px;padding:2px 12px;border:1px solid transparent;border-radius:4px}
-.blk-math_line.active{background:var(--hover);border-color:transparent}
+/* (en formel, man skriver i, ser ens ud på egen linje og i teksten: lyseblå; pladsen til formelbjælken ligger uden for) */
+.blk-math_line.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
 .blk-math_line.has-err:not(.active){border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
 .m-row{display:flex;align-items:center;gap:10px;min-height:40px;position:relative}
 .m-main{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:2px 14px;min-height:40px}
@@ -4640,7 +4642,7 @@ print(1 + 1)`, out: null } : {};
       }
     },
     target(mf) {
-      this.toolbar && !this.toolbar.classList.contains("formula") && (this.swapAt = Date.now()), this.field = mf, this.toolbar && this.toolbar.classList.add("formula"), this.sync(mf, !0), this.room(mf.closest(".m-row") || mf.closest(".blk-head") || mf.closest(".im") && mf.closest("p, li")), this.place();
+      this.toolbar && !this.toolbar.classList.contains("formula") && (this.swapAt = Date.now()), this.field = mf, this.toolbar && this.toolbar.classList.add("formula"), this.sync(mf, !0), this.room(mf.closest(".blk-math_line") || mf.closest(".blk-head") || mf.closest(".im") && mf.closest("p, li")), this.place();
     },
     room(el2) {
       this.roomEl !== el2 && (this.roomEl && this.roomEl.classList.remove("bar-room"), this.roomEl = el2 || null, el2 && el2.classList.add("bar-room"));
@@ -5963,7 +5965,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       this.editing = !0, this.dom.classList.add("editing");
       let mf = this.mf = makeField(this.node.attrs.latex, { label: "Matematik i teksten", onCommand: (p) => this.set(applyCommand(this.node.attrs, p)) });
       mf.classList.add("mf-inline");
-      let chip = this.chip = h("button", { type: "button", class: "cas-chip im-chip", "aria-haspopup": "menu", "aria-expanded": "false", title: "V\xE6lg hvad CAS skal g\xF8re (Alt+Enter)" }, h("span", { class: "cas-chip-t" }, this.node.attrs.action ? ACTIONS[this.node.attrs.action] : "CAS"), h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE"));
+      let chip = this.chip = h("button", { type: "button", class: "cas-chip im-chip" + (this.node.attrs.action ? "" : " none"), "aria-haspopup": "menu", "aria-expanded": "false", title: "V\xE6lg hvad CAS skal g\xF8re (Alt+Enter)" }, h("span", { class: "cas-chip-t" }, this.node.attrs.action ? ACTIONS[this.node.attrs.action] : "CAS"), h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE"));
       chip.addEventListener("mousedown", (e) => e.preventDefault()), chip.addEventListener("click", (e) => this.openMenu(e.detail === 0));
       let editor = this.editor = h("span", { class: "im-editor", role: "group", "aria-label": "Redig\xE9r matematik i teksten" }, mf, chip);
       document.body.append(editor);
@@ -6055,7 +6057,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     set(patch) {
       setAttrs(this.id, patch);
       let t = this.chip && this.chip.firstChild;
-      t && (t.textContent = this.node.attrs.action ? ACTIONS[this.node.attrs.action] : "CAS"), currentPop() && currentPop()._owner === this && this.menuBody();
+      t && (t.textContent = this.node.attrs.action ? ACTIONS[this.node.attrs.action] : "CAS", this.chip.classList.toggle("none", !this.node.attrs.action)), currentPop() && currentPop()._owner === this && this.menuBody();
     }
     openMenu(kbd) {
       if (currentPop() && currentPop()._owner === this) {

@@ -976,8 +976,9 @@ body.pop-cover #toolbar{visibility:hidden}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
-<section id="start" class="start" hidden aria-label="Startside" tabindex="-1"></section>
-<div class="app" id="app" data-mode="write">
+<!-- (startsiden er synlig fra første øjeblik, så dokumentet ikke blinker frem, mens appen starter) -->
+<section id="start" class="start" aria-label="Startside" tabindex="-1"><div class="st-wrap"><header class="st-head"><div class="brand st-brand"><span class="mark" aria-hidden="true">√</span><span>VisMat</span></div></header></div></section>
+<div class="app" id="app" data-mode="write" inert>
   <header class="bar">
     <button type="button" class="tbtn only-narrow" id="btnNav" aria-label="Opgaver">☰</button>
     <button type="button" class="tbtn back-btn" id="btnBack" title="Tilbage til dokumentet (Esc)"><span aria-hidden="true">←</span><span class="lbl">Tilbage til dokumentet</span></button>

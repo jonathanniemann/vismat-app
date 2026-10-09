@@ -307,7 +307,8 @@ p.bar-room,li.bar-room{padding-bottom:calc(var(--bar-h,40px) + 10px);margin-bott
 /* vises kun, når musen er på den sidste linje eller under den */
 .opg-end{display:flex;align-items:center;gap:2px;margin:0 0 0 -24px;padding:2px 0 4px;min-height:30px;cursor:text;color:var(--ink-3);opacity:0;transition:opacity .15s;user-select:none}
 .opgave:last-child .opg-end:not(.mid){padding-bottom:72px}
-.opg-end:hover,.opg-end:focus-within,.opgave > :hover + .opg-end{opacity:1}
+/* (kun når man peger på selve rækken: ved blokken over står håndtaget i margenen, og der står aldrig to ting dér) */
+.opg-end:hover,.opg-end:focus-within{opacity:1}
 /* efter en delopgave: en smal række, så afstanden til næste delopgave er som før */
 /* før en delopgave: "+" står tæt under det, den hører til, med luft ned til næste delopgave */
 .opg-end.mid{margin-top:-14px;padding:0;min-height:28px;align-items:center}
@@ -831,7 +832,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
 @media print{
   @page{size:A4;margin:0}
   body{background:#fff}
-  .bar,.rail,.hand-bar,.write,.scrim,.toast{display:none!important}
+  .bar,.rail,.hand-bar,.write,.scrim,.toast,.start{display:none!important}
   .app{display:block;height:auto}
   .desk{overflow:visible}
   .hand{display:block!important;padding:0}
@@ -904,9 +905,76 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .app.with-py .rail.left .rail-close{display:block}
   .app.with-py .only-narrow{display:inline-flex}
 }
+/* Startside */
+.start{position:fixed;inset:0;z-index:50;background:var(--desk);overflow:auto;-webkit-overflow-scrolling:touch}
+.start[hidden]{display:none}
+.start:focus{outline:none}
+body.on-start{overflow:hidden}
+.st-wrap{max-width:860px;margin:0 auto;padding:28px 32px calc(48px + env(safe-area-inset-bottom,0px));box-sizing:border-box}
+.st-head{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.st-brand{padding:0;font-size:17px;gap:10px}
+.st-brand .mark{width:28px;height:28px;font-size:19px!important;border-radius:7px}
+.st-open{height:32px;padding:0 12px;font-size:13px;color:var(--ink-2);border:1px solid var(--rule)}
+.st-intro{margin:-6px 0 22px;color:var(--ink-2);font-size:15px;max-width:52ch}
+.st-continue{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;width:100%;box-sizing:border-box;text-align:left;border:0;background:var(--paper);box-shadow:var(--shadow);border-radius:10px;padding:16px 18px;margin:0 0 26px;cursor:pointer}
+.st-continue:hover{box-shadow:var(--shadow),0 0 0 2px var(--accent-soft)}
+.st-cl{font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;flex-basis:100%}
+.st-ctitle{font:600 19px var(--serif);color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.st-cw{font-size:12.5px;color:var(--ink-3)}
+.st-h{font-size:13px;font-weight:600;color:var(--ink-2);margin:0 0 10px}
+.st-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:30px}
+.st-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:0;background:var(--paper);box-shadow:var(--shadow);border-radius:10px;padding:14px 14px 14px;cursor:pointer;min-height:118px;box-sizing:border-box;transition:box-shadow .12s,transform .12s}
+.st-card:hover{box-shadow:var(--shadow),0 0 0 2px var(--accent-soft);transform:translateY(-1px)}
+.st-ic{display:grid;place-items:center;min-width:34px;height:34px;padding:0 6px;box-sizing:border-box;border-radius:8px;margin-bottom:auto;font:600 15px var(--serif);background:var(--rule-2);color:var(--ink-2)}
+.st-card.blank .st-ic{background:var(--accent);color:var(--accent-ink);font:400 22px var(--ui)}
+.st-card.hand .st-ic{background:var(--accent-soft);color:var(--accent);font:600 11.5px var(--ui);letter-spacing:.06em}
+.st-card.ex .st-ic{font-style:italic}
+.st-ct{font-weight:600;color:var(--ink);margin-top:12px}
+.st-cd{font-size:12.5px;color:var(--ink-3);line-height:1.35}
+.st-lh{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.st-lh .st-h{margin:0;flex:1}
+.st-search{width:min(260px,50vw);height:30px;box-sizing:border-box;border:1px solid var(--rule);border-radius:6px;background:var(--paper);padding:0 10px;font-size:13px}
+.st-search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.st-list{background:var(--paper);box-shadow:var(--shadow);border-radius:10px;padding:4px;min-height:20px}
+.st-row{display:flex;align-items:center;gap:2px;border-radius:6px}
+.st-row:hover,.st-row:focus-within{background:var(--hover)}
+.st-row-open{flex:1;min-width:0;display:flex;align-items:center;gap:12px;border:0;background:none;text-align:left;padding:10px 10px;cursor:pointer;border-radius:6px}
+.st-doc-ic{flex:none;width:20px;height:24px;border:1.5px solid var(--rule);border-radius:3px;box-sizing:border-box;background:linear-gradient(var(--rule),var(--rule)) 4px 7px/9px 1.5px no-repeat,linear-gradient(var(--rule),var(--rule)) 4px 12px/9px 1.5px no-repeat,linear-gradient(var(--rule),var(--rule)) 4px 17px/6px 1.5px no-repeat}
+.st-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:500}
+.st-w{flex:none;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.st-more{flex:none;width:32px;height:32px;margin-right:4px;border:0;background:none;border-radius:6px;cursor:pointer;color:var(--ink-3);font-size:16px;opacity:.6}
+.st-row:hover .st-more,.st-more:focus-visible,.st-more[aria-expanded=true]{opacity:1}
+.st-more:hover{background:var(--rule-2);color:var(--ink)}
+.st-rename{flex:1;min-width:0;height:28px;box-sizing:border-box;border:1px solid var(--accent);border-radius:5px;padding:0 8px;background:var(--paper);font-weight:500;outline:2px solid var(--accent-soft)}
+.st-menu{min-width:180px}
+.pop-item.danger{color:var(--warn)}
+.st-empty{margin:0;padding:14px 12px;color:var(--ink-3);font-size:13px}
+.st-foot{margin:14px 2px 0;font-size:12px;color:var(--ink-3)}
+.start.drop::after{content:"Slip filen for at åbne den";position:fixed;inset:12px;border:2px dashed var(--accent);border-radius:14px;background:color-mix(in srgb,var(--accent-soft) 80%,transparent);display:grid;place-items:center;font:600 16px var(--ui);color:var(--accent);pointer-events:none}
+.st-dialog{border:0;border-radius:12px;padding:22px 22px 18px;width:min(440px,calc(100vw - 32px));box-sizing:border-box;background:var(--paper);color:var(--ink);box-shadow:var(--pop-shadow)}
+.st-dialog::backdrop{background:rgba(14,17,22,.35)}
+.st-dialog h2{margin:0 0 14px;font:600 18px var(--ui)}
+.st-f{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;min-width:0}
+.st-fl{font-size:12px;font-weight:500;color:var(--ink-2)}
+.st-f input{height:34px;box-sizing:border-box;border:1px solid var(--rule);border-radius:6px;background:var(--paper);padding:0 10px;font-size:14px;width:100%}
+.st-f input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+.st-fh{font-size:11.5px;color:var(--ink-3)}
+.st-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.st-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+.st-btns .ghost{height:32px;padding:0 12px;font-size:13px}
+.nav-home{cursor:pointer;border:0;background:none;border-radius:6px;text-align:left;font:inherit;color:inherit}
+.nav-home:hover{background:var(--hover)}
+@media (max-width:760px){
+  .st-wrap{padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+  .st-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .st-card{min-height:104px}
+  .st-w{display:none}
+}
+@media (max-width:420px){.st-2{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
+<section id="start" class="start" hidden aria-label="Startside" tabindex="-1"></section>
 <div class="app" id="app" data-mode="write">
   <header class="bar">
     <button type="button" class="tbtn only-narrow" id="btnNav" aria-label="Opgaver">☰</button>
@@ -923,11 +991,11 @@ math-field::part(virtual-keyboard-toggle){display:none}
 
   <nav class="rail left" id="nav" aria-label="Disposition">
     <button type="button" class="iconbtn rail-close" id="navClose" aria-label="Luk panelet">×</button>
-    <div class="brand"><span class="mark" aria-hidden="true">√</span><span>VisMat</span></div>
+    <button type="button" class="brand nav-home" id="navHome" title="Til startsiden"><span class="mark" aria-hidden="true">√</span><span>VisMat</span></button>
     <p class="rail-h">Opgaver</p>
     <ol id="navList"></ol>
     <button type="button" class="rail-btn" id="newOpg">+ Ny opgave</button>
-    <input type="file" id="fileIn" accept=".json,application/json" hidden>
+    <input type="file" id="fileIn" accept=".json,.vismat.json,application/json" hidden>
     <button type="button" class="rail-btn help-btn" id="helpBtn"><span aria-hidden="true">?</span> Sådan skriver du</button>
     <template id="helpTpl"><div class="help-pop"><div class="pop-title">Sådan skriver du</div><ol>
         <li>Skriv tekst som i Word. <b>Formel</b> giver en linje med matematik, <b>Formel i tekst</b> matematik midt i en sætning.</li>
@@ -1085,21 +1153,21 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
   // src/lib/dom.js
   var uid = (p = "b") => p + Math.random().toString(36).slice(2, 9);
   function h(tag, attrs, ...kids) {
-    let el = document.createElement(tag);
+    let el2 = document.createElement(tag);
     if (attrs) for (let [k, v] of Object.entries(attrs))
-      v == null || v === !1 || (k === "class" ? el.className = v : k === "text" ? el.textContent = v : k === "html" ? el.innerHTML = v : k.startsWith("on") ? el.addEventListener(k.slice(2), v) : k === "dataset" ? Object.assign(el.dataset, v) : k === "value" ? el.value = v : el.setAttribute(k, v === !0 ? "" : v));
+      v == null || v === !1 || (k === "class" ? el2.className = v : k === "text" ? el2.textContent = v : k === "html" ? el2.innerHTML = v : k.startsWith("on") ? el2.addEventListener(k.slice(2), v) : k === "dataset" ? Object.assign(el2.dataset, v) : k === "value" ? el2.value = v : el2.setAttribute(k, v === !0 ? "" : v));
     let add2 = (kid) => {
       if (!(kid == null || kid === !1)) {
         if (Array.isArray(kid)) return kid.forEach(add2);
-        el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+        el2.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
       }
     };
-    return kids.forEach(add2), el;
+    return kids.forEach(add2), el2;
   }
-  function keepFocus(el) {
-    return el.addEventListener("mousedown", (e) => e.preventDefault()), el.addEventListener("pointerdown", (e) => {
+  function keepFocus(el2) {
+    return el2.addEventListener("mousedown", (e) => e.preventDefault()), el2.addEventListener("pointerdown", (e) => {
       e.pointerType !== "mouse" && e.preventDefault();
-    }), el;
+    }), el2;
   }
   var pop = null, currentPop = () => pop;
   function onAway(e) {
@@ -1228,8 +1296,8 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     let rows = body.split("\\\\").map((r) => r.trim()).filter(Boolean);
     if (rows.length < 2) return null;
     let out = [];
-    for (let row of rows) {
-      let cells = row.split("&");
+    for (let row2 of rows) {
+      let cells = row2.split("&");
       if (cells.length !== 2) return null;
       let expr = cells[0].trim(), cond = cells[1].replace(/\\text\{\s*(?:for|når|hvis)\s*\}/g, "").replace(/\\(?:quad|qquad)(?![a-zA-Z])/g, "").replace(/^\s*[,;]/, "").trim();
       if (!expr || /(?:^|[^<>:\\])=/.test(expr.replace(/\\(?:le|ge|leq|geq)(?![a-zA-Z])/g, ""))) return null;
@@ -1460,13 +1528,13 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
         if (primes && this.is("_")) {
           if (this.next(), letters = [], this.is("{")) {
             for (this.next(); this.is("id"); ) {
-              let q = this.next();
-              letters.push(...display(q.v, q.sub));
+              let q2 = this.next();
+              letters.push(...display(q2.v, q2.sub));
             }
             this.expect("}");
           } else if (this.is("id")) {
-            let q = this.next();
-            letters.push(...display(q.v, q.sub));
+            let q2 = this.next();
+            letters.push(...display(q2.v, q2.sub));
           }
         } else letters = [...k.sub];
         if (letters.length && letters.every((c) => multi.varsDisp.includes(c))) {
@@ -1560,7 +1628,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       return op === "<=" ? cdf(null, c) : op === "<" ? cdf(null, minus1(c)) : cdf(op === ">=" ? c : plus1(c), N);
     }
     if (st.type === "and") {
-      let [a, b] = st.parts.map(side), lo = [a, b].find((q) => q.op === ">=" || q.op === ">"), hi = [a, b].find((q) => q.op === "<=" || q.op === "<");
+      let [a, b] = st.parts.map(side), lo = [a, b].find((q2) => q2.op === ">=" || q2.op === ">"), hi = [a, b].find((q2) => q2.op === "<=" || q2.op === "<");
       if (!lo || !hi) throw new CasError("Skriv sandsynligheden som fx P(7 \u2264 " + X.v + " \u2264 10)");
       return cdf(lo.op === ">" ? plus1(lo.c) : lo.c, hi.op === "<" ? minus1(hi.c) : hi.c);
     }
@@ -1589,7 +1657,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       return op === "<=" || op === "<" ? cdf(NINF, c) : cdf(c, INF);
     }
     if (st.type === "and") {
-      let [a, b] = st.parts.map(side), lo = [a, b].find((q) => q.op === ">=" || q.op === ">"), hi = [a, b].find((q) => q.op === "<=" || q.op === "<");
+      let [a, b] = st.parts.map(side), lo = [a, b].find((q2) => q2.op === ">=" || q2.op === ">"), hi = [a, b].find((q2) => q2.op === "<=" || q2.op === "<");
       if (!lo || !hi) throw new CasError("Skriv sandsynligheden som fx P(4 \u2264 " + X.v + " \u2264 9)");
       return cdf(lo.c, hi.c);
     }
@@ -1886,7 +1954,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       case "neg":
         return "-" + this.wrap(n2.a, 3);
       case "mul": {
-        let A = strip(n2.a), B = strip(n2.b), isPt = (q) => q.type === "id" && (ctx.vals.get(q.py) || {}).isPoint;
+        let A = strip(n2.a), B = strip(n2.b), isPt = (q2) => q2.type === "id" && (ctx.vals.get(q2.py) || {}).isPoint;
         if (n2.implicit && isPt(A) && isPt(B))
           return this.useSym(A.py, A.disp), this.useSym(B.py, B.disp), this.user.add(A.py), this.user.add(B.py), "(" + B.py + " - " + A.py + ")";
         if (n2.implicit && A.type === "id" && B.type === "id" && /^[A-Z]$/.test(A.disp) && /^[A-Z]$/.test(B.disp) && !ctx.vals.has(A.py) && !ctx.vals.has(B.py))
@@ -2129,7 +2197,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     define: "Defin\xE9r"
   }, TRANSFORM = { simplify: "simplify", factor: "factor", expand: "expand", calc: "simplify" }, TRANSFORM_NOTE = { simplify: "# simplify reducerer h\xF8jresiden", calc: "# simplify udregner h\xF8jresiden", factor: "# factor skriver h\xF8jresiden som et produkt", expand: "# expand ganger parenteserne ud i h\xF8jresiden" };
   function pickVar(free, ctx) {
-    for (let pref of ["x", "t"]) if (free.includes(pref)) return pref;
+    for (let pref2 of ["x", "t"]) if (free.includes(pref2)) return pref2;
     return free.slice().sort()[0] || null;
   }
   function subExprLatexToPy(src, ctx) {
@@ -2459,7 +2527,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
         if (p.i < p.tk.length) throw new CasError("Kunne ikke l\xE6se h\xF8jresiden");
         let em2 = new Emitter(ctx), code2 = em2.emit(rhs), need2 = [...em2.used].filter((u) => !ctx.bound.has(u)), sl2 = symbolsLine(need2, ctx);
         sl2 && lines.push(sl2), need2.forEach((u) => ctx.bound.add(u)), transform && (lines.push(TRANSFORM_NOTE[transform]), code2 = TRANSFORM[transform] + "(" + code2 + ")"), opts.mode === "decimal" && lines.push("# v\xE6rdien vises som decimaltal"), lines.push(nm + " = " + code2);
-        let syms = [...em2.used, ...em2.hidden || []].filter((u) => u !== nm && !ctx.vals.has(u) && !ctx.fns.has(u)), isVec = /^(?:transform\()?Vektor\(/.test(code2) || /^\(?[A-Za-z_]\w* - [A-Za-z_]\w*\)?$/.test(code2) && code2.split(" - ").every((q) => ctx.vals.has(q.replace(/[()]/g, "")) && ctx.vals.get(q.replace(/[()]/g, "")).isPoint) || isVecNode(rhs, ctx) && !/\bPunkt\(/.test(code2) && !(code2.match(/[A-Za-z_]\w*/g) || []).some((q) => (ctx.vals.get(q) || {}).isPoint);
+        let syms = [...em2.used, ...em2.hidden || []].filter((u) => u !== nm && !ctx.vals.has(u) && !ctx.fns.has(u)), isVec = /^(?:transform\()?Vektor\(/.test(code2) || /^\(?[A-Za-z_]\w* - [A-Za-z_]\w*\)?$/.test(code2) && code2.split(" - ").every((q2) => ctx.vals.has(q2.replace(/[()]/g, "")) && ctx.vals.get(q2.replace(/[()]/g, "")).isPoint) || isVecNode(rhs, ctx) && !/\bPunkt\(/.test(code2) && !(code2.match(/[A-Za-z_]\w*/g) || []).some((q2) => (ctx.vals.get(q2) || {}).isPoint);
         ctx.bound.add(nm), ctx.vals.set(nm, { disp: nmDisp, label: ctx.label, block: block.id, floaty: em2.floaty, syms: syms.length ? syms : null, isVector: isVec || null }), ctx.fns.delete(nm), meta = { def: "var", name: nm, disp: nmDisp, dec: opts.mode === "decimal" }, nm === "e" && (info.note = "Nu betyder e ikke l\xE6ngere Eulers tal (2,718\u2026) i resten af opgaven."), info.defKind = "var", info.uses = [...em2.used].filter((u) => before.has(u)), info.above = info.uses.map((u) => ctx.dispName.get(u) || u);
       } else {
         let argToks = node.args || [node.arg], vs = argToks.map((t) => pyName(t.v, t.sub)), vDisps = argToks.map((t) => display(t.v, t.sub));
@@ -2685,7 +2753,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
 `), meta: { bars: !0 } } };
       }
     }
-    let exprs = [], used = /* @__PURE__ */ new Set(), calls = [], srcs = [], figs = [], exprOf = {}, kinds = [], normals = [], figVars = /* @__PURE__ */ new Set(), normLabels = {}, odeAxes = null, surfAxes = null, paramNote = null, areas = [], isPt = (q) => ctx.vals.has(q) && ctx.vals.get(q).isPoint;
+    let exprs = [], used = /* @__PURE__ */ new Set(), calls = [], srcs = [], figs = [], exprOf = {}, kinds = [], normals = [], figVars = /* @__PURE__ */ new Set(), normLabels = {}, odeAxes = null, surfAxes = null, paramNote = null, areas = [], isPt = (q2) => ctx.vals.has(q2) && ctx.vals.get(q2).isPoint;
     (block.fns || []).forEach((l, fi) => {
       let src = normalize(l);
       if (!src) return;
@@ -2712,14 +2780,14 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
         let raw = l.replace(/\\left\s*\(/g, "(").replace(/\\right\s*\)/g, ")").replace(/\{,\}/g, ",").trim(), pm = /^\((.*)\)$/.exec(raw);
         if (pm && !/[()]/.test(pm[1].replace(/\\[a-zA-Z]+\{[^{}]*\}/g, ""))) {
           let inner = pm[1], parts = inner.includes(";") ? inner.split(";") : inner.split(",");
-          if (parts.length === 2 && parts.every((q) => q.trim())) {
-            let em2 = new Emitter(ctx), xy = parts.map((q) => {
-              let pp = new Parser(tokenize(normalize(q.trim().replace(/(\d),(?=\d)/g, "$1{,}"))), ctx), e = pp.expr();
+          if (parts.length === 2 && parts.every((q2) => q2.trim())) {
+            let em2 = new Emitter(ctx), xy = parts.map((q2) => {
+              let pp = new Parser(tokenize(normalize(q2.trim().replace(/(\d),(?=\d)/g, "$1{,}"))), ctx), e = pp.expr();
               if (pp.i < pp.tk.length) throw new CasError('Kunne ikke l\xE6se punktet "' + l + '"');
               return em2.emit(e);
             });
             if ([...em2.user].some((u) => !ctx.vals.has(u) && !ctx.fns.has(u))) throw new CasError("Et punkt i et plot skal have tal som koordinater, fx (0, 3)");
-            let lab = "(" + parts.map((q) => q.trim()).join(inner.includes(";") ? "; " : ", ") + ")";
+            let lab = "(" + parts.map((q2) => q2.trim()).join(inner.includes(";") ? "; " : ", ") + ")";
             figs.push({ kind: "punkt", names: [lab], code: "[(" + xy.join(", ") + ")]", src: l }), em2.used.forEach((u) => {
               (ctx.fns.has(u) || ctx.vals.has(u)) && used.add(u);
             }), kinds[fi] = "punkt";
@@ -2745,8 +2813,8 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
             (ctx.fns.has(u) || ctx.vals.has(u)) && used.add(u);
           });
           let fnOf = (n3) => {
-            let q = strip(n3);
-            return q.type === "ucall" && !q.primes && q.args.length === 1 && strip(q.args[0]).type === "id" ? { f: ctx.fns.get(q.name), arg: strip(q.args[0]).py } : null;
+            let q2 = strip(n3);
+            return q2.type === "ucall" && !q2.primes && q2.args.length === 1 && strip(q2.args[0]).type === "id" ? { f: ctx.fns.get(q2.name), arg: strip(q2.args[0]).py } : null;
           };
           areas.push({ top, bot, a, b, v: sn.v, src: l, fi, curves: two ? [[top, fnOf(body.a)], [bot, fnOf(body.b)]] : [[top, fnOf(body)]] }), kinds[fi] = "areal";
           return;
@@ -2755,8 +2823,8 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       let names = src.split(/[;,]/).map((x) => x.trim());
       if (names.every((nm) => /^[A-Z](?:_\{?[A-Za-z0-9]+\}?)?$/.test(nm))) {
         let toks = names.map((nm) => tokenize(nm)[0]), pys = toks.map((t) => pyName(t.v, t.sub));
-        if (pys.every((q) => ctx.vals.has(q) && ctx.vals.get(q).isPoint)) {
-          figs.push({ kind: names.length === 1 ? "punkt" : "polygon", names: toks.map((t) => display(t.v, t.sub)), code: "[" + pys.join(", ") + "]", src: l }), pys.forEach((q) => used.add(q)), kinds[fi] = names.length === 1 ? "punkt" : names.length === 2 ? "linjestykke" : "polygon";
+        if (pys.every((q2) => ctx.vals.has(q2) && ctx.vals.get(q2).isPoint)) {
+          figs.push({ kind: names.length === 1 ? "punkt" : "polygon", names: toks.map((t) => display(t.v, t.sub)), code: "[" + pys.join(", ") + "]", src: l }), pys.forEach((q2) => used.add(q2)), kinds[fi] = names.length === 1 ? "punkt" : names.length === 2 ? "linjestykke" : "polygon";
           return;
         }
       }
@@ -2870,7 +2938,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     let vDisp = ctx.dispName.get(v) || v, blankX = (x) => x == null || String(x).trim() === "", dom = null;
     for (let c of calls) c && c.f && c.f.dom && c.arg === v && (dom = dom ? [Math.min(dom[0] ?? 1 / 0, c.f.dom[0] ?? 1 / 0), Math.max(dom[1] ?? -1 / 0, c.f.dom[1] ?? -1 / 0)] : c.f.dom.slice(0, 2));
     dom && (!isFinite(dom[0]) || !isFinite(dom[1]) || dom[0] == null || dom[1] == null) && (dom = null);
-    let nw = blankX(block.xmin) && blankX(block.xmax) && !dom && normals.length && normals.length === exprs.length && !figs.length && normals.every((q) => isFinite(q.muN) && isFinite(q.sN)) ? [Math.min(...normals.map((q) => q.muN - 4 * q.sN)), Math.max(...normals.map((q) => q.muN + 4 * q.sN))] : null, auto = blankX(block.xmin) && blankX(block.xmax) && !dom && !nw, num2 = (x) => Number(String(x).replace(",", ".").replace("\u2212", "-")), xmin = nw ? nw[0] : auto ? -10 : blankX(block.xmin) ? dom ? dom[0] : num2(block.xmax) - 10 : num2(block.xmin), xmax = nw ? nw[1] : auto ? 10 : blankX(block.xmax) ? dom ? dom[1] : xmin + 10 : num2(block.xmax);
+    let nw = blankX(block.xmin) && blankX(block.xmax) && !dom && normals.length && normals.length === exprs.length && !figs.length && normals.every((q2) => isFinite(q2.muN) && isFinite(q2.sN)) ? [Math.min(...normals.map((q2) => q2.muN - 4 * q2.sN)), Math.max(...normals.map((q2) => q2.muN + 4 * q2.sN))] : null, auto = blankX(block.xmin) && blankX(block.xmax) && !dom && !nw, num2 = (x) => Number(String(x).replace(",", ".").replace("\u2212", "-")), xmin = nw ? nw[0] : auto ? -10 : blankX(block.xmin) ? dom ? dom[0] : num2(block.xmax) - 10 : num2(block.xmin), xmax = nw ? nw[1] : auto ? 10 : blankX(block.xmax) ? dom ? dom[1] : xmin + 10 : num2(block.xmax);
     if (!isFinite(xmin) || !isFinite(xmax) || xmin >= xmax) throw new CasError("V\xE6lg et interval hvor fra er mindre end til");
     DEG && exprs.some((e) => /\b(sin|cos|tan)\(pi\*/.test(e)) && (info.note = 'Grafen tegnes med x i grader. Skal x v\xE6re i radianer, s\xE5 skift under "Vinkler" i CAS-menuen p\xE5 en linje med sin/cos/tan.'), used.add(v);
     let need = [...used, ...figVars].filter((u, i, a) => a.indexOf(u) === i && !ctx.bound.has(u) && !ctx.vals.has(u) && !ctx.fns.has(u)), lines = [], sl = symbolsLine(need, ctx);
@@ -2880,8 +2948,8 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       f.pre && lines.push(f.pre);
     }), lines.push("# figurer: punkter, polygoner (A;B;C), ligninger i x og y (linjer og cirkler), parameterkurver og h\xE6ldningsfelter"), lines.push("figurer = [" + figs.map((f) => "('" + f.kind + "', " + (f.kind === "ligning" ? f.code : JSON.stringify(["pil", "bane", "felt", "flade"].includes(f.kind) ? f.label : f.names) + ", " + f.code) + ")").join(", ") + "]")), lines.push("# lambdify g\xF8r udtrykkene til funktioner, der kan regne med tal"), lines.push("fns = [lambdify(" + v + ', u, "math") for u in udtryk]'), lines.push("ts = [" + fmtNum(xmin) + " + " + fmtNum(span) + "*i/300 for i in range(301)]"), lines.push("kurver = [[punkt(fn, t) for t in ts] for fn in fns]  # punkt() giver None hvor fn ikke er defineret"), areas.length && (lines.push("# arealerne, der skraveres: (\xF8verste graf, nederste graf, fra, til)"), lines.push("arealer = [" + areas.map((A) => "(lambdify(" + A.v + ", " + A.top + ', "math"), lambdify(' + A.v + ", " + A.bot + ', "math"), float(' + A.a + "), float(" + A.b + "), " + A.color + ")").join(", ") + "]")), auto && lines.push("# intervallet v\xE6lges automatisk, s\xE5 nulpunkter og toppunkter kommer med");
     let marks = (block.marks || []).filter((m) => /^(max|min|zero):\d+$|^isect:\d+:\d+$/.test(m)).map((m) => {
-      let [k, ...ix] = m.split(":"), e = ix.map((q) => exprOf[q]);
-      return e.some((q) => q == null) ? null : [k, ...e].join(":");
+      let [k, ...ix] = m.split(":"), e = ix.map((q2) => exprOf[q2]);
+      return e.some((q2) => q2 == null) ? null : [k, ...e].join(":");
     }).filter(Boolean);
     marks.length && lines.push("# afl\xE6sning (" + marks.join(", ") + ") findes numerisk p\xE5 det viste interval");
     let named = calls.filter((c) => c && c.f);
@@ -2913,13 +2981,13 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     quad: "Andengrad"
   };
   function tableRoles(b) {
-    let a = b || {}, mode = a.model && a.model !== "none" ? "reg" : ["stat", "qq", "sum", "hist"].includes(a.plot) ? "obs" : "tabel", cells = (a.rows || []).map((r) => [String(r[0] ?? "").trim(), String(r[1] ?? "").trim()]), num2 = (t) => {
+    let a = b || {}, mode2 = a.model && a.model !== "none" ? "reg" : ["stat", "qq", "sum", "hist"].includes(a.plot) ? "obs" : "tabel", cells = (a.rows || []).map((r) => [String(r[0] ?? "").trim(), String(r[1] ?? "").trim()]), num2 = (t) => {
       let x = t.replace(/\s/g, "").replace("\u2212", "-").replace(",", ".");
       return x === "" || !isFinite(Number(x)) ? null : Number(x);
-    }, da = (x) => String(+x.toFixed(4)).replace(".", ","), issues = [], hard = (i, j, msg) => issues.push({ i, j, msg, hard: !0 }), soft = (i, j, msg) => issues.push({ i, j, msg, hard: !1 }), out = { mode, roles: [null, null], w: "none", wAuto: !0, issues, rows: [], pct: [], kum: [], grouped: !1, view: a.plot };
-    if (mode === "tabel") return out;
+    }, da = (x) => String(+x.toFixed(4)).replace(".", ","), issues = [], hard = (i, j, msg) => issues.push({ i, j, msg, hard: !0 }), soft = (i, j, msg) => issues.push({ i, j, msg, hard: !1 }), out = { mode: mode2, roles: [null, null], w: "none", wAuto: !0, issues, rows: [], pct: [], kum: [], grouped: !1, view: a.plot };
+    if (mode2 === "tabel") return out;
     let isIv = (t) => !!parseInterval(t) && num2(t) == null;
-    if (mode === "reg")
+    if (mode2 === "reg")
       return cells.forEach(([x, y], i) => {
         x === "" && y === "" || (x !== "" && num2(x) == null && hard(i, 0, isIv(x) ? '"' + x + '" er et interval. Grupperede data: brug Statistik' : '"' + x + '" er ikke et tal'), y !== "" && num2(y) == null && hard(i, 1, '"' + y + '" er ikke et tal'), x === "" || y === "" ? soft(i, x === "" ? 0 : 1, "R\xE6kken mangler " + (x === "" ? "en x-v\xE6rdi" : "en y-v\xE6rdi") + " og bruges ikke") : num2(x) != null && num2(y) != null && out.rows.push([num2(x), num2(y), i]));
       }), out.roles = ["x", "y"], out;
@@ -2968,10 +3036,10 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       used.push([x, v, i]);
     }), out.rows = used.map(([x, v, i]) => [grouped ? parseInterval(x) : num2(x), v, i]);
     let total = out.rows.reduce((t, r) => t + r[1], 0);
-    if (out.total = total, w === "frek" && out.rows.length && !issues.some((q) => q.hard) && (total > 0 ? Math.abs(total - 100) >= 0.5 && Math.abs(total - 1) >= 5e-3 && (out.wAuto ? hard(-1, 1, "Anden kolonne har decimaltal, der giver " + da(total) + " i alt: det er hverken hyppigheder (hele tal) eller frekvenser (i alt 100 %). V\xE6lg i overskriften, hvad kolonnen er \u2013 eller brug Regression, hvis det er to m\xE5lte st\xF8rrelser") : soft(-1, 1, "Frekvenserne giver " + da(total) + " i alt, ikke 100 %. De regnes om, s\xE5 de giver 100 %")) : hard(-1, 1, "Frekvenserne giver 0 i alt")), w === "hyp" && out.rows.length && !(total > 0) && hard(-1, 1, "Hyppighederne giver 0 i alt"), out.wAuto && w === "hyp" && !/hyppig|antal/i.test(a.hy || "") && out.rows.length && !issues.some((q) => q.hard) && (soft(-1, 1, Math.abs(total - 100) < 1e-9 ? 'Anden kolonne l\xE6ses som hyppigheder (antal), s\xE5 n = 100. Er det frekvenser i %, s\xE5 v\xE6lg "frekvens" under overskriften' : "Anden kolonne l\xE6ses som hyppigheder (antal observationer af hver v\xE6rdi), s\xE5 n = " + total + ". Er det noget andet, s\xE5 v\xE6lg under overskriften"), issues[issues.length - 1].guess = !0), !grouped && w !== "none" && out.rows.some((r, k) => k && r[0] < out.rows[k - 1][0]) && soft(-1, 0, "Observationerne st\xE5r ikke i stigende r\xE6kkef\xF8lge. Den kumulerede frekvens i en r\xE6kke er andelen af observationer, der er mindre end eller lig med r\xE6kkens v\xE6rdi"), w !== "none" && total > 0) {
+    if (out.total = total, w === "frek" && out.rows.length && !issues.some((q2) => q2.hard) && (total > 0 ? Math.abs(total - 100) >= 0.5 && Math.abs(total - 1) >= 5e-3 && (out.wAuto ? hard(-1, 1, "Anden kolonne har decimaltal, der giver " + da(total) + " i alt: det er hverken hyppigheder (hele tal) eller frekvenser (i alt 100 %). V\xE6lg i overskriften, hvad kolonnen er \u2013 eller brug Regression, hvis det er to m\xE5lte st\xF8rrelser") : soft(-1, 1, "Frekvenserne giver " + da(total) + " i alt, ikke 100 %. De regnes om, s\xE5 de giver 100 %")) : hard(-1, 1, "Frekvenserne giver 0 i alt")), w === "hyp" && out.rows.length && !(total > 0) && hard(-1, 1, "Hyppighederne giver 0 i alt"), out.wAuto && w === "hyp" && !/hyppig|antal/i.test(a.hy || "") && out.rows.length && !issues.some((q2) => q2.hard) && (soft(-1, 1, Math.abs(total - 100) < 1e-9 ? 'Anden kolonne l\xE6ses som hyppigheder (antal), s\xE5 n = 100. Er det frekvenser i %, s\xE5 v\xE6lg "frekvens" under overskriften' : "Anden kolonne l\xE6ses som hyppigheder (antal observationer af hver v\xE6rdi), s\xE5 n = " + total + ". Er det noget andet, s\xE5 v\xE6lg under overskriften"), issues[issues.length - 1].guess = !0), !grouped && w !== "none" && out.rows.some((r, k) => k && r[0] < out.rows[k - 1][0]) && soft(-1, 0, "Observationerne st\xE5r ikke i stigende r\xE6kkef\xF8lge. Den kumulerede frekvens i en r\xE6kke er andelen af observationer, der er mindre end eller lig med r\xE6kkens v\xE6rdi"), w !== "none" && total > 0) {
       let pct = new Map(out.rows.map((r) => [r[2], 100 * r[1] / total]));
       for (let r of out.rows)
-        out.pct[r[2]] = pct.get(r[2]), out.kum[r[2]] = grouped ? out.rows.filter((q) => q[2] <= r[2]).reduce((t, q) => t + pct.get(q[2]), 0) : out.rows.filter((q) => q[0] <= r[0]).reduce((t, q) => t + pct.get(q[2]), 0);
+        out.pct[r[2]] = pct.get(r[2]), out.kum[r[2]] = grouped ? out.rows.filter((q2) => q2[2] <= r[2]).reduce((t, q2) => t + pct.get(q2[2]), 0) : out.rows.filter((q2) => q2[0] <= r[0]).reduce((t, q2) => t + pct.get(q2[2]), 0);
     }
     return out.roles = [grouped ? "interval" : "observation", w === "hyp" ? "hyppighed" : w === "frek" ? "frekvens" : "tom"], out;
   }
@@ -2979,12 +3047,12 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     return b && b.name && b.name !== "f" ? b.name : "F";
   }
   function rolesError(R) {
-    let q = R.issues.find((x) => x.hard);
-    if (q) throw new CasError((q.i >= 0 ? "R\xE6kke " + (q.i + 1) + ", " + (q.j ? "anden" : "f\xF8rste") + " kolonne: " : "") + q.msg);
+    let q2 = R.issues.find((x) => x.hard);
+    if (q2) throw new CasError((q2.i >= 0 ? "R\xE6kke " + (q2.i + 1) + ", " + (q2.j ? "anden" : "f\xF8rste") + " kolonne: " : "") + q2.msg);
   }
   function tableNote(b) {
     let R = tableRoles(b);
-    return R.mode === "tabel" || R.issues.some((q) => q.hard) ? "" : rolesNote(R);
+    return R.mode === "tabel" || R.issues.some((q2) => q2.hard) ? "" : rolesNote(R);
   }
   function rolesNote(R) {
     let col = R.issues.filter((x) => !x.hard && x.i < 0).map((x) => x.msg + ".").join(" "), s = R.issues.filter((x) => !x.hard && x.i >= 0);
@@ -3038,7 +3106,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
         if (tk.length !== 1 || tk[0].t !== "id") throw new CasError("Koefficienten " + p + " skal gemmes som \xE9t bogstav, evt. med indeks");
         let name = pyName(tk[0].v, tk[0].sub), disp = display(tk[0].v, tk[0].sub);
         if (targets.has(name)) throw new CasError("Koefficienterne skal have forskellige navne, ogs\xE5 fra funktionen og variablen");
-        if (["a", "b", "c", "R2", "res", "s", "andel", "kv", "ki"].some((q) => q !== p && name === P2(q))) throw new CasError(disp + " bruges allerede internt af modellen. V\xE6lg et andet koefficientnavn");
+        if (["a", "b", "c", "R2", "res", "s", "andel", "kv", "ki"].some((q2) => q2 !== p && name === P2(q2))) throw new CasError(disp + " bruges allerede internt af modellen. V\xE6lg et andet koefficientnavn");
         targets.add(name), aliases.push({ p, name, disp });
       }
     }
@@ -3049,13 +3117,13 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       saved.push(name), ctx.bound.add(name), ctx.fns.delete(name), ctx.dispName.set(name, disp), ctx.vals.set(name, { disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
     if (resid) {
       let rn = residNames(block), got = [["s", rn.s, P2("s")]].concat(resid.ki ? [["lo", rn.lo, P2("ki") + "[0]"], ["hi", rn.hi, P2("ki") + "[1]"]] : []).map(([k, raw, src]) => ({ k, src, ...saveName(raw) }));
-      for (let q of got) {
-        if (targets.has(q.py) || got.filter((x) => x.py === q.py).length > 1) throw new CasError(nameTexPlain(q.disp) + ' bruges allerede af modellen. V\xE6lg et andet navn ved "Gemmes som" under Residualer');
-        (ctx.vals.has(q.py) || ctx.fns.has(q.py)) && (info.note = (info.note ? info.note + " " : "") + nameTexPlain(q.disp) + " er allerede defineret ovenfor. Fra tabellen og nedad er det " + (q.k === "s" ? "residualspredningen" : q.k === "lo" ? "konfidensintervallets nedre gr\xE6nse" : "konfidensintervallets \xF8vre gr\xE6nse") + ".");
+      for (let q2 of got) {
+        if (targets.has(q2.py) || got.filter((x) => x.py === q2.py).length > 1) throw new CasError(nameTexPlain(q2.disp) + ' bruges allerede af modellen. V\xE6lg et andet navn ved "Gemmes som" under Residualer');
+        (ctx.vals.has(q2.py) || ctx.fns.has(q2.py)) && (info.note = (info.note ? info.note + " " : "") + nameTexPlain(q2.disp) + " er allerede defineret ovenfor. Fra tabellen og nedad er det " + (q2.k === "s" ? "residualspredningen" : q2.k === "lo" ? "konfidensintervallets nedre gr\xE6nse" : "konfidensintervallets \xF8vre gr\xE6nse") + ".");
       }
-      lines.push("# Gem residualspredningen" + (resid.ki ? " og konfidensintervallets endepunkter" : "") + " til resten af opgaven"), lines.push(got.map((q) => q.py).join(", ") + " = " + got.map((q) => q.src).join(", "));
-      for (let q of got)
-        saved.push(q.py), ctx.bound.add(q.py), ctx.fns.delete(q.py), ctx.dispName.set(q.py, q.disp), ctx.vals.set(q.py, { disp: q.disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
+      lines.push("# Gem residualspredningen" + (resid.ki ? " og konfidensintervallets endepunkter" : "") + " til resten af opgaven"), lines.push(got.map((q2) => q2.py).join(", ") + " = " + got.map((q2) => q2.src).join(", "));
+      for (let q2 of got)
+        saved.push(q2.py), ctx.bound.add(q2.py), ctx.fns.delete(q2.py), ctx.dispName.set(q2.py, q2.disp), ctx.vals.set(q2.py, { disp: q2.disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
     }
     return ctx.bound.add(f), ctx.fns.set(f, { var: v, disp: vDisp, name: fDisp, label: ctx.label, block: block.id, regression: m, floaty: !0 }), ctx.vals.delete(f), skipped && (info.note = info.note ? skipped + " " + info.note : skipped), info.f = fDisp, info.v = vDisp, { info, step: { id: block.id, kind: "table", code: lines.join(`
 `), meta: { model: m, params: params.map(P2), R2: P2("R2"), f, v, resid, saved } } };
@@ -3078,12 +3146,12 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
   var STAT_WHAT = { m: "middelv\xE6rdi", s: "spredning", q1: "nedre kvartil", q2: "median", q3: "\xF8vre kvartil" };
   function saveStats(block, ctx, info, lines, kv, mean = !0) {
     let nm = statNames(block), got = (mean ? [["m", "middel"], ["s", "spredning"]] : []).concat(kv ? [["q1", "kv['q1']"], ["q2", "kv['med']"], ["q3", "kv['q3']"]] : []).map(([k, src]) => ({ k, src, ...saveName(nm[k]) }));
-    for (let q of got) if (got.filter((x) => x.py === q.py).length > 1) throw new CasError('Tallene ved "Gemmes som" skal gemmes under hver sit navn (' + nameTexPlain(q.disp) + " bruges to gange)");
-    let taken = got.filter((q) => ctx.vals.has(q.py) || ctx.fns.has(q.py));
-    taken.length && (info.note = (info.note ? info.note + " " : "") + taken.map((q) => nameTexPlain(q.disp)).join(", ") + " er allerede defineret ovenfor. Fra tabellen og nedad er " + (taken.length > 1 ? "de" : "det") + " tabellens " + taken.map((q) => STAT_WHAT[q.k]).join(", ") + '. V\xE6lg et andet navn ved "Gemmes som", hvis det ikke var meningen.'), lines.push("# Gem " + (mean ? kv ? "middelv\xE6rdien, spredningen og kvartilerne" : "middelv\xE6rdien og spredningen" : "kvartilerne") + " til resten af opgaven"), lines.push(got.map((q) => q.py).join(", ") + " = " + got.map((q) => q.src).join(", "));
-    for (let q of got)
-      ctx.bound.add(q.py), ctx.fns.delete(q.py), ctx.dispName.set(q.py, q.disp), ctx.vals.set(q.py, { disp: q.disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
-    info.saved = got.map((q) => q.disp);
+    for (let q2 of got) if (got.filter((x) => x.py === q2.py).length > 1) throw new CasError('Tallene ved "Gemmes som" skal gemmes under hver sit navn (' + nameTexPlain(q2.disp) + " bruges to gange)");
+    let taken = got.filter((q2) => ctx.vals.has(q2.py) || ctx.fns.has(q2.py));
+    taken.length && (info.note = (info.note ? info.note + " " : "") + taken.map((q2) => nameTexPlain(q2.disp)).join(", ") + " er allerede defineret ovenfor. Fra tabellen og nedad er " + (taken.length > 1 ? "de" : "det") + " tabellens " + taken.map((q2) => STAT_WHAT[q2.k]).join(", ") + '. V\xE6lg et andet navn ved "Gemmes som", hvis det ikke var meningen.'), lines.push("# Gem " + (mean ? kv ? "middelv\xE6rdien, spredningen og kvartilerne" : "middelv\xE6rdien og spredningen" : "kvartilerne") + " til resten af opgaven"), lines.push(got.map((q2) => q2.py).join(", ") + " = " + got.map((q2) => q2.src).join(", "));
+    for (let q2 of got)
+      ctx.bound.add(q2.py), ctx.fns.delete(q2.py), ctx.dispName.set(q2.py, q2.disp), ctx.vals.set(q2.py, { disp: q2.disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
+    info.saved = got.map((q2) => q2.disp);
   }
   function nameTexPlain(d) {
     return d.replace(/^([A-Za-z])_bar$/, "$1\u0304").replace(/^([A-Za-z])_hat$/, "$1\u0302");
@@ -3544,6 +3612,10 @@ for k in range(0, 5):
       pm: { type: "doc", content: [O("", P())] }
     };
   }
+  function skeleton({ title = "", name = "", cls = "", date = "", opgaver = 1, del = 0 } = {}) {
+    let b = blank(), nO = Math.max(1, Math.min(30, Number(opgaver) || 1)), nD = Math.max(0, Math.min(10, Number(del) || 0)), opg = () => nD ? O("", P(), ...Array.from({ length: nD }, () => [D(), P()]).flat()) : O("", P());
+    return b.pm.content = Array.from({ length: nO }, opg), b.meta = Object.assign(b.meta, { title, name, cls }, date ? { date } : {}), b;
+  }
   function text(node) {
     return (node.content || []).map((c) => c.text || c.type === "math_inline" && c.attrs.latex || "").join("");
   }
@@ -3937,9 +4009,9 @@ print(1 + 1)`, out: null } : {};
     } catch {
     }
   }
-  var daComma = (latex) => String(latex || "").replace(/(\d)\.(?=\d)/g, "$1{,}"), hasFocus = (el) => !!el && (el.hasFocus ? el.hasFocus() : document.activeElement === el);
-  function focusWithin(el) {
-    return el ? el.contains(document.activeElement) && document.activeElement !== document.body ? !0 : [...el.querySelectorAll("math-field")].some((m) => hasFocus(m)) || el.tagName === "MATH-FIELD" && hasFocus(el) : !1;
+  var daComma = (latex) => String(latex || "").replace(/(\d)\.(?=\d)/g, "$1{,}"), hasFocus = (el2) => !!el2 && (el2.hasFocus ? el2.hasFocus() : document.activeElement === el2);
+  function focusWithin(el2) {
+    return el2 ? el2.contains(document.activeElement) && document.activeElement !== document.body ? !0 : [...el2.querySelectorAll("math-field")].some((m) => hasFocus(m)) || el2.tagName === "MATH-FIELD" && hasFocus(el2) : !1;
   }
   function tex(latex, inline) {
     if (!latex) return "";
@@ -4075,15 +4147,15 @@ print(1 + 1)`, out: null } : {};
     "cup",
     "cap"
   ]), ascii2 = (w) => String(w).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z]/g, "");
-  function findItems(q, where) {
-    let ql = String(q || "").toLowerCase(), qa = ascii2(q), plain = /^[a-z]*$/.test(ql), hit = (w) => w.toLowerCase().startsWith(ql) || plain && ascii2(w).startsWith(qa), score = (it) => hit(it.cmd) ? 0 : 1;
+  function findItems(q2, where) {
+    let ql = String(q2 || "").toLowerCase(), qa = ascii2(q2), plain = /^[a-z]*$/.test(ql), hit = (w) => w.toLowerCase().startsWith(ql) || plain && ascii2(w).startsWith(qa), score = (it) => hit(it.cmd) ? 0 : 1;
     return ITEMS.filter((it) => (it.where ? it.where === where : !0) && [it.cmd, ...it.words || []].some(hit)).map((it, i) => ({ it, i, s: score(it) })).sort((a, b) => (where === "text" ? (a.it.cas ? 1 : 0) - (b.it.cas ? 1 : 0) : 0) || a.s - b.s || a.i - b.i).map((x) => x.it);
   }
   function exactItem(word, where) {
     let w = String(word || "").toLowerCase(), wa = ascii2(word);
     return ITEMS.find((it) => (it.where ? it.where === where : !0) && [it.cmd, ...it.words || []].some((x) => x.toLowerCase() === w || ascii2(x) === wa && wa === w.replace(/[^a-z]/g, ""))) || null;
   }
-  var isTexCommand = (q) => TEX.has(q), ACTION_DESC = Object.fromEntries(ITEMS.filter((it) => it.cas).map((it) => [it.id, it.desc]));
+  var isTexCommand = (q2) => TEX.has(q2), ACTION_DESC = Object.fromEntries(ITEMS.filter((it) => it.cas).map((it) => [it.id, it.desc]));
 
   // src/editor/palette.js
   var svg = (d) => '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true">' + d + "</svg>", ICON = {
@@ -4107,12 +4179,12 @@ print(1 + 1)`, out: null } : {};
     exact: "\xBD",
     tex: "\u03A3"
   }, cur = null, esc2 = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]), paletteOwner = () => cur && currentPop() === cur.pop ? cur.owner : null, GROUPS = { text: [["ins", "Inds\xE6t"], ["cas", "Ny formel med CAS"]], math: [["tex", "LaTeX"], ["cas", "CAS-handling"], ["svar", "Svarform"]] }, groupOf = (it) => it.tex ? "tex" : it.cas ? "cas" : it.where === "math" ? "svar" : "ins";
-  function showPalette(anchor, { owner, q, where, onPick, onClose, extra, search }) {
-    q = q || "";
-    let found = findItems(q, where);
+  function showPalette(anchor, { owner, q: q2, where, onPick, onClose, extra, search }) {
+    q2 = q2 || "";
+    let found = findItems(q2, where);
     if (!found.length && !search)
       return hidePalette(owner), !1;
-    let all = (extra || []).concat(found), items = GROUPS[where].map((g) => g[0]).flatMap((g) => all.filter((it) => groupOf(it) === g)), same = paletteOwner() === owner, prevId = same && cur.items[cur.idx] ? cur.items[cur.idx].id : null, idx = items.length ? search ? Math.max(0, items.findIndex((it) => it.id === prevId)) : q ? Math.max(0, items.findIndex((it) => it.id === prevId)) : -1 : -1, box = same ? cur.box : h("div", { class: "palette", role: "listbox", "aria-label": "Kommandoer" }), list = box.querySelector(".pal-list");
+    let all = (extra || []).concat(found), items = GROUPS[where].map((g) => g[0]).flatMap((g) => all.filter((it) => groupOf(it) === g)), same = paletteOwner() === owner, prevId = same && cur.items[cur.idx] ? cur.items[cur.idx].id : null, idx = items.length ? search ? Math.max(0, items.findIndex((it) => it.id === prevId)) : q2 ? Math.max(0, items.findIndex((it) => it.id === prevId)) : -1 : -1, box = same ? cur.box : h("div", { class: "palette", role: "listbox", "aria-label": "Kommandoer" }), list = box.querySelector(".pal-list");
     if (!list) {
       if (list = h("div", { class: "pal-list" }), search) {
         let inp = h("input", { class: "pal-search", placeholder: "S\xF8g: formel, graf, l\xF8s \u2026", "aria-label": "S\xF8g efter det, der skal inds\xE6ttes", autocomplete: "off", spellcheck: "false" });
@@ -4127,7 +4199,7 @@ print(1 + 1)`, out: null } : {};
     if (items.forEach((it, i) => {
       let g = groupOf(it);
       g !== group && (group = g, list.append(h("div", { class: "pal-g" }, GROUPS[where].find((x) => x[0] === g)[1])));
-      let n2 = !it.tex && ascii2(it.cmd).startsWith(ascii2(q)) && it.cmd.toLowerCase().startsWith(String(q).toLowerCase()) || it.tex ? q.length : 0, b = h("button", {
+      let n2 = !it.tex && ascii2(it.cmd).startsWith(ascii2(q2)) && it.cmd.toLowerCase().startsWith(String(q2).toLowerCase()) || it.tex ? q2.length : 0, b = h("button", {
         type: "button",
         class: "pal-item",
         role: "option",
@@ -4180,12 +4252,12 @@ print(1 + 1)`, out: null } : {};
   }
   function mathPalette(mf) {
     if (!mf._onCommand) return;
-    let q = hasFocus(mf) ? latexQuery(mf) : null;
-    if (q == null && (mf._palDismissed = !1), q == null || mf._palDismissed) {
+    let q2 = hasFocus(mf) ? latexQuery(mf) : null;
+    if (q2 == null && (mf._palDismissed = !1), q2 == null || mf._palDismissed) {
       hidePalette(mf);
       return;
     }
-    let extra = isTexCommand(q) ? [{ id: "tex", tex: !0, cmd: q, label: "Symbol", desc: "inds\xE6t \\" + q + " i formlen" }] : [], r = mf.getBoundingClientRect(), x = r.left;
+    let extra = isTexCommand(q2) ? [{ id: "tex", tex: !0, cmd: q2, label: "Symbol", desc: "inds\xE6t \\" + q2 + " i formlen" }] : [], r = mf.getBoundingClientRect(), x = r.left;
     try {
       let cp = mf.caretPoint;
       cp && isFinite(cp.x) && (x = cp.x - 12);
@@ -4193,7 +4265,7 @@ print(1 + 1)`, out: null } : {};
     }
     showPalette({ left: x, right: x, top: r.top, bottom: r.bottom }, {
       owner: mf,
-      q,
+      q: q2,
       where: "math",
       extra,
       onPick: (it) => {
@@ -4566,14 +4638,14 @@ print(1 + 1)`, out: null } : {};
         lxPref = localStorage.getItem("vismat-pref-latex");
       } catch {
       }
-      let row = (label, on2, fn) => {
+      let row2 = (label, on2, fn) => {
         let b = keepFocus(h("button", { type: "button", class: "pop-item", role: "menuitemcheckbox", "aria-checked": String(!!on2) }, h("span", { class: "chk", "aria-hidden": "true" }, on2 ? "\u2713" : ""), h("span", { class: "grow" }, label)));
         return b.addEventListener("click", () => {
           closePop(), fn();
         }), b;
       }, extra = () => [
-        row("Vis LaTeX-kode", toolbar.classList.contains("show-latex"), () => setLx(!toolbar.classList.contains("show-latex"))),
-        row("Formeltastatur", window.mathVirtualKeyboard && window.mathVirtualKeyboard.visible, () => {
+        row2("Vis LaTeX-kode", toolbar.classList.contains("show-latex"), () => setLx(!toolbar.classList.contains("show-latex"))),
+        row2("Formeltastatur", window.mathVirtualKeyboard && window.mathVirtualKeyboard.visible, () => {
           let vk = window.mathVirtualKeyboard;
           !vk || !this.field || (this.field.focus(), vk.visible ? vk.hide() : vk.show({ animate: !0 }));
         })
@@ -4617,8 +4689,8 @@ print(1 + 1)`, out: null } : {};
     target(mf) {
       this.toolbar && !this.toolbar.classList.contains("formula") && (this.swapAt = Date.now()), this.field = mf, this.toolbar && this.toolbar.classList.add("formula"), this.sync(mf, !0), this.room(mf.closest(".m-row") || mf.closest(".blk-head") || mf.closest(".im") && mf.closest("p, li")), this.place();
     },
-    room(el) {
-      this.roomEl !== el && (this.roomEl && this.roomEl.classList.remove("bar-room"), this.roomEl = el || null, el && el.classList.add("bar-room"));
+    room(el2) {
+      this.roomEl !== el2 && (this.roomEl && this.roomEl.classList.remove("bar-room"), this.roomEl = el2 || null, el2 && el2.classList.add("bar-room"));
     },
     // Bjælken står lige under formlen (eller over den, hvis der ikke er plads under)
     place() {
@@ -4634,8 +4706,8 @@ print(1 + 1)`, out: null } : {};
     sync(mf, force) {
       this.latexBox && this.field === mf && (force || document.activeElement !== this.latexBox) && (this.latexBox.value = mf.value);
     },
-    owns(el) {
-      return !!(el && this.toolbar && this.toolbar.contains(el));
+    owns(el2) {
+      return !!(el2 && this.toolbar && this.toolbar.contains(el2));
     }
   };
 
@@ -4770,7 +4842,7 @@ print(1 + 1)`, out: null } : {};
     !keys2 || !keys2.length || (startKeyBuffer(), keyBuf.unshift(...keys2));
   }
   function replayKeys(mf, keys2, onEnter) {
-    let text2 = "", flush = (last2) => {
+    let text2 = "", flush2 = (last2) => {
       let tail = "";
       if (last2) {
         let m = /\\[A-Za-zæøåÆØÅé]*$/.exec(text2);
@@ -4794,11 +4866,11 @@ print(1 + 1)`, out: null } : {};
     for (let i = 0; i < keys2.length; i++) {
       let k = keys2[i];
       if (k === "Enter") {
-        flush(), mf.dispatchEvent(new Event("input")), onEnter && onEnter(keys2.slice(i + 1));
+        flush2(), mf.dispatchEvent(new Event("input")), onEnter && onEnter(keys2.slice(i + 1));
         return;
       }
       if (k === "Backspace") {
-        flush();
+        flush2();
         try {
           mf.executeCommand("deleteBackward");
         } catch {
@@ -4806,7 +4878,7 @@ print(1 + 1)`, out: null } : {};
         continue;
       }
       if (k === "SelectAll") {
-        flush();
+        flush2();
         try {
           mf.executeCommand("selectAll");
         } catch {
@@ -4815,7 +4887,7 @@ print(1 + 1)`, out: null } : {};
       }
       text2 += k;
     }
-    flush(!0), mf.dispatchEvent(new Event("input"));
+    flush2(!0), mf.dispatchEvent(new Event("input"));
   }
   function focusNodeAt(pos) {
     let tries = 0;
@@ -4993,15 +5065,15 @@ print(1 + 1)`, out: null } : {};
   var dismissedAt = null, palettePlugin = new Plugin({
     view: () => ({
       update(v) {
-        let q = v.hasFocus() ? textQuery(v.state) : null;
-        if (q || (dismissedAt = null), !q || q.from === dismissedAt) {
+        let q2 = v.hasFocus() ? textQuery(v.state) : null;
+        if (q2 || (dismissedAt = null), !q2 || q2.from === dismissedAt) {
           hidePalette("text");
           return;
         }
-        let c = v.coordsAtPos(q.to);
+        let c = v.coordsAtPos(q2.to);
         showPalette({ left: c.left, right: c.left, top: c.top, bottom: c.bottom }, {
           owner: "text",
-          q: q.q,
+          q: q2.q,
           where: "text",
           onPick: (it) => {
             app.gutterPara = null;
@@ -5009,7 +5081,7 @@ print(1 + 1)`, out: null } : {};
             now && runTextItem(it, [now.from, now.to]);
           },
           onClose: () => {
-            dismissedAt = q.from;
+            dismissedAt = q2.from;
             let st = app.view.state, $f = st.selection.$from;
             if ($f.parent.type === S.paragraph && /^[\\/]$/.test($f.parent.textContent)) {
               let para = $f.before(), gut = app.gutterPara === para;
@@ -5129,10 +5201,10 @@ print(1 + 1)`, out: null } : {};
     props: {
       handleDOMEvents: {
         mousedown(v, e) {
-          let t = e.target, dl = t.closest && t.closest(".dl"), sec = t.classList && t.classList.contains("opgave") && e.offsetY < 22 ? t : null, el = dl ? dl.closest(".delopg") : sec;
-          if (!el) return !1;
+          let t = e.target, dl = t.closest && t.closest(".dl"), sec = t.classList && t.classList.contains("opgave") && e.offsetY < 22 ? t : null, el2 = dl ? dl.closest(".delopg") : sec;
+          if (!el2) return !1;
           let pos = -1;
-          v.state.doc.descendants((n2, p) => pos >= 0 ? !1 : v.nodeDOM(p) === el ? (pos = p, !1) : n2.type === S.doc || n2.type === S.opgave);
+          v.state.doc.descendants((n2, p) => pos >= 0 ? !1 : v.nodeDOM(p) === el2 ? (pos = p, !1) : n2.type === S.doc || n2.type === S.opgave);
           let node = pos >= 0 && v.state.doc.nodeAt(pos);
           return !node || node.type !== S.opgave && node.type !== S.delopgave ? !1 : (e.preventDefault(), numberPop(v, pos, node, dl || { left: e.clientX, right: e.clientX, top: e.clientY, bottom: e.clientY + 4 }), !0);
         }
@@ -5153,22 +5225,22 @@ print(1 + 1)`, out: null } : {};
     }
   });
   function endRow(view2, getPos, mid) {
-    let plus = h("button", { type: "button", class: "end-plus", title: "Inds\xE6t formel, graf, tabel \u2026", "aria-label": "Inds\xE6t formel, graf, tabel \u2026" }, "+"), row = h("div", { class: "opg-end" + (mid ? " mid" : ""), contenteditable: "false", title: "Klik for at skrive her \xB7 + for formel, graf, tabel \u2026" }, plus), para = () => {
+    let plus = h("button", { type: "button", class: "end-plus", title: "Inds\xE6t formel, graf, tabel \u2026", "aria-label": "Inds\xE6t formel, graf, tabel \u2026" }, "+"), row2 = h("div", { class: "opg-end" + (mid ? " mid" : ""), contenteditable: "false", title: "Klik for at skrive her \xB7 + for formel, graf, tabel \u2026" }, plus), para = () => {
       let end = getPos();
       if (end == null) return null;
       let tr = view2.state.tr, last2 = tr.doc.resolve(end).nodeBefore, p;
       return last2 && last2.type === S.paragraph && last2.content.size === 0 ? p = end - 1 : (tr = tr.insert(end, S.paragraph.create()), p = end + 1), tr = tr.setSelection(TextSelection2.create(tr.doc, p)).scrollIntoView(), view2.dispatch(tr), view2.focus(), p;
     };
-    return row.addEventListener("mousedown", (e) => {
+    return row2.addEventListener("mousedown", (e) => {
       e.preventDefault(), e.stopPropagation();
-    }), row.addEventListener("click", (e) => {
+    }), row2.addEventListener("click", (e) => {
       plus.contains(e.target) || para();
     }), plus.addEventListener("click", () => {
       showPalette(plus, { owner: "end", q: "", where: "text", search: !0, onPick: (it) => {
         let p = para();
         p != null && runTextItem(it, [p, p]);
       } });
-    }), row;
+    }), row2;
   }
   var phPlugin = new Plugin({
     props: {
@@ -5176,7 +5248,7 @@ print(1 + 1)`, out: null } : {};
         let decos = [], sel = state.selection, d = state.doc, o0 = d.childCount === 1 && d.firstChild, emptyDoc = !!(o0 && o0.childCount === 2 && o0.child(1).type === S.paragraph && o0.child(1).content.size === 0), ph = (n2, pos, text2) => decos.push(Decoration.node(pos, pos + n2.nodeSize, { class: "empty", "data-ph": text2 }));
         return state.doc.descendants((n2, pos) => (n2.type === S.opgtitle && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 ? ph(n2, pos, "Titel (valgfri)") : decos.push(Decoration.node(pos, pos + n2.nodeSize, { class: "untitled" }))), n2.type === S.opgave && (decos.push(Decoration.widget(pos + n2.nodeSize - 1, endRow, { side: 1, key: "end-" + (n2.attrs.id || pos), ignoreSelection: !0, stopEvent: () => !0 })), n2.forEach((c, off, i) => {
           c.type === S.delopgave && i > 1 && decos.push(Decoration.widget(pos + 1 + off, (v, gp) => endRow(v, gp, !0), { side: -1, key: "mid-" + (c.attrs.id || off), ignoreSelection: !0, stopEvent: () => !0 }));
-        })), n2.type === S.delopgave && n2.content.size === 0 && ph(n2, pos, "Sp\xF8rgsm\xE5let (valgfrit) \u2013 Enter for at svare"), n2.type === S.paragraph && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 || emptyDoc) && ph(n2, pos, "Skriv, eller tryk \\ for formel, graf, tabel \u2026"), n2.type === S.doc || n2.type === S.opgave)), DecorationSet.create(state.doc, decos);
+        })), n2.type === S.delopgave && n2.content.size === 0 && ph(n2, pos, "Sp\xF8rgsm\xE5let (valgfrit) \u2013 Enter for at svare"), n2.type === S.paragraph && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 || emptyDoc) && ph(n2, pos, "Skriv, eller tast \\ for at inds\xE6tte formel, graf, tabel \u2026"), n2.type === S.doc || n2.type === S.opgave)), DecorationSet.create(state.doc, decos);
       }
     }
   });
@@ -5361,12 +5433,12 @@ print(1 + 1)`, out: null } : {};
     }, seg = (k, choices, def, label) => h("span", { class: "seg sm", role: "radiogroup", "aria-label": label }, choices.map(([v, t]) => {
       let b = h("button", { type: "button", role: "radio", "aria-checked": String((opts[k] || def) === v), dataset: { k: k + "-" + v }, title: COMMAND_HINT[v] ? "Eller skriv " + COMMAND_HINT[v] + " i formlen" : null }, t);
       return b.addEventListener("click", () => setOpt(k, v)), b;
-    })), row = (label, ...kids) => h("div", { class: "opt-row" }, h("span", { class: "opt-l" }, label), ...kids);
+    })), row2 = (label, ...kids) => h("div", { class: "opt-row" }, h("span", { class: "opt-l" }, label), ...kids);
     function options() {
       let rows = [], vPh = info.vDisp || "x";
-      if (cur2 === "solve" && !info.system && rows.push(row("variabel", input("v", vPh, "narrow", "L\xF8s for (variabel)"), seg("dom", [["R", "\u211D"], ["C", "\u2102"]], "R", "Talm\xE6ngde"))), cur2 === "solve" && !info.system && !info.conditions && !/;/.test(a.latex || "") && rows.push(h("div", { class: "opt-row" }, h("span", { class: "opt-hint" }, "Kun positive l\xF8sninger? Skriv fx ", h("code", { style: "white-space:nowrap" }, "; " + vPh + " > 0"), " efter ligningen"))), cur2 === "diff" && rows.push(row("mht.", input("v", vPh, "narrow", "Differenti\xE9r med hensyn til"))), cur2 === "integrate" && (rows.push(row("mht.", input("v", vPh, "narrow", "Integr\xE9r med hensyn til"))), rows.push(row("fra", input("a", "", "narrow", "Nedre gr\xE6nse"), h("span", { class: "opt-l" }, "til"), input("b", "", "narrow", "\xD8vre gr\xE6nse")))), (cur2 !== "define" || info.defKind === "var") && rows.push(row("svar", seg("mode", [["exact", "Pr\xE6cist"], ["decimal", "Decimal"]], info.floaty ? "decimal" : "exact", "Svarform"))), rows.push(h("div", { class: "opt-row" }, precisionControl(opts.digits, (v) => setOpt("digits", v), host.id))), /\\(?:arc)?(?:sin|cos|tan)|\\degree|°|\\circ/.test(a.latex || "")) {
+      if (cur2 === "solve" && !info.system && rows.push(row2("variabel", input("v", vPh, "narrow", "L\xF8s for (variabel)"), seg("dom", [["R", "\u211D"], ["C", "\u2102"]], "R", "Talm\xE6ngde"))), cur2 === "solve" && !info.system && !info.conditions && !/;/.test(a.latex || "") && rows.push(h("div", { class: "opt-row" }, h("span", { class: "opt-hint" }, "Kun positive l\xF8sninger? Skriv fx ", h("code", { style: "white-space:nowrap" }, "; " + vPh + " > 0"), " efter ligningen"))), cur2 === "diff" && rows.push(row2("mht.", input("v", vPh, "narrow", "Differenti\xE9r med hensyn til"))), cur2 === "integrate" && (rows.push(row2("mht.", input("v", vPh, "narrow", "Integr\xE9r med hensyn til"))), rows.push(row2("fra", input("a", "", "narrow", "Nedre gr\xE6nse"), h("span", { class: "opt-l" }, "til"), input("b", "", "narrow", "\xD8vre gr\xE6nse")))), (cur2 !== "define" || info.defKind === "var") && rows.push(row2("svar", seg("mode", [["exact", "Pr\xE6cist"], ["decimal", "Decimal"]], info.floaty ? "decimal" : "exact", "Svarform"))), rows.push(h("div", { class: "opt-row" }, precisionControl(opts.digits, (v) => setOpt("digits", v), host.id))), /\\(?:arc)?(?:sin|cos|tan)|\\degree|°|\\circ/.test(a.latex || "")) {
         let angle = app.meta.angle === "rad" || app.meta.angle === "deg" ? app.meta.angle : "auto";
-        rows.push(row("vinkler", h(
+        rows.push(row2("vinkler", h(
           "span",
           { class: "seg sm", role: "radiogroup", "aria-label": "Vinkelenhed (hele dokumentet)" },
           [["auto", "Auto", "Grader i trekantsberegninger, radianer i funktioner, integraler og n\xE5r der st\xE5r \u03C0"], ["deg", "Grader"], ["rad", "Radianer"]].map(([v, t, tip]) => {
@@ -5385,7 +5457,7 @@ print(1 + 1)`, out: null } : {};
           let inp = input("save", ph, "narrow save", "Gem resultatet som");
           inp.addEventListener("keydown", (e) => {
             e.key === "Enter" && (e.preventDefault(), e.stopPropagation(), inp.value.trim() || setOpt("save", ph), closePop());
-          }), rows.push(row("gem som", inp, cur2 === "solve" ? h("span", { class: "opt-hint" }, "flere l\xF8sninger: " + sub(opts.save || ph) + ", " + sub((opts.save || ph).replace(/_\{?\d+\}?$/, "") + "_2") + " \u2026") : null));
+          }), rows.push(row2("gem som", inp, cur2 === "solve" ? h("span", { class: "opt-hint" }, "flere l\xF8sninger: " + sub(opts.save || ph) + ", " + sub((opts.save || ph).replace(/_\{?\d+\}?$/, "") + "_2") + " \u2026") : null));
         } else {
           let more = h("button", { type: "button", class: "opt-save", dataset: { k: "save-open" } }, h("span", { class: "chk", "aria-hidden": "true" }, "+"), " Gem resultatet \u2026");
           more.addEventListener("click", () => {
@@ -5415,7 +5487,7 @@ print(1 + 1)`, out: null } : {};
           h("span", { class: "grow" }, t)
         );
         b.addEventListener("click", () => {
-          box._saveOpen = !1, host.set({ action: on2 ? null : k });
+          box._saveOpen = !1, host.set({ action: on2 ? null : k }), closePop(), host.done && host.done();
         });
         let say = () => {
           desc.textContent = t + ": " + ACTION_DESC[k];
@@ -5451,8 +5523,8 @@ print(1 + 1)`, out: null } : {};
       let acts = [...box.querySelectorAll(".cas-act")], from = acts.indexOf(document.activeElement), hit = acts.slice(from + 1).concat(acts.slice(0, from + 1)).find((b) => b.textContent.replace("\u2713", "").trim().toLowerCase().startsWith(e.key.toLowerCase()));
       hit && (hit.focus(), e.preventDefault());
     })), focusKeep) {
-      let el = box.querySelector("#" + CSS.escape(focusKeep)) || box.querySelector('[data-k="' + focusKeep + '"]');
-      el && el.focus({ preventScroll: !0 });
+      let el2 = box.querySelector("#" + CSS.escape(focusKeep)) || box.querySelector('[data-k="' + focusKeep + '"]');
+      el2 && el2.focus({ preventScroll: !0 });
     }
   }
 
@@ -5497,14 +5569,14 @@ print(1 + 1)`, out: null } : {};
   function blockAt(e) {
     if (e.target && e.target.closest && e.target.closest(".opg-end")) return null;
     let direct = e.target && e.target.closest ? e.target.closest("#editor .opgave > *") : null;
-    return direct || blocks().find((el) => {
-      let r = el.getBoundingClientRect();
+    return direct || blocks().find((el2) => {
+      let r = el2.getBoundingClientRect();
       return e.clientY >= r.top - 4 && e.clientY <= r.bottom + 4;
     }) || null;
   }
-  function posOf(el) {
+  function posOf(el2) {
     let v = app.view, pos = null, node = null;
-    if (v.state.doc.descendants((n2, p) => pos != null ? !1 : v.nodeDOM(p) === el ? (pos = p, node = n2, !1) : n2.type === S.doc || n2.type === S.opgave), node && node.type === S.opgtitle) {
+    if (v.state.doc.descendants((n2, p) => pos != null ? !1 : v.nodeDOM(p) === el2 ? (pos = p, node = n2, !1) : n2.type === S.doc || n2.type === S.opgave), node && node.type === S.opgtitle) {
       let $p = v.state.doc.resolve(pos);
       return { pos: $p.before(), node: $p.parent, whole: !0 };
     }
@@ -5524,8 +5596,8 @@ print(1 + 1)`, out: null } : {};
       opg.forEach((ch, off, i) => {
         let at = opgPos + 1 + off;
         if (i > 0) {
-          let el = v.nodeDOM(at);
-          el && el.getBoundingClientRect && out.push({ pos: at, y: el.getBoundingClientRect().top - 3 });
+          let el2 = v.nodeDOM(at);
+          el2 && el2.getBoundingClientRect && out.push({ pos: at, y: el2.getBoundingClientRect().top - 3 });
         }
         p = at + ch.nodeSize;
       });
@@ -5538,8 +5610,8 @@ print(1 + 1)`, out: null } : {};
     return out;
   }
   var blockMenuFn = null;
-  function openBlockMenu(anchor, el) {
-    blockMenuFn && blockMenuFn(anchor, el);
+  function openBlockMenu(anchor, el2) {
+    blockMenuFn && blockMenuFn(anchor, el2);
   }
   function initGutter() {
     let paper = document.querySelector(".paper");
@@ -5551,31 +5623,39 @@ print(1 + 1)`, out: null } : {};
       return a instanceof window.Node && gut.contains(a);
     }, hide = () => {
       dragging || ours() || (gut.classList.remove("on"), target = null);
-    }, show = (el) => {
-      target = el;
-      let pr = paper.getBoundingClientRect(), r = el.getBoundingClientRect(), lh = el.matches("p, .delopg, .opg-title") ? Math.min(r.height, parseFloat(getComputedStyle(el).lineHeight) || 28) : el.classList.contains("blk-math_line") ? r.height : 32, chip = el.classList.contains("blk") && el.querySelector(":scope .cas-chip:not(.im-chip)"), right = 100, mid = r.top + lh / 2;
+    }, show = (el2) => {
+      target = el2;
+      let pr = paper.getBoundingClientRect(), r = el2.getBoundingClientRect(), lh = el2.matches("p, .delopg, .opg-title") ? Math.min(r.height, parseFloat(getComputedStyle(el2).lineHeight) || 28) : el2.classList.contains("blk-math_line") ? r.height : 32, chip = el2.classList.contains("blk") && el2.querySelector(":scope .cas-chip:not(.im-chip)"), right = 100, mid = r.top + lh / 2;
       if (chip) {
         let cr = chip.getBoundingClientRect();
-        cr.width && cr.height && (right = Math.min(right, cr.left - pr.left - 2), el.classList.contains("blk-math_line") || (mid = cr.top + cr.height / 2));
+        cr.width && cr.height && (right = Math.min(right, cr.left - pr.left - 2), el2.classList.contains("blk-math_line") || (mid = cr.top + cr.height / 2));
       }
-      gut.style.left = right - 20 + "px", gut.style.top = mid - pr.top - 12 + "px", gut.classList.toggle("whole", el.classList.contains("opg-title"));
-      let blank3 = el.tagName === "P" && !el.textContent.trim() && !el.querySelector(".im");
+      gut.style.left = right - 20 + "px", gut.style.top = mid - pr.top - 12 + "px", gut.classList.toggle("whole", el2.classList.contains("opg-title"));
+      let blank3 = el2.tagName === "P" && !el2.textContent.trim() && !el2.querySelector(".im");
       gut.classList.toggle("blank", blank3), grip.title = blank3 ? "Inds\xE6t formel, graf, tabel \u2026" : "Klik: inds\xE6t, flyt eller slet \xB7 tr\xE6k: flyt", grip.setAttribute("aria-label", blank3 ? "Inds\xE6t her" : "Inds\xE6t, flyt eller slet"), gut.classList.add("on");
+    }, away = () => {
+      dragging || (gut.classList.remove("on"), target = null);
     };
     paper.addEventListener("mousemove", (e) => {
       if (gut.contains(e.target) || dragging || app.mode !== "write" || ours()) return;
-      let el = blockAt(e);
-      if (!el) {
+      if (currentPop()) {
+        away();
+        return;
+      }
+      let el2 = blockAt(e);
+      if (!el2) {
         hide();
         return;
       }
-      el !== target && show(el);
-    }), paper.addEventListener("mouseleave", hide);
-    let insertMenu = (el, anchor = grip) => showPalette(anchor, { owner: "gutter", q: "", where: "text", search: !0, onPick: (it) => insertBelow(el, it), onClose: () => {
+      el2 !== target && show(el2);
+    }), paper.addEventListener("mouseleave", hide), paper.addEventListener("click", () => {
+      currentPop() && !ours() && away();
+    });
+    let insertMenu = (el2, anchor = grip) => showPalette(anchor, { owner: "gutter", q: "", where: "text", search: !0, onPick: (it) => insertBelow(el2, it), onClose: () => {
       gut.classList.remove("on"), target = null;
     } });
-    function insertBelow(el, it) {
-      let v = app.view, at = posOf(el);
+    function insertBelow(el2, it) {
+      let v = app.view, at = posOf(el2);
       if (!at) return;
       v.focus();
       let tr = v.state.tr, p;
@@ -5588,18 +5668,18 @@ print(1 + 1)`, out: null } : {};
         return;
       }
       e.preventDefault();
-      let el = target, at = posOf(el);
+      let el2 = target, at = posOf(el2);
       if (!at) return;
       let x0 = e.clientX, y0 = e.clientY, moved = !1, gap = null, list = null, onMove = (ev) => {
         if (!moved && Math.abs(ev.clientY - y0) + Math.abs(ev.clientX - x0) < 5) return;
-        moved || (moved = !0, dragging = at, list = gaps(at.whole), (at.whole ? el.parentElement : el).classList.add("dragging"), document.body.classList.add("is-dragging")), gap = list.reduce((b, g) => !b || Math.abs(g.y - ev.clientY) < Math.abs(b.y - ev.clientY) ? g : b, null);
+        moved || (moved = !0, dragging = at, list = gaps(at.whole), (at.whole ? el2.parentElement : el2).classList.add("dragging"), document.body.classList.add("is-dragging")), gap = list.reduce((b, g) => !b || Math.abs(g.y - ev.clientY) < Math.abs(b.y - ev.clientY) ? g : b, null);
         let pr = paper.getBoundingClientRect();
         line.hidden = !gap, gap && (line.style.top = gap.y - pr.top + "px");
         let desk = document.getElementById("desk"), dr = desk.getBoundingClientRect();
         ev.clientY < dr.top + 60 ? desk.scrollTop -= 12 : ev.clientY > dr.bottom - 60 && (desk.scrollTop += 12);
       }, onUp = () => {
         if (document.removeEventListener("mousemove", onMove, !0), document.removeEventListener("mouseup", onUp, !0), document.removeEventListener("keydown", onKey, !0), line.hidden = !0, document.body.classList.remove("is-dragging"), document.querySelectorAll(".dragging").forEach((x) => x.classList.remove("dragging")), dragging = null, !moved) {
-          menu(el, at);
+          menu(el2, at);
           return;
         }
         gap && moveNodeTo(at.pos, gap.pos), gut.classList.remove("on"), target = null;
@@ -5607,14 +5687,14 @@ print(1 + 1)`, out: null } : {};
         ev.key === "Escape" && (gap = null, onUp());
       };
       document.addEventListener("mousemove", onMove, !0), document.addEventListener("mouseup", onUp, !0), document.addEventListener("keydown", onKey, !0);
-    }), blockMenuFn = (anchor, el) => {
-      let at = posOf(el);
-      at && menu(el, at, anchor);
+    }), blockMenuFn = (anchor, el2) => {
+      let at = posOf(el2);
+      at && menu(el2, at, anchor);
     };
-    function menu(el, at, anchor = grip) {
+    function menu(el2, at, anchor = grip) {
       let item = (label, hint, fn, cls) => h("button", { type: "button", class: "pop-item" + (cls ? " " + cls : ""), onclick: () => {
         closePop(), fn();
-      } }, h("span", { class: "grow" }, label), hint ? h("span", { class: "pop-hint" }, hint) : null), cur2 = () => posOf(el) || at, mac = /Mac|iPhone|iPad/.test(navigator.platform || ""), k = (a) => (mac ? "\u2318\u21E7" : "Ctrl+Shift+") + a, ins = item("Inds\xE6t herunder \u2026", "\\", () => insertMenu(el, anchor)), items = at.whole ? [
+      } }, h("span", { class: "grow" }, label), hint ? h("span", { class: "pop-hint" }, hint) : null), cur2 = () => posOf(el2) || at, mac = /Mac|iPhone|iPad/.test(navigator.platform || ""), k = (a) => (mac ? "\u2318\u21E7" : "Ctrl+Shift+") + a, ins = item("Inds\xE6t herunder \u2026", "\\", () => insertMenu(el2, anchor)), items = at.whole ? [
         ins,
         h("div", { class: "pop-sep" }),
         item("Flyt opgaven op", "", () => {
@@ -5704,13 +5784,13 @@ print(1 + 1)`, out: null } : {};
       this.ro && this.ro.disconnect(), app.views.get(this.id) === this && app.views.delete(this.id);
     }
     // Tegn grafen igen, når pladsen ændrer sig, så teksten i grafen beholder sin størrelse
-    watchWidth(el) {
+    watchWidth(el2) {
       if (typeof ResizeObserver > "u") return;
       let last2 = 0;
       this.ro = new ResizeObserver(() => {
-        let w = el.clientWidth;
+        let w = el2.clientWidth;
         w && Math.abs(w - last2) > 16 && (last2 = w, this.refresh());
-      }), this.ro.observe(el);
+      }), this.ro.observe(el2);
     }
     // soft: en vejledning (fx "Udfyld de tomme felter"), vises neutralt og tæller ikke som fejl
     showErr(msg, soft) {
@@ -5809,8 +5889,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         h("span", { class: "cas-chip-t" }),
         h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE")
       ), this.chip.addEventListener("mousedown", (e) => e.preventDefault()), this.chip.addEventListener("click", (e) => this.openMenu(e.detail === 0)), this.sym = h("span", { class: "m-sym" }), this.res = h("span", { class: "m-res" }), this.out = h("div", { class: "m-out" }, this.sym, this.res), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.py.classList.add("py-mini"), this.pybox = h("div", { class: "pybox" }), this.hint = h("span", { class: "m-hint", "aria-hidden": "true" }, "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter");
-      let main = h("div", { class: "m-main" }, this.ph, mf, this.out, this.hint), row = h("div", { class: "m-row" }, this.chip, main, this.py);
-      this.dom.append(row, this.err, this.pybox), this.out.title = "Klik: ret formlen \xB7 Dobbeltklik: kopi\xE9r resultatet", this.out.addEventListener("dblclick", (e) => {
+      let main = h("div", { class: "m-main" }, this.ph, mf, this.out, this.hint), row2 = h("div", { class: "m-row" }, this.chip, main, this.py);
+      this.dom.append(row2, this.err, this.pybox), this.out.title = "Klik: ret formlen \xB7 Dobbeltklik: kopi\xE9r resultatet", this.out.addEventListener("dblclick", (e) => {
         e.preventDefault();
         let t = this.lastRes;
         if (!t) return;
@@ -5822,7 +5902,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         }
       }), this.dom.addEventListener("mousedown", (e) => {
         let onOut = this.out.contains(e.target);
-        if (e.button !== 0 || e.target !== this.dom && e.target !== row && e.target !== main && !onOut) return;
+        if (e.button !== 0 || e.target !== this.dom && e.target !== row2 && e.target !== main && !onOut) return;
         e.preventDefault(), e.stopPropagation();
         let r = mf.getBoundingClientRect();
         this.mf.focus();
@@ -5948,7 +6028,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       kbd ? first && first.focus({ preventScroll: !0 }) : this.menuEl.focus({ preventScroll: !0 });
     }
     menuBody() {
-      this.menuEl && (buildCasMenu(this.menuEl, { id: this.id, attrs: this.node.attrs, set: (p) => this.set(p), inline: !1, convert: () => toInline(this.id), remove: () => deleteId(this.id) }), currentPop() && currentPop()._owner === this && placePop());
+      this.menuEl && (buildCasMenu(this.menuEl, { id: this.id, attrs: this.node.attrs, set: (p) => this.set(p), inline: !1, convert: () => toInline(this.id), remove: () => deleteId(this.id), done: () => this.focus(!0) }), currentPop() && currentPop()._owner === this && placePop());
     }
   };
 
@@ -6041,7 +6121,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         let d = e.detail && e.detail.direction;
         e.preventDefault(), commit(d === "backward" || d === "upward" ? -1 : 1);
       });
-      let t0 = Date.now(), outside = (el) => Date.now() - t0 > 400 && !editor.contains(el) && !bar.owns(el) && !(currentPop() && currentPop().contains(el));
+      let t0 = Date.now(), outside = (el2) => Date.now() - t0 > 400 && !editor.contains(el2) && !bar.owns(el2) && !(currentPop() && currentPop().contains(el2));
       mf.addEventListener("focusout", () => setTimeout(() => {
         this.editing && !hasFocus(mf) && outside(document.activeElement) && document.activeElement !== document.body && commit(1);
       }, 0));
@@ -6105,6 +6185,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let attrs = Object.assign({}, this.node.attrs, { latex: this.mf ? this.mf.value : this.node.attrs.latex });
       buildCasMenu(this.menuEl, { id: this.id, attrs, set: (p) => this.set(p), inline: !0, convert: () => this.convert(), remove: () => {
         this.mf && (this.mf.value = ""), this.commit && this.commit(1);
+      }, done: () => {
+        this.mf && this.mf.focus();
       } });
     }
     // Til formellinje: formlen, som den står i feltet lige nu
@@ -6176,7 +6258,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   function mathName(t, x, y, anchor, pal, fs, extra = "") {
     let m = /^([A-Za-z])(?:_\{?(\w+)\}?)?$/.exec(String(t));
     if (!m) return null;
-    let print = pal === PRINT, fam = print ? 'font-family="New Computer Modern Math"' : 'font-family="KaTeX_Math, Latin Modern Math, Cambria Math, serif" font-style="italic"', sub = m[2] ? `<tspan dy="${(fs * 0.3).toFixed(1)}" font-size="${(fs * 0.8).toFixed(1)}">${esc(print ? [...m[2]].map((q) => /[A-Za-z]/.test(q) ? MATH_IT(q) : q).join("") : m[2])}</tspan>` : "";
+    let print = pal === PRINT, fam = print ? 'font-family="New Computer Modern Math"' : 'font-family="KaTeX_Math, Latin Modern Math, Cambria Math, serif" font-style="italic"', sub = m[2] ? `<tspan dy="${(fs * 0.3).toFixed(1)}" font-size="${(fs * 0.8).toFixed(1)}">${esc(print ? [...m[2]].map((q2) => /[A-Za-z]/.test(q2) ? MATH_IT(q2) : q2).join("") : m[2])}</tspan>` : "";
     return `<text x="${x}" y="${y}" fill="${pal.ink}" ${fam} font-size="${fs + 3}" ${anchor ? 'text-anchor="' + anchor + '"' : ""} ${extra}>${esc(print ? MATH_IT(m[1]) : m[1])}${sub}</text>`;
   }
   function niceStep(span, n2 = 6) {
@@ -6261,9 +6343,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       }
       c += `<path d="${d}" fill="none" stroke="${pal.tick}" stroke-width="1.3" stroke-linecap="round" opacity="0.8"/>`;
     }), (areas || []).forEach((A) => {
-      let ok = (q) => q[1] != null && isFinite(q[1]), top = A.top.filter(ok), bot = A.bot.filter(ok);
+      let ok = (q2) => q2[1] != null && isFinite(q2[1]), top = A.top.filter(ok), bot = A.bot.filter(ok);
       if (top.length < 2 || bot.length < 2) return;
-      let d = top.concat(bot.slice().reverse()).map((q, k) => (k ? "L" : "M") + X(q[0]).toFixed(1) + " " + Y(q[1]).toFixed(1)).join("") + "Z";
+      let d = top.concat(bot.slice().reverse()).map((q2, k) => (k ? "L" : "M") + X(q2[0]).toFixed(1) + " " + Y(q2[1]).toFixed(1)).join("") + "Z";
       c += `<path d="${d}" fill="${A.color}" fill-opacity="0.22" stroke="none"/>`;
     }), series.forEach((s) => {
       let d = "", pen = !1, prev = null, seen = [];
@@ -6322,20 +6404,20 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let cid = "cl" + Math.random().toString(36).slice(2, 7);
     return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(aria || (ylab ? "Data og model for " + ylab + " mod " + (xlab || "x") : "Graf"))}" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="${cid}"><rect x="${ml}" y="${mt}" width="${W - ml - mr}" height="${H - mt - mb}"/></clipPath></defs>${g}<g clip-path="url(#${cid})">${c}</g>${m}${tk}</svg>`;
   }
-  function surfaceSVG(S2, pal, size, labs = {}, az = -120, el = 24) {
-    let W = size.w, H = size.h, fs = size.font || 12, [a, b] = S2.x, [c, d] = S2.y, [zl, zh] = S2.zr, n2 = S2.z.length - 1, m = S2.z[0].length - 1, f = Math.PI / 180, ca = Math.cos(az * f), sa = Math.sin(az * f), ce = Math.cos(el * f), se = Math.sin(el * f), nx = (x) => (x - a) / (b - a) * 2 - 1, ny = (y) => (y - c) / (d - c) * 2 - 1, nz = (z) => Math.max(-1.1, Math.min(1.1, (z - zl) / (zh - zl) * 2 - 1)) * 0.8, P2 = (x, y, z) => {
+  function surfaceSVG(S2, pal, size, labs = {}, az = -120, el2 = 24) {
+    let W = size.w, H = size.h, fs = size.font || 12, [a, b] = S2.x, [c, d] = S2.y, [zl, zh] = S2.zr, n2 = S2.z.length - 1, m = S2.z[0].length - 1, f = Math.PI / 180, ca = Math.cos(az * f), sa = Math.sin(az * f), ce = Math.cos(el2 * f), se = Math.sin(el2 * f), nx = (x) => (x - a) / (b - a) * 2 - 1, ny = (y) => (y - c) / (d - c) * 2 - 1, nz = (z) => Math.max(-1.1, Math.min(1.1, (z - zl) / (zh - zl) * 2 - 1)) * 0.8, P2 = (x, y, z) => {
       let X = x * ca - y * sa, Y = x * sa + y * ca;
       return { u: X, v: z * ce + Y * se, dep: Y * ce - z * se };
     }, corners = [];
     for (let x of [-1, 1]) for (let y of [-1, 1]) for (let z of [-0.8, 0.8]) corners.push(P2(x, y, z));
-    let u0 = Math.min(...corners.map((p) => p.u)), u1 = Math.max(...corners.map((p) => p.u)), v0 = Math.min(...corners.map((p) => p.v)), v1 = Math.max(...corners.map((p) => p.v)), mg = fs * 3.2, k = Math.min((W - 2 * mg) / (u1 - u0), (H - 2 * mg) / (v1 - v0)), ox = W / 2 - k * (u0 + u1) / 2, oy = H / 2 + k * (v0 + v1) / 2, S22 = (p) => [ox + k * p.u, oy - k * p.v], pt = (x, y, z) => S22(P2(nx(x), ny(y), nz(z))), font = `font-family="Instrument Sans, system-ui, sans-serif" font-size="${fs}"`, g = "", txt2 = "", corners2 = [[a, c], [a, d], [b, c], [b, d]], [xb, yb] = corners2.reduce((p, q) => P2(nx(q[0]), ny(q[1]), -0.8).dep > P2(nx(p[0]), ny(p[1]), -0.8).dep ? q : p), xo = xb === a ? b : a, yo = yb === c ? d : c, [cx, cy] = pt((a + b) / 2, (c + d) / 2, (zl + zh) / 2), axis = (p0, p1, lab, lo, hi) => {
+    let u0 = Math.min(...corners.map((p) => p.u)), u1 = Math.max(...corners.map((p) => p.u)), v0 = Math.min(...corners.map((p) => p.v)), v1 = Math.max(...corners.map((p) => p.v)), mg = fs * 3.2, k = Math.min((W - 2 * mg) / (u1 - u0), (H - 2 * mg) / (v1 - v0)), ox = W / 2 - k * (u0 + u1) / 2, oy = H / 2 + k * (v0 + v1) / 2, S22 = (p) => [ox + k * p.u, oy - k * p.v], pt = (x, y, z) => S22(P2(nx(x), ny(y), nz(z))), font = `font-family="Instrument Sans, system-ui, sans-serif" font-size="${fs}"`, g = "", txt2 = "", corners2 = [[a, c], [a, d], [b, c], [b, d]], [xb, yb] = corners2.reduce((p, q2) => P2(nx(q2[0]), ny(q2[1]), -0.8).dep > P2(nx(p[0]), ny(p[1]), -0.8).dep ? q2 : p), xo = xb === a ? b : a, yo = yb === c ? d : c, [cx, cy] = pt((a + b) / 2, (c + d) / 2, (zl + zh) / 2), axis = (p0, p1, lab, lo, hi) => {
       let [x0, y0] = pt(...p0), [x1, y1] = pt(...p1);
       g += `<line x1="${x0.toFixed(1)}" y1="${y0.toFixed(1)}" x2="${x1.toFixed(1)}" y2="${y1.toFixed(1)}" stroke="${pal.axis}" stroke-width="1.3"/>`;
       let L = Math.hypot(x1 - x0, y1 - y0) || 1, nxp = -(y1 - y0) / L, nyp = (x1 - x0) / L, mx = (x0 + x1) / 2, my = (y0 + y1) / 2;
       nxp * (mx - cx) + nyp * (my - cy) < 0 && (nxp = -nxp, nyp = -nyp);
       let off = fs * 1.3, st = niceStep(Math.abs(hi - lo), 4), lo2 = Math.min(lo, hi), hi2 = Math.max(lo, hi);
       for (let t = Math.ceil(lo2 / st) * st; t <= hi2 + 1e-9; t += st) {
-        let q = (t - lo) / (hi - lo), tx = x0 + (x1 - x0) * q + nxp * off, ty = y0 + (y1 - y0) * q + nyp * off + fs / 3;
+        let q2 = (t - lo) / (hi - lo), tx = x0 + (x1 - x0) * q2 + nxp * off, ty = y0 + (y1 - y0) * q2 + nyp * off + fs / 3;
         txt2 += `<text x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" fill="${pal.tick}" ${font} text-anchor="middle" ${halo(pal)}>${tickTxt(t, st)}</text>`;
       }
       let vert = Math.abs(x1 - x0) < Math.abs(y1 - y0) * 0.3, lx = (vert ? x1 + (x1 - x0) / L * 14 + nxp * off * 0.6 : mx + nxp * off * 2.4).toFixed(1), ly = (vert ? y1 + (y1 - y0) / L * 14 + nyp * off * 0.6 + fs / 3 : my + nyp * off * 2.4 + fs / 3).toFixed(1);
@@ -6356,20 +6438,20 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       line3([a, yb, t], [b, yb, t], pal.grid, 1), line3([xb, c, t], [xb, d, t], pal.grid, 1);
     for (let [p0, p1] of [[[xo, c, zl], [xo, d, zl]], [[a, yo, zl], [b, yo, zl]], [[xo, yb, zl], [xo, yb, zh]], [[xb, yo, zl], [xb, yo, zh]], [[a, yb, zh], [b, yb, zh]], [[xb, c, zh], [xb, d, zh]]]) line3(p0, p1, pal.axis, 0.7);
     axis([a, yo, zl], [b, yo, zl], labs.x || "x", a, b), axis([xo, c, zl], [xo, d, zl], labs.y || "y", c, d);
-    let [zx, zy] = [[xo, yb], [xb, yo]].reduce((p, q) => pt(q[0], q[1], zl)[0] < pt(p[0], p[1], zl)[0] ? q : p);
+    let [zx, zy] = [[xo, yb], [xb, yo]].reduce((p, q2) => pt(q2[0], q2[1], zl)[0] < pt(p[0], p[1], zl)[0] ? q2 : p);
     line3([zx, zy, zl], [zx, zy, zh], pal.axis, 0.7), axis([zx, zy, zl], [zx, zy, zh], labs.z || "z", zl, zh);
     let quads = [], xv = (i) => a + (b - a) * i / n2, yv = (j) => c + (d - c) * j / m;
     for (let i = 0; i < n2; i++) for (let j = 0; j < m; j++) {
       let zz = [S2.z[i][j], S2.z[i + 1][j], S2.z[i + 1][j + 1], S2.z[i][j + 1]];
       if (zz.some((z) => z == null)) continue;
-      let xs = [xv(i), xv(i + 1), xv(i + 1), xv(i)], ys = [yv(j), yv(j), yv(j + 1), yv(j + 1)], Q = zz.map((z, q) => P2(nx(xs[q]), ny(ys[q]), nz(z))), h2 = Math.max(0, Math.min(1, ((zz[0] + zz[1] + zz[2] + zz[3]) / 4 - zl) / (zh - zl))), gx = (nz(zz[1]) - nz(zz[0]) + nz(zz[2]) - nz(zz[3])) / 2 / (2 / n2), gy = (nz(zz[3]) - nz(zz[0]) + nz(zz[2]) - nz(zz[1])) / 2 / (2 / m), light = Math.max(0, (1 - 0.35 * gx + 0.25 * gy) / Math.sqrt(1 + gx * gx + gy * gy));
+      let xs = [xv(i), xv(i + 1), xv(i + 1), xv(i)], ys = [yv(j), yv(j), yv(j + 1), yv(j + 1)], Q = zz.map((z, q2) => P2(nx(xs[q2]), ny(ys[q2]), nz(z))), h2 = Math.max(0, Math.min(1, ((zz[0] + zz[1] + zz[2] + zz[3]) / 4 - zl) / (zh - zl))), gx = (nz(zz[1]) - nz(zz[0]) + nz(zz[2]) - nz(zz[3])) / 2 / (2 / n2), gy = (nz(zz[3]) - nz(zz[0]) + nz(zz[2]) - nz(zz[1])) / 2 / (2 / m), light = Math.max(0, (1 - 0.35 * gx + 0.25 * gy) / Math.sqrt(1 + gx * gx + gy * gy));
       quads.push({ dep: Q.reduce((s, p) => s + p.dep, 0) / 4, pts: Q.map(S22), h: h2, light });
     }
-    quads.sort((p, q) => q.dep - p.dep);
+    quads.sort((p, q2) => q2.dep - p.dep);
     let sf = "";
-    for (let q of quads) {
-      let hue = 215 - 185 * q.h, lum = 38 + 26 * Math.min(1, q.light);
-      sf += `<path d="M${q.pts.map((p) => p[0].toFixed(1) + " " + p[1].toFixed(1)).join("L")}Z" fill="hsl(${hue.toFixed(0)},62%,${lum.toFixed(0)}%)" stroke="hsl(${hue.toFixed(0)},40%,${(lum - 14).toFixed(0)}%)" stroke-width="0.5" stroke-linejoin="round"/>`;
+    for (let q2 of quads) {
+      let hue = 215 - 185 * q2.h, lum = 38 + 26 * Math.min(1, q2.light);
+      sf += `<path d="M${q2.pts.map((p) => p[0].toFixed(1) + " " + p[1].toFixed(1)).join("L")}Z" fill="hsl(${hue.toFixed(0)},62%,${lum.toFixed(0)}%)" stroke="hsl(${hue.toFixed(0)},40%,${(lum - 14).toFixed(0)}%)" stroke-width="0.5" stroke-linejoin="round"/>`;
     }
     return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(labs.aria || "Graf af en funktion af to variable")}" xmlns="http://www.w3.org/2000/svg">${g}${sf}${txt2}</svg>`;
   }
@@ -6378,7 +6460,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
   function graphSVG(b, r, pal, size, info) {
     if (r && !r.error && r.bars) {
-      let ks = r.bars.map((q) => q[0]), lo = Math.min(...ks) - 0.8, hi = Math.max(...ks) + 0.8;
+      let ks = r.bars.map((q2) => q2[0]), lo = Math.min(...ks) - 0.8, hi = Math.max(...ks) + 0.8;
       return plotSVG({ series: [], bars: r.bars, xr: [numIn(b.xmin, lo), numIn(b.xmax, hi)], yr: [0, numIn(b.ymax, null)], xlab: (b.xlab || "").trim() || "k", ylab: (b.ylab || "").trim() || info && info.ylab || "P", pal, size, labelPositions: b.labelPositions, digits: b.digits, aria: "S\xF8jlediagram for " + (b.fns || []).join("") });
     }
     if (!r || r.error || !r.curves) return null;
@@ -6395,7 +6477,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   function distText(r, info, digits = "") {
     if (!info) return [];
     if (info.dist && info.dist.kind === "binom" && r && r.bars && r.bars.length) {
-      let ps = r.bars, top = Math.max(...ps.map((q) => q[1])), modes = ps.filter((q) => q[1] >= top - 1e-12).map((q) => q[0]), E = ps.reduce((t, q) => t + q[0] * q[1], 0), sd = Math.sqrt(ps.reduce((t, q) => t + (q[0] - E) ** 2 * q[1], 0));
+      let ps = r.bars, top = Math.max(...ps.map((q2) => q2[1])), modes = ps.filter((q2) => q2[1] >= top - 1e-12).map((q2) => q2[0]), E = ps.reduce((t, q2) => t + q2[0] * q2[1], 0), sd = Math.sqrt(ps.reduce((t, q2) => t + (q2[0] - E) ** 2 * q2[1], 0));
       return ["Typetal: " + modes.join(" og "), "Middelv\xE6rdi: " + markNum(E, digits), "Spredning: " + markNum(sd, digits)];
     }
     return info.dists && info.dists.length && (info.kinds || []).filter(Boolean).every((k) => k === "t\xE6thed") ? info.dists.flatMap((d) => [(info.dists.length > 1 ? d.disp + ": " : "") + "Middelv\xE6rdi: " + markNum(d.mu, digits), "Spredning: " + markNum(d.s, digits)]) : [];
@@ -6407,8 +6489,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let view2 = b.model === "none" && ["stat", "qq", "sum", "hist"].includes(b.plot) ? tableRoles(b).view : null, xl = (b.hx || "").trim() || b.v || "x";
     if (view2 === "sum") {
       if (!r || !r.pts) return '<div class="g-empty">Skriv intervallerne (fx ]0;20]) i f\xF8rste kolonne og deres hyppighed eller frekvens i anden</div>';
-      let xs0 = r.pts.map((q) => q[0]), lo0 = Math.min(...xs0), hi0 = Math.max(...xs0), pad0 = (hi0 - lo0) * 0.04 || 1, kvl = r.kv ? [[25, r.kv.q1], [50, r.kv.med], [75, r.kv.q3]].map(([p, q]) => ({ pts: [[lo0 - pad0, p], [q, p], [q, 0]], color: pal.s[1], dash: !0 })) : [];
-      return plotSVG({ labelPositions: b.labelPositions, labelPrefix: "table:", series: kvl, points: r.pts, line: !0, xr: [lo0 - pad0, hi0 + pad0], yr: [0, Math.max(100, ...r.pts.map((q) => q[1])) * 1.04], xlab: xl, ylab: "Kumuleret frekvens (%)", pal, size, aria: "Sumkurve", originLabel: !0 });
+      let xs0 = r.pts.map((q2) => q2[0]), lo0 = Math.min(...xs0), hi0 = Math.max(...xs0), pad0 = (hi0 - lo0) * 0.04 || 1, kvl = r.kv ? [[25, r.kv.q1], [50, r.kv.med], [75, r.kv.q3]].map(([p, q2]) => ({ pts: [[lo0 - pad0, p], [q2, p], [q2, 0]], color: pal.s[1], dash: !0 })) : [];
+      return plotSVG({ labelPositions: b.labelPositions, labelPrefix: "table:", series: kvl, points: r.pts, line: !0, xr: [lo0 - pad0, hi0 + pad0], yr: [0, Math.max(100, ...r.pts.map((q2) => q2[1])) * 1.04], xlab: xl, ylab: "Kumuleret frekvens (%)", pal, size, aria: "Sumkurve", originLabel: !0 });
     }
     if (view2 === "hist") {
       if (!r || !r.ivs) return '<div class="g-empty">Skriv intervallerne (fx ]0;20]) i f\xF8rste kolonne og deres hyppighed eller frekvens i anden</div>';
@@ -6419,18 +6501,18 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       return !r || !r.stat ? '<div class="g-empty">Skriv observationerne i f\xF8rste kolonne (og evt. deres hyppighed eller frekvens i anden)</div>' : boxSVG(r.stat.kv, pal, size, "Boksplot" + ((b.hx || "").trim() ? " af " + b.hx.trim().replace(/\s*\(.*\)$/, "").toLowerCase() : ""));
     if (view2 === "qq") {
       if (!r || !r.qq) return '<div class="g-empty">Skriv mindst tre observationer i f\xF8rste kolonne, eller inds\xE6t dem fra et regneark</div>';
-      let xs0 = r.qq.map((q) => q[0]), lo0 = Math.min(...xs0), hi0 = Math.max(...xs0), pad0 = (hi0 - lo0) * 0.06 || 1, L = [[lo0 - pad0, (lo0 - pad0 - r.mean) / r.s], [hi0 + pad0, (hi0 + pad0 - r.mean) / r.s]];
+      let xs0 = r.qq.map((q2) => q2[0]), lo0 = Math.min(...xs0), hi0 = Math.max(...xs0), pad0 = (hi0 - lo0) * 0.06 || 1, L = [[lo0 - pad0, (lo0 - pad0 - r.mean) / r.s], [hi0 + pad0, (hi0 + pad0 - r.mean) / r.s]];
       return plotSVG({ labelPositions: b.labelPositions, labelPrefix: "table:", series: [{ pts: L, color: pal.s[1], dash: !0 }], points: r.qq, xr: [lo0 - pad0, hi0 + pad0], yr: null, xlab: xl, ylab: "Fraktil i N(0; 1)", pal, size, aria: "Normalfordelingsplot", ticksBottom: !0 });
     }
-    let pts = b.rows.map((rw) => [numIn(rw[0], null), numIn(rw[1], null)]).filter((q) => q[0] != null && q[1] != null);
+    let pts = b.rows.map((rw) => [numIn(rw[0], null), numIn(rw[1], null)]).filter((q2) => q2[0] != null && q2[1] != null);
     if (!pts.length)
       return '<div class="g-empty">' + (b.rows.some((rw) => numIn(rw[0], null) != null) ? "Punkterne kr\xE6ver tal i begge kolonner. Er det enkelte observationer, s\xE5 v\xE6lg Statistik i m\xE6rket til venstre for tabellen" : "Indtast data, eller inds\xE6t dem fra et regneark") + "</div>";
     if (b.model === "none") {
       if (!b.plot || b.plot === "none") return "";
-      let xs0 = pts.map((q) => q[0]), lo0 = Math.min(...xs0), hi0 = Math.max(...xs0), pad0 = (hi0 - lo0) * 0.05 || 1;
+      let xs0 = pts.map((q2) => q2[0]), lo0 = Math.min(...xs0), hi0 = Math.max(...xs0), pad0 = (hi0 - lo0) * 0.05 || 1;
       return plotSVG({ labelPositions: b.labelPositions, labelPrefix: "table:", series: [], points: pts, line: b.plot === "line", xr: [Math.min(lo0 - pad0, lo0 >= 0 && lo0 < (hi0 - lo0) * 0.3 ? 0 : lo0 - pad0), hi0 + pad0], yr: null, xlab: (b.hx || "").trim() || b.v || "x", ylab: (b.hy || "").trim() || b.name || "y", pal, size });
     }
-    let xs = pts.map((q) => q[0]), lo = Math.min(...xs), hi = Math.max(...xs), pad = (hi - lo) * 0.08 || 1, series = [];
+    let xs = pts.map((q2) => q2[0]), lo = Math.min(...xs), hi = Math.max(...xs), pad = (hi - lo) * 0.08 || 1, series = [];
     if (r && !r.error && r.params) {
       let f = modelFn(b, r.params), a = b.model === "pot" ? Math.max(lo - pad, (hi - lo) / 400) : lo - pad, z = hi + pad;
       series = [{ pts: Array.from({ length: 201 }, (_, i) => {
@@ -6442,7 +6524,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
   function residPlot(b, r, pal, size) {
     if (!r || !r.resid) return "";
-    let xs = b.rows.map((rw) => [numIn(rw[0], null), numIn(rw[1], null)]).filter((q) => q[0] != null && q[1] != null).map((q) => q[0]);
+    let xs = b.rows.map((rw) => [numIn(rw[0], null), numIn(rw[1], null)]).filter((q2) => q2[0] != null && q2[1] != null).map((q2) => q2[0]);
     if (xs.length !== r.resid.length) return "";
     let lo = Math.min(...xs), hi = Math.max(...xs), pad = (hi - lo) * 0.08 || 1, pts = xs.map((x, i) => [x, r.resid[i]]), flat = (y, dash) => ({ pts: [[lo - pad, y], [hi + pad, y]], color: dash ? pal.s[1] : pal.axis, dash }), m = Math.max(2.3 * r.s, ...r.resid.map(Math.abs)) * 1.08, sz = Object.assign({}, size, { h: Math.round(Math.min(size.h, size.w * 0.42)) });
     return plotSVG({ labelPositions: b.labelPositions, labelPrefix: "residual:", series: [flat(2 * r.s, !0), flat(-2 * r.s, !0)], points: pts, xr: [lo - pad, hi + pad], yr: [-m, m], xlab: (b.hx || "").trim() || b.v || "x", ylab: "Residual", pal, size: sz, aria: "Residualplot med linjerne \xB12s", ticksBottom: !0, tags: [{ y: 2 * r.s, text: "2s", color: pal.s[1] }, { y: -2 * r.s, text: "\u22122s", color: pal.s[1] }] });
@@ -6459,31 +6541,31 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
 
   // src/editor/plot-labels.js
   function enablePlotLabels(host, plot = host.plot) {
-    let position = (el) => [Number(el.dataset.x), Number(el.dataset.y)], moveTo = (el, svg2, x, y) => {
+    let position = (el2) => [Number(el2.dataset.x), Number(el2.dataset.y)], moveTo = (el2, svg2, x, y) => {
       let { width: w, height: h2 } = svg2.viewBox.baseVal;
-      x = Math.max(2 / w, Math.min(1 - (Number(el.dataset.w) + 2) / w, x)), y = Math.max(2 / h2, Math.min(1 - (Number(el.dataset.h) + 2) / h2, y)), el.dataset.x = String(x), el.dataset.y = String(y), el.setAttribute("transform", "translate(" + x * w + " " + y * h2 + ")");
-    }, save = (el) => host.set({ labelPositions: { ...host.node.attrs.labelPositions, [el.dataset.plotLabel]: position(el) } });
+      x = Math.max(2 / w, Math.min(1 - (Number(el2.dataset.w) + 2) / w, x)), y = Math.max(2 / h2, Math.min(1 - (Number(el2.dataset.h) + 2) / h2, y)), el2.dataset.x = String(x), el2.dataset.y = String(y), el2.setAttribute("transform", "translate(" + x * w + " " + y * h2 + ")");
+    }, save = (el2) => host.set({ labelPositions: { ...host.node.attrs.labelPositions, [el2.dataset.plotLabel]: position(el2) } });
     plot.addEventListener("pointerdown", (e) => {
-      let el = e.target.closest("[data-plot-label]"), svg2 = el && el.ownerSVGElement;
-      if (!el || !svg2 || e.button !== 0) return;
-      e.preventDefault(), e.stopPropagation(), el.focus({ preventScroll: !0 });
-      let [x, y] = position(el), sx = e.clientX, sy = e.clientY, bounds = svg2.getBoundingClientRect(), moved = !1;
+      let el2 = e.target.closest("[data-plot-label]"), svg2 = el2 && el2.ownerSVGElement;
+      if (!el2 || !svg2 || e.button !== 0) return;
+      e.preventDefault(), e.stopPropagation(), el2.focus({ preventScroll: !0 });
+      let [x, y] = position(el2), sx = e.clientX, sy = e.clientY, bounds = svg2.getBoundingClientRect(), moved = !1;
       host.draggingLabel = !0, plot.setPointerCapture(e.pointerId);
       let move = (ev) => {
-        Math.hypot(ev.clientX - sx, ev.clientY - sy) < 2 && !moved || (moved = !0, moveTo(el, svg2, x + (ev.clientX - sx) / bounds.width, y + (ev.clientY - sy) / bounds.height));
+        Math.hypot(ev.clientX - sx, ev.clientY - sy) < 2 && !moved || (moved = !0, moveTo(el2, svg2, x + (ev.clientX - sx) / bounds.width, y + (ev.clientY - sy) / bounds.height));
       }, finish = (ev) => {
-        plot.removeEventListener("pointermove", move), plot.removeEventListener("pointerup", finish), plot.removeEventListener("pointercancel", finish), host.draggingLabel = !1, plot.hasPointerCapture(e.pointerId) && plot.releasePointerCapture(e.pointerId), moved && ev.type !== "pointercancel" ? save(el) : host.refresh();
-        let current = [...plot.querySelectorAll("[data-plot-label]")].find((n2) => n2.dataset.plotLabel === el.dataset.plotLabel);
+        plot.removeEventListener("pointermove", move), plot.removeEventListener("pointerup", finish), plot.removeEventListener("pointercancel", finish), host.draggingLabel = !1, plot.hasPointerCapture(e.pointerId) && plot.releasePointerCapture(e.pointerId), moved && ev.type !== "pointercancel" ? save(el2) : host.refresh();
+        let current = [...plot.querySelectorAll("[data-plot-label]")].find((n2) => n2.dataset.plotLabel === el2.dataset.plotLabel);
         current && current.focus({ preventScroll: !0 });
       };
       plot.addEventListener("pointermove", move), plot.addEventListener("pointerup", finish), plot.addEventListener("pointercancel", finish);
     }), plot.addEventListener("keydown", (e) => {
-      let el = e.target.closest("[data-plot-label]"), svg2 = el && el.ownerSVGElement, dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
-      if (!el || !svg2 || !dir) return;
+      let el2 = e.target.closest("[data-plot-label]"), svg2 = el2 && el2.ownerSVGElement, dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+      if (!el2 || !svg2 || !dir) return;
       e.preventDefault(), e.stopPropagation();
-      let [x, y] = position(el), step = e.shiftKey ? 10 : 2;
-      moveTo(el, svg2, x + dir[0] * step / svg2.viewBox.baseVal.width, y + dir[1] * step / svg2.viewBox.baseVal.height), save(el);
-      let current = [...plot.querySelectorAll("[data-plot-label]")].find((n2) => n2.dataset.plotLabel === el.dataset.plotLabel);
+      let [x, y] = position(el2), step = e.shiftKey ? 10 : 2;
+      moveTo(el2, svg2, x + dir[0] * step / svg2.viewBox.baseVal.width, y + dir[1] * step / svg2.viewBox.baseVal.height), save(el2);
+      let current = [...plot.querySelectorAll("[data-plot-label]")].find((n2) => n2.dataset.plotLabel === el2.dataset.plotLabel);
       current && current.focus({ preventScroll: !0 });
     });
   }
@@ -6520,12 +6602,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     rotation() {
       let a = () => this.node.attrs, cur2 = () => [this.dragAz ?? num(a().az, -120), this.dragEl ?? num(a().el, 24)], draw = () => {
         if (this.surf) {
-          let [az, el] = cur2();
-          this.plot.innerHTML = surfaceSVG(this.surf.S, LIVE, screenSize(this.plot.clientWidth), this.surf.labs, az, el);
+          let [az, el2] = cur2();
+          this.plot.innerHTML = surfaceSVG(this.surf.S, LIVE, screenSize(this.plot.clientWidth), this.surf.labs, az, el2);
         }
       }, save = () => {
-        let [az, el] = cur2();
-        this.dragAz = this.dragEl = null, this.set({ az: String(Math.round((az % 360 + 540) % 360 - 180)), el: String(Math.round(el)) });
+        let [az, el2] = cur2();
+        this.dragAz = this.dragEl = null, this.set({ az: String(Math.round((az % 360 + 540) % 360 - 180)), el: String(Math.round(el2)) });
       };
       this.plot.tabIndex = 0, this.plot.setAttribute("aria-label", "3D-plot: brug piletasterne for at dreje fladen"), this.plot.addEventListener("mousedown", (e) => {
         this.surf && (e.preventDefault(), e.stopPropagation(), this.plot.focus({ preventScroll: !0 }));
@@ -6545,8 +6627,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         let d = { ArrowLeft: [15, 0], ArrowRight: [-15, 0], ArrowUp: [0, -5], ArrowDown: [0, 5] }[e.key];
         if (!d) return;
         e.preventDefault(), e.stopPropagation();
-        let [az, el] = cur2();
-        this.dragAz = az + d[0], this.dragEl = Math.max(5, Math.min(85, el + d[1])), draw(), save();
+        let [az, el2] = cur2();
+        this.dragAz = az + d[0], this.dragEl = Math.max(5, Math.min(85, el2 + d[1])), draw(), save();
       });
     }
     drawFns() {
@@ -6633,8 +6715,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         fns.length > 1 && kids.push(h("div", { class: "pop-title" }, h("span", { class: "sw", style: "background:" + COLORS[i % 4] }), lbl(f))), kids.push(item("max:" + i, MARK_NAME.max), item("min:" + i, MARK_NAME.min), item("zero:" + i, "Nulpunkter")), n2 < fns.length - 1 && fns.length > 1 && kids.push(h("div", { class: "pop-sep" }));
       });
       let pairs = [];
-      for (let p = 0; p < fns.length; p++) for (let q = p + 1; q < fns.length; q++) pairs.push([fns[p], fns[q]]);
-      pairs.length ? (kids.push(h("div", { class: "pop-sep" })), pairs.forEach(([p, q]) => kids.push(item("isect:" + p.i + ":" + q.i, "Sk\xE6ring", h("span", { class: "pop-hint", html: tex(p.f, !0) + " og " + tex(q.f, !0) }))))) : fns.length === 1 && kids.push(h("div", { class: "pop-hint pop-foot" }, "Sk\xE6ring med en vandret linje: tilf\xF8j fx 25 som funktion")), openPop(this.readBtn, kids, { role: "menu" });
+      for (let p = 0; p < fns.length; p++) for (let q2 = p + 1; q2 < fns.length; q2++) pairs.push([fns[p], fns[q2]]);
+      pairs.length ? (kids.push(h("div", { class: "pop-sep" })), pairs.forEach(([p, q2]) => kids.push(item("isect:" + p.i + ":" + q2.i, "Sk\xE6ring", h("span", { class: "pop-hint", html: tex(p.f, !0) + " og " + tex(q2.f, !0) }))))) : fns.length === 1 && kids.push(h("div", { class: "pop-hint pop-foot" }, "Sk\xE6ring med en vandret linje: tilf\xF8j fx 25 som funktion")), openPop(this.readBtn, kids, { role: "menu" });
     }
     focus() {
       let m = this.fieldEls && this.fieldEls[0];
@@ -6655,9 +6737,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let b = this.node.attrs, { info, r, stale, fresh } = lookup(this.id);
       this.showErr(info && info.error && !info.soft ? info.error : fresh && fresh.error ? fresh.error : fresh && fresh.warn && fresh.warn.length ? "Ukendte symboler: " + fresh.warn.join("; ") + ". Defin\xE9r dem ovenfor, eller tegn grafen for \xE9n variabel ad gangen." : "", !1), this.err.hidden && info && info.note && this.showErr(info.note, !0);
       let shown = fresh || (r && !r.error ? r : null), svg2 = graphSVG(b, shown, LIVE, screenSize(this.plot.clientWidth), info), msg = info && info.empty ? "Skriv hvad der skal tegnes ovenfor: en funktion, et punkt, en vektor, en linje eller en cirkel" : app.cas && app.cas.state === "failed" ? "CAS er ikke tilg\xE6ngelig" : "Tegner \u2026", KIND = { funktion: "funktion", punkt: "punkt", vektor: "vektor", linjestykke: "linjestykke", polygon: "polygon", linje: "linje", cirkel: "cirkel", kurve: "kurve", t\u00E6thed: "t\xE6thedsfunktion", bane: "parameterkurve", felt: "h\xE6ldningsfelt", flade: "flade (3D)", areal: "areal" };
-      (this.kindEls || []).forEach((el, i) => {
+      (this.kindEls || []).forEach((el2, i) => {
         let k = info && info.kinds && info.kinds[i];
-        el.textContent = k && !(info && info.bars) ? KIND[k] || "" : info && info.bars && i === 0 ? "fordeling" : "";
+        el2.textContent = k && !(info && info.bars) ? KIND[k] || "" : info && info.bars && i === 0 ? "fordeling" : "";
       }), this.casLbl.setLabel(b.dim === "3" ? "3D-plot" : "Plot"), this.plot.innerHTML = svg2 || '<div class="g-empty">' + (b.dim === "3" && info && info.empty ? "Skriv en funktion af to variable ovenfor, fx f(x,y) eller x^2+y^2" : msg) + "</div>", this.surf = svg2 && shown.figs && shown.figs.surface ? { S: shown.figs.surface, labs: { x: axisNames(b, info).x, y: axisNames(b, info).y, z: info && info.zlab || "z" } } : null, this.hint3.hidden = !(this.surf && b.dim === "3"), this.plot.classList.toggle("rot3", !!this.surf && b.dim === "3");
       let dp = this.precision.querySelector("input");
       document.activeElement !== dp && (dp.value = b.digits || ""), this.plot.classList.toggle("stale", !!stale), this.plot.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026";
@@ -6694,12 +6776,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   function residHTML(a, r, plotW) {
     let L = residLines(a, r);
     if (!L) return "";
-    let esc3 = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;"), lab = (k) => Array.isArray(k) ? k.map((q) => typeof q == "string" ? esc3(q) : tex(q.m, !0)).join("") : k, rn = residNames(a), shown = (raw) => String(raw).replace(/_\{([^}]*)\}/, "_$1"), box = (k, label) => '<input class="mini t-sn rf-sn" data-rn="' + k + '" value="' + esc3(shown(rn[k])).replace(/"/g, "&quot;") + '" maxlength="24" spellcheck="false" aria-label="' + label + ' gemmes som" size="' + Math.max(2, shown(rn[k]).length + 1) + '">', save = (key) => key === "s" ? '<span class="rf-save">Gemmes som ' + box("s", "Residualspredningen") + "</span>" : key === "ki" ? '<span class="rf-save">Gemmes som ' + box("lo", "Nedre gr\xE6nse") + " og " + box("hi", "\xD8vre gr\xE6nse") + "</span>" : "", row = (k, parts, note, idx) => '<div class="rf-k">' + lab(k) + '</div><div class="rf-v">' + parts.map((q) => q.m != null ? tex(q.m, !0) : '<span class="rf-t">' + esc3(q.t) + "</span>").join("") + save(idx) + (note ? '<div class="rf-note">' + note + "</div>" : "") + "</div>";
-    return '<div class="rf-head">Residualer</div>' + residPlot(a, r, LIVE, screenSize(plotW)) + '<div class="rf-grid">' + L.rows.map((x) => row(x[0], x[1], x[2], x[3])).join("") + "</div>" + boxSVG(r.kv, LIVE, screenSize(plotW), "Boksplot af residualerne") + fiveHTML(r.kv, a.digits);
+    let esc3 = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;"), lab = (k) => Array.isArray(k) ? k.map((q2) => typeof q2 == "string" ? esc3(q2) : tex(q2.m, !0)).join("") : k, rn = residNames(a), shown = (raw) => String(raw).replace(/_\{([^}]*)\}/, "_$1"), box = (k, label) => '<input class="mini t-sn rf-sn" data-rn="' + k + '" value="' + esc3(shown(rn[k])).replace(/"/g, "&quot;") + '" maxlength="24" spellcheck="false" aria-label="' + label + ' gemmes som" size="' + Math.max(2, shown(rn[k]).length + 1) + '">', save = (key) => key === "s" ? '<span class="rf-save">Gemmes som ' + box("s", "Residualspredningen") + "</span>" : key === "ki" ? '<span class="rf-save">Gemmes som ' + box("lo", "Nedre gr\xE6nse") + " og " + box("hi", "\xD8vre gr\xE6nse") + "</span>" : "", row2 = (k, parts, note, idx) => '<div class="rf-k">' + lab(k) + '</div><div class="rf-v">' + parts.map((q2) => q2.m != null ? tex(q2.m, !0) : '<span class="rf-t">' + esc3(q2.t) + "</span>").join("") + save(idx) + (note ? '<div class="rf-note">' + note + "</div>" : "") + "</div>";
+    return '<div class="rf-head">Residualer</div>' + residPlot(a, r, LIVE, screenSize(plotW)) + '<div class="rf-grid">' + L.rows.map((x) => row2(x[0], x[1], x[2], x[3])).join("") + "</div>" + boxSVG(r.kv, LIVE, screenSize(plotW), "Boksplot af residualerne") + fiveHTML(r.kv, a.digits);
   }
   function fiveHTML(kv, digits, grouped) {
-    let row = '<div class="rf-five">' + [["mindste", kv.min], ["nedre kvartil", kv.q1], ["median", kv.med], ["\xF8vre kvartil", kv.q3], ["st\xF8rste", kv.max]].map(([l, v]) => '<div><span class="rf-l">' + l + "</span>" + tex(numDa(v, digits), !0) + "</div>").join("") + "</div>";
-    return grouped ? row + '<div class="rf-out">Kvartils\xE6ttet afl\xE6st p\xE5 sumkurven <span>(mindste og st\xF8rste: intervallernes yderste endepunkter)</span></div>' : row;
+    let row2 = '<div class="rf-five">' + [["mindste", kv.min], ["nedre kvartil", kv.q1], ["median", kv.med], ["\xF8vre kvartil", kv.q3], ["st\xF8rste", kv.max]].map(([l, v]) => '<div><span class="rf-l">' + l + "</span>" + tex(numDa(v, digits), !0) + "</div>").join("") + "</div>";
+    return grouped ? row2 + '<div class="rf-out">Kvartils\xE6ttet afl\xE6st p\xE5 sumkurven <span>(mindste og st\xF8rste: intervallernes yderste endepunkter)</span></div>' : row2;
   }
   var TableView = class extends BlockView {
     build() {
@@ -6870,14 +6952,14 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let a = this.node.attrs;
       if (old.attrs.rows.length === a.rows.length && old.attrs.name === a.name && old.attrs.v === a.v && old.attrs.plot === "sum" == (a.plot === "sum") && old.attrs.model === a.model)
         this.cells.forEach((inp) => {
-          let row = a.rows[+inp.dataset.i], v = row && row[+inp.dataset.j];
+          let row2 = a.rows[+inp.dataset.i], v = row2 && row2[+inp.dataset.j];
           document.activeElement !== inp && v != null && inp.value !== v && (inp.value = v);
         });
       else {
         let f = document.activeElement && document.activeElement.id;
         if (this.drawRows(), f) {
-          let el = document.getElementById(f);
-          el && el.focus();
+          let el2 = document.getElementById(f);
+          el2 && el2.focus();
         }
       }
       document.activeElement !== this.nameIn && this.nameIn.value !== a.name && (this.nameIn.value = a.name), document.activeElement !== this.varIn && this.varIn.value !== a.v && (this.varIn.value = a.v);
@@ -6886,8 +6968,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     // Kolonnernes betydning under overskrifterne, de udregnede kolonner (frekvens, kumuleret frekvens, I alt),
     // og de celler CAS ikke kan bruge (rød: CAS regner ikke · gul: rækken bruges ikke). Alt regnes her med det samme
-    showRoles(mode) {
-      let a = this.node.attrs, R = tableRoles(a), st = mode === "stat", hasData = a.rows.some((r) => String(r[0] || "").trim() !== "");
+    showRoles(mode2) {
+      let a = this.node.attrs, R = tableRoles(a), st = mode2 === "stat", hasData = a.rows.some((r) => String(r[0] || "").trim() !== "");
       this.roleEls[0].hidden = this.roleEls[1].hidden = !st, st && (this.xSel.value = R.grouped ? "iv" : "obs", this.xSel.title = R.xAuto ? "G\xE6ttet ud fra data \u2013 v\xE6lg selv, hvad f\xF8rste kolonne er" : "F\xF8rste kolonne er valgt som " + this.xSel.selectedOptions[0].textContent, this.xSel.classList.toggle("auto", R.xAuto), this.wSel.value = R.w, this.wSel.querySelector("option[value=none]").hidden = R.grouped, this.wSel.title = R.wAuto ? "G\xE6ttet ud fra tallene \u2013 v\xE6lg selv, hvad anden kolonne er" : "Anden kolonne er valgt som " + this.wSel.selectedOptions[0].textContent, this.wSel.classList.toggle("auto", R.wAuto)), this.dtype.textContent = st ? R.grouped ? "Grupperede data" : hasData ? "Enkelte observationer" : "" : "", this.dtype.hidden = !this.dtype.textContent, this.plots.querySelectorAll("button").forEach((b) => {
         let fits = R.grouped ? ["sum", "hist"].includes(b.dataset.p) : ["stat", "qq"].includes(b.dataset.p);
         b.hidden = !fits, b.setAttribute("aria-checked", String(b.dataset.p === R.view));
@@ -6899,31 +6981,31 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         df.textContent = pc(R.pct[i]), dk.textContent = pc(R.kum[i]);
       }), this.foot.hidden = !showK || !R.rows.length, this.totW.textContent = R.w === "hyp" ? String(R.total) : R.w === "frek" ? pc(R.total) : "", this.totF.textContent = showF ? "100" : "";
       let mark2 = /* @__PURE__ */ new Map();
-      for (let q of R.issues) {
-        let k = q.i + ":" + q.j;
-        (!mark2.has(k) || q.hard) && mark2.set(k, q);
+      for (let q2 of R.issues) {
+        let k = q2.i + ":" + q2.j;
+        (!mark2.has(k) || q2.hard) && mark2.set(k, q2);
       }
       for (let inp of this.cells || []) {
-        let q = mark2.get(inp.dataset.i + ":" + inp.dataset.j);
-        inp.classList.toggle("bad", !!q && q.hard), inp.classList.toggle("warn", !!q && !q.hard), q ? inp.title = q.msg : inp.removeAttribute("title"), inp.setAttribute("aria-invalid", String(!!q && q.hard));
+        let q2 = mark2.get(inp.dataset.i + ":" + inp.dataset.j);
+        inp.classList.toggle("bad", !!q2 && q2.hard), inp.classList.toggle("warn", !!q2 && !q2.hard), q2 ? inp.title = q2.msg : inp.removeAttribute("title"), inp.setAttribute("aria-invalid", String(!!q2 && q2.hard));
       }
-      let colQ = R.issues.find((q) => q.i === -1 && q.j === 1 && !q.guess);
+      let colQ = R.issues.find((q2) => q2.i === -1 && q2.j === 1 && !q2.guess);
       return this.hyIn.classList.toggle("bad", !!colQ && colQ.hard), this.hyIn.classList.toggle("warn", !!colQ && !colQ.hard), colQ ? this.hyIn.title = colQ.msg : this.hyIn.removeAttribute("title"), this.totW.classList.toggle("warn", !!colQ && !colQ.hard), R;
     }
     refresh() {
       if (this.draggingLabel) return;
       let a = this.node.attrs, { info, r, stale, fresh } = lookup(this.id);
       this.models.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(a.model === b.dataset.m)));
-      let plain = a.model === "none", mode = this.mode();
+      let plain = a.model === "none", mode2 = this.mode();
       plain || (this.lastModel = a.model);
-      let sum = mode === "stat" && tableRoles(a).grouped;
-      this.models.hidden = mode !== "reg", this.residRow.hidden = mode !== "reg", this.drawSave(mode === "reg" ? a.model : sum ? "sum" : mode === "stat" ? tableRoles(a).view === "qq" ? "stat" : "statq" : null);
+      let sum = mode2 === "stat" && tableRoles(a).grouped;
+      this.models.hidden = mode2 !== "reg", this.residRow.hidden = mode2 !== "reg", this.drawSave(mode2 === "reg" ? a.model : sum ? "sum" : mode2 === "stat" ? tableRoles(a).view === "qq" ? "stat" : "statq" : null);
       let sn = statNames(a);
       for (let k of ["m", "s", "q1", "q2", "q3"]) {
         let inp = this.statIn[k];
         document.activeElement !== inp && (inp.value = sn[k], fit(inp));
       }
-      this.precision.hidden = mode === "tabel";
+      this.precision.hidden = mode2 === "tabel";
       let dp = this.precision.querySelector("input");
       document.activeElement !== dp && (dp.value = a.digits || "");
       let cn = coeffNames(a);
@@ -6932,10 +7014,10 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         document.activeElement !== inp && (inp.value = cn[p] ?? p, fit(inp));
       }
       let nm = sum ? sumName(a) : a.name;
-      document.activeElement !== this.nameIn && this.nameIn.value !== nm && (this.nameIn.value = nm), fit(this.nameIn), fit(this.varIn), this.saveRow.querySelectorAll(".t-sv").forEach((el) => {
-        el.innerHTML = tex(nameTex(a.v || "x"), !0);
-      }), this.plots.hidden = mode !== "stat", this.pointsBtn.hidden = mode !== "tabel", this.pointsBtn.setAttribute("aria-checked", String(["points", "line"].includes(a.plot))), this.casLbl.setLabel(mode === "reg" ? "Regression" : mode === "stat" ? "Statistik" : "Tabel"), this.casLbl.classList.toggle("none", mode === "tabel"), this.residBtn.setAttribute("aria-checked", String(!!a.resid)), this.residBtn.textContent = a.resid ? "\u2212 Skjul residualer" : "+ Vis residualer";
-      let R = this.showRoles(mode), view2 = mode === "stat" ? R.view : null, grouped = view2 === "sum" || view2 === "hist";
+      document.activeElement !== this.nameIn && this.nameIn.value !== nm && (this.nameIn.value = nm), fit(this.nameIn), fit(this.varIn), this.saveRow.querySelectorAll(".t-sv").forEach((el2) => {
+        el2.innerHTML = tex(nameTex(a.v || "x"), !0);
+      }), this.plots.hidden = mode2 !== "stat", this.pointsBtn.hidden = mode2 !== "tabel", this.pointsBtn.setAttribute("aria-checked", String(["points", "line"].includes(a.plot))), this.casLbl.setLabel(mode2 === "reg" ? "Regression" : mode2 === "stat" ? "Statistik" : "Tabel"), this.casLbl.classList.toggle("none", mode2 === "tabel"), this.residBtn.setAttribute("aria-checked", String(!!a.resid)), this.residBtn.textContent = a.resid ? "\u2212 Skjul residualer" : "+ Vis residualer";
+      let R = this.showRoles(mode2), view2 = mode2 === "stat" ? R.view : null, grouped = view2 === "sum" || view2 === "hist";
       this.dom.classList.toggle("t-plain", plain && (a.plot || "none") === "none"), this.dom.classList.toggle("t-sum", grouped), this.dom.classList.toggle("t-qq", view2 === "qq"), this.dom.classList.toggle("t-stat", view2 === "stat");
       let hard = info && info.error && !info.soft ? info.error : fresh && fresh.error ? fresh.error : "";
       this.showErr(hard || info && (info.error || info.msg || info.note) || "", !hard);
@@ -7067,13 +7149,13 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         }
         if (c.type === "delopgave") {
           a.label && /^[a-z]$/.test(a.label) && (k = a.label.charCodeAt(0) - 97);
-          let parts = rich(c), text2 = parts.map((q) => q.math != null ? q.math : q.text || "").join("");
+          let parts = rich(c), text2 = parts.map((q2) => q2.math != null ? q2.math : q2.text || "").join("");
           blocks2.push({ t: "del", label: String.fromCharCode(97 + k++), text: text2, parts, keep: !0, empty: !text2, id: a.id });
           continue;
         }
         if (c.type === "paragraph") {
           let parts = rich(c);
-          parts.some((q) => q.text && q.text.trim() || q.math) && blocks2.push({ t: "p", parts, ids: parts.filter((q) => q.id).map((q) => q.id) });
+          parts.some((q2) => q2.text && q2.text.trim() || q2.math) && blocks2.push({ t: "p", parts, ids: parts.filter((q2) => q2.id).map((q2) => q2.id) });
           continue;
         }
         if (c.type === "math_line") {
@@ -7118,12 +7200,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
             }
           } else if (r && r.params) {
             let coeffs = coefficientsTex(a, r), cn = coeffNames(a), np = r.params.length;
-            addImg(tablePlot(a, r, PRINT, PRINT_SIZE), "66%", [], a.id, [{ k: "Model", m: modelTex(a, r.params), save: nameTex(a.name || "f") + "(" + nameTex(a.v || "x") + ")" }].concat(coeffs ? [{ k: "Koefficienter", m: coeffs, save: names(["a", "b", "c"].slice(0, np).map((q) => cn[q] || q)) }] : [], [{ k: "Forklaringsgrad", m: "R^2=" + r2Da(r.R2, a.digits) }]));
+            addImg(tablePlot(a, r, PRINT, PRINT_SIZE), "66%", [], a.id, [{ k: "Model", m: modelTex(a, r.params), save: nameTex(a.name || "f") + "(" + nameTex(a.v || "x") + ")" }].concat(coeffs ? [{ k: "Koefficienter", m: coeffs, save: names(["a", "b", "c"].slice(0, np).map((q2) => cn[q2] || q2)) }] : [], [{ k: "Forklaringsgrad", m: "R^2=" + r2Da(r.R2, a.digits) }]));
             let L = a.resid ? residLines(a, r) : null;
             if (L) {
               let rn = residNames(a), rows2 = L.rows.map((x) => {
-                let lab = Array.isArray(x[0]) ? x[0] : [x[0]], row = { k: lab.filter((q) => typeof q == "string").join("").trim(), km: (lab.find((q) => q && q.m) || {}).m }, tparts = x[1].filter((q) => q.t != null).map((q) => q.t).join(""), mparts = x[1].filter((q) => q.m != null).map((q) => q.m).join("\\ ");
-                return tparts && (row.t = tparts), mparts && (row.m = mparts), x[3] === "s" && (row.save = nameL(rn.s)), x[3] === "ki" && (row.save = names([rn.lo, rn.hi])), row;
+                let lab = Array.isArray(x[0]) ? x[0] : [x[0]], row2 = { k: lab.filter((q2) => typeof q2 == "string").join("").trim(), km: (lab.find((q2) => q2 && q2.m) || {}).m }, tparts = x[1].filter((q2) => q2.t != null).map((q2) => q2.t).join(""), mparts = x[1].filter((q2) => q2.m != null).map((q2) => q2.m).join("\\ ");
+                return tparts && (row2.t = tparts), mparts && (row2.m = mparts), x[3] === "s" && (row2.save = nameL(rn.s)), x[3] === "ki" && (row2.save = names([rn.lo, rn.hi])), row2;
               });
               addImg(residPlot(a, r, PRINT, PRINT_SIZE), "66%", [], a.id, rows2, "Residualer"), addImg(boxSVG(r.kv, PRINT, PRINT_SIZE, "Boksplot af residualerne"), "66%", [], a.id, [{ five: fiveOf(r.kv, a.digits) }], "Boksplot");
             }
@@ -7249,10 +7331,10 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   };
 
   // src/ui/handin.js
-  var $ = (id2) => document.getElementById(id2), PH = 1123, PW = 794, TOP = 98, BOT = 90, pdf = new PdfClient(), currentModel = () => printModel(app.view.state.doc.toJSON(), app.meta, app.session, { python: app.handOpts.python, pyFresh: (id2, out) => out.sig == null || out.sig === pySig(id2) }), richHTML = (parts) => (parts || []).map((q) => {
-    if (q.math != null) return '<span class="im-p' + (q.cas ? " cas" : "") + '">' + tex(q.math, !0) + "</span>";
-    let t = esc(q.text);
-    return q.bold && (t = "<strong>" + t + "</strong>"), q.em && (t = "<em>" + t + "</em>"), t;
+  var $ = (id2) => document.getElementById(id2), PH = 1123, PW = 794, TOP = 98, BOT = 90, pdf = new PdfClient(), currentModel = () => printModel(app.view.state.doc.toJSON(), app.meta, app.session, { python: app.handOpts.python, pyFresh: (id2, out) => out.sig == null || out.sig === pySig(id2) }), richHTML = (parts) => (parts || []).map((q2) => {
+    if (q2.math != null) return '<span class="im-p' + (q2.cas ? " cas" : "") + '">' + tex(q2.math, !0) + "</span>";
+    let t = esc(q2.text);
+    return q2.bold && (t = "<strong>" + t + "</strong>"), q2.em && (t = "<em>" + t + "</em>"), t;
   }).join("");
   function blockHTML(b, meta) {
     switch (b.t) {
@@ -7302,7 +7384,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       if (await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise, my !== seq) return !1;
       let opgs = "";
       try {
-        opgs = "," + [...(await page.getTextContent()).items.map((q) => q.str).join(" ").matchAll(/Opgave\s+(\d+)/g)].map((m) => m[1]).join(",") + ",";
+        opgs = "," + [...(await page.getTextContent()).items.map((q2) => q2.str).join(" ").matchAll(/Opgave\s+(\d+)/g)].map((m) => m[1]).join(",") + ",";
       } catch {
       }
       wraps.push(h("div", { class: "page-wrap pdfpage", style: "width:" + w + "px", dataset: { opgs } }, canvas));
@@ -7319,12 +7401,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     return model.missing && app.cas && app.cas.state !== "failed" ? "cas" : pdfBusy ? "pdf" : null;
   }
   function showBusy(model) {
-    let host = $("pages"), el = $("handBusy");
-    if (!el && host && (el = h("div", { id: "handBusy", class: "hand-busy", role: "status", "aria-live": "polite" }, h("span", { class: "spin", "aria-hidden": "true" }), h("span", { class: "hb-t" })), host.before(el)), !el) return;
+    let host = $("pages"), el2 = $("handBusy");
+    if (!el2 && host && (el2 = h("div", { id: "handBusy", class: "hand-busy", role: "status", "aria-live": "polite" }, h("span", { class: "spin", "aria-hidden": "true" }), h("span", { class: "hb-t" })), host.before(el2)), !el2) return;
     let st = busyState(model);
-    host.classList.toggle("busy", !!st), clearTimeout(doneT), st ? (el.classList.remove("done"), el.hidden = !1, el.querySelector(".hb-t").textContent = st === "cas" ? "CAS regner \u2026 (" + model.missing + (model.missing === 1 ? " beregning mangler" : " beregninger mangler") + ") \u2013 afleveringen opdateres, n\xE5r den er f\xE6rdig" : "Opdaterer afleveringen \u2026", wasBusy = !0) : wasBusy ? (wasBusy = !1, el.classList.add("done"), el.hidden = !1, el.querySelector(".hb-t").textContent = "\u2713 Afleveringen er klar", doneT = setTimeout(() => {
-      el.hidden = !0;
-    }, 1800)) : el.hidden = !0;
+    host.classList.toggle("busy", !!st), clearTimeout(doneT), st ? (el2.classList.remove("done"), el2.hidden = !1, el2.querySelector(".hb-t").textContent = st === "cas" ? "CAS regner \u2026 (" + model.missing + (model.missing === 1 ? " beregning mangler" : " beregninger mangler") + ") \u2013 afleveringen opdateres, n\xE5r den er f\xE6rdig" : "Opdaterer afleveringen \u2026", wasBusy = !0) : wasBusy ? (wasBusy = !1, el2.classList.add("done"), el2.hidden = !1, el2.querySelector(".hb-t").textContent = "\u2713 Afleveringen er klar", doneT = setTimeout(() => {
+      el2.hidden = !0;
+    }, 1800)) : el2.hidden = !0;
   }
   var handTarget = null;
   function setHandTarget(n2) {
@@ -7400,11 +7482,11 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let meta = model.meta, blocks2 = model.blocks.map((b) => blockHTML(b, meta)), meas = h("div", { class: "page measure" }, h("div", { class: "page-body" }));
     host.append(meas);
     let hs = blocks2.map((b) => {
-      let el = h("div", { class: "hb " + b.cls, html: b.html });
-      return meas.firstChild.append(el), el;
-    }).map((el) => {
-      let cs = getComputedStyle(el);
-      return el.offsetHeight + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom);
+      let el2 = h("div", { class: "hb " + b.cls, html: b.html });
+      return meas.firstChild.append(el2), el2;
+    }).map((el2) => {
+      let cs = getComputedStyle(el2);
+      return el2.offsetHeight + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom);
     });
     meas.remove();
     let pages = [[]], used = 0;
@@ -7476,8 +7558,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   var holdNav = () => {
     app.navUntil = Date.now() + 1600;
   };
-  function flash(el) {
-    el && (holdNav(), el.scrollIntoView({ behavior: "smooth", block: "center" }), el.classList.add("flash"), setTimeout(() => el.classList.remove("flash"), 1200));
+  function flash(el2) {
+    el2 && (holdNav(), el2.scrollIntoView({ behavior: "smooth", block: "center" }), el2.classList.add("flash"), setTimeout(() => el2.classList.remove("flash"), 1200));
   }
   var blockEl = (id2) => document.querySelector('[data-id="' + id2 + '"]') || (app.views.get(id2) || {}).dom, navT = null;
   function renderSideSoon() {
@@ -7492,8 +7574,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let list = extract(app.view.state.doc.toJSON());
     nav.innerHTML = "", list.forEach((o, oi) => {
       let on2 = o.id === app.activeOpg, go = (id2) => () => {
-        let el = (app.mode === "hand" ? pageOfOpg(o.number) : null) || (id2 ? blockEl(id2) : document.querySelector('[data-opg="' + o.id + '"]'));
-        holdNav(), el && el.scrollIntoView({ behavior: "smooth", block: "start" }), app.activeOpg = o.id, renderSide(), closeRails();
+        let el2 = (app.mode === "hand" ? pageOfOpg(o.number) : null) || (id2 ? blockEl(id2) : document.querySelector('[data-opg="' + o.id + '"]'));
+        holdNav(), el2 && el2.scrollIntoView({ behavior: "smooth", block: "start" }), app.activeOpg = o.id, renderSide(), closeRails();
       }, li = h(
         "li",
         { class: "nav-opg" + (on2 ? " on" : "") },
@@ -7622,6 +7704,97 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     return walk(snap.pm), snap;
   }
 
+  // src/lib/store.js
+  var DB = "vismat";
+  var mem = /* @__PURE__ */ new Map(), dirty = /* @__PURE__ */ new Map(), db = null, mode = "local", flushT = 0, req = (r) => new Promise((res, rej) => {
+    r.onsuccess = () => res(r.result), r.onerror = () => rej(r.error);
+  });
+  function fromLocal() {
+    let out = [];
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        let k = localStorage.key(i);
+        k && k.startsWith("vismat-") && !k.startsWith("vismat-pref-") && out.push([k, localStorage.getItem(k)]);
+      }
+    } catch {
+    }
+    return out;
+  }
+  async function initStore() {
+    try {
+      let idb = globalThis.indexedDB;
+      if (!idb) throw new Error("ingen IndexedDB");
+      db = await new Promise((res, rej) => {
+        let r = idb.open(DB, 1);
+        r.onupgradeneeded = () => r.result.createObjectStore("kv"), r.onsuccess = () => res(r.result), r.onerror = () => rej(r.error), r.onblocked = () => rej(new Error("blokeret")), setTimeout(() => rej(new Error("IndexedDB svarer ikke")), 4e3);
+      });
+      let st = db.transaction("kv", "readonly").objectStore("kv"), [keys2, vals] = await Promise.all([req(st.getAllKeys()), req(st.getAll())]);
+      if (keys2.forEach((k, i) => mem.set(k, vals[i])), mode = "idb", !mem.has("vismat-docs")) {
+        let old = fromLocal();
+        for (let [k, v] of old)
+          mem.set(k, v), dirty.set(k, v);
+        old.length && await flush();
+      }
+    } catch {
+      db = null, mode = "local", mem.clear();
+      for (let [k, v] of fromLocal()) mem.set(k, v);
+    }
+    try {
+      navigator.storage && navigator.storage.persist && navigator.storage.persisted().then((p) => p || navigator.storage.persist()).catch(() => {
+      });
+    } catch {
+    }
+    return mode;
+  }
+  var store = {
+    get: (k) => mem.has(k) ? mem.get(k) : null,
+    set(k, v) {
+      if (mem.set(k, v), mode === "idb")
+        return dirty.set(k, v), schedule(), !0;
+      try {
+        return localStorage.setItem(k, v), !0;
+      } catch {
+        return !1;
+      }
+    },
+    del(k) {
+      if (mem.delete(k), mode === "idb") {
+        dirty.set(k, void 0), schedule();
+        return;
+      }
+      try {
+        localStorage.removeItem(k);
+      } catch {
+      }
+    },
+    keys: () => [...mem.keys()],
+    mode: () => mode,
+    flush
+  };
+  function schedule() {
+    clearTimeout(flushT), flushT = setTimeout(flush, 200);
+  }
+  function flush() {
+    if (clearTimeout(flushT), !db || !dirty.size) return Promise.resolve(!0);
+    let items = [...dirty];
+    return dirty.clear(), new Promise((res) => {
+      let tx;
+      try {
+        tx = db.transaction("kv", "readwrite");
+      } catch {
+        for (let [k, v] of items) dirty.has(k) || dirty.set(k, v);
+        return res(!1);
+      }
+      let st = tx.objectStore("kv");
+      for (let [k, v] of items)
+        v === void 0 ? st.delete(k) : st.put(v, k);
+      tx.oncomplete = () => res(!0), tx.onerror = tx.onabort = () => {
+        for (let [k, v] of items) dirty.has(k) || dirty.set(k, v);
+        res(!1);
+      };
+    });
+  }
+
   // src/ui/docs.js
   var LEGACY2 = "vismat-proto-v2", IDX = "vismat-docs", CUR = "vismat-current", DOC = (id2) => "vismat-doc-" + id2, lsGet = (k) => {
     try {
@@ -7635,25 +7808,24 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     } catch {
       return !1;
     }
-  }, lsDel = (k) => {
-    try {
-      localStorage.removeItem(k);
-    } catch {
-    }
-  };
+  }, pref = { get: (k) => lsGet("vismat-pref-" + k), set: (k, v) => lsSet("vismat-pref-" + k, v) };
   function isDocFile(s) {
     return !!(s && (s.v === 2 || s.v === 3) && s.pm && s.meta);
   }
-  var DocStore = class {
+  var opgCount = (s) => (s && s.pm && s.pm.content || []).filter((n2) => n2.type === "opgave").length, DocStore = class {
     // load(snapshot) kaldes, når et andet dokument skal vises; snapshot() giver det åbne dokument
     constructor({ load, snapshot, validate }) {
       Object.assign(this, { load, snapshot, validate }), this.mem = {};
       try {
-        this.docs = JSON.parse(lsGet(IDX) || "[]");
+        this.docs = JSON.parse(store.get(IDX) || "[]");
       } catch {
         this.docs = [];
       }
-      if (Array.isArray(this.docs) || (this.docs = []), this.cur = lsGet(CUR), !this.docs.length || !this.read(this.cur)) {
+      if (Array.isArray(this.docs) || (this.docs = []), this.cur = store.get(CUR), !this.docs.length || !this.read(this.cur)) {
+        if (this.docs = this.docs.filter((d) => this.read(d.id)), this.docs.length) {
+          this.cur = this.docs.slice().sort((a, b) => b.updated - a.updated)[0].id, this.writeIndex();
+          return;
+        }
         let first = null;
         try {
           first = JSON.parse(lsGet(LEGACY2) || "null");
@@ -7664,27 +7836,43 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         } catch {
           first = null;
         }
-        first || (first = blank(), this.firstRun = !0), this.cur = uid("doc"), this.docs = [{ id: this.cur, title: first.meta.title, updated: Date.now() }], this.write(this.cur, first), this.writeIndex();
+        first || (first = blank(), this.firstRun = !0), this.cur = uid("doc"), this.docs = [{ id: this.cur, title: first.meta.title, updated: Date.now(), n: opgCount(first), fresh: !!this.firstRun }], this.write(this.cur, first), this.writeIndex();
       }
     }
     read(id2) {
       if (!id2) return null;
       if (this.mem[id2]) return this.mem[id2];
       try {
-        let x = JSON.parse(lsGet(DOC(id2)) || "null");
+        let x = JSON.parse(store.get(DOC(id2)) || "null");
         if (isDocFile(x)) return this.mem[id2] = upgrade(x);
       } catch {
       }
       return null;
     }
+    // (hukommelsen får sin egen kopi: snapshot() deler meta med editoren, og en ændret titel skal kunne ses som en ændring)
     write(id2, snap) {
-      return this.mem[id2] = snap, lsSet(DOC(id2), JSON.stringify(snap));
+      let json = JSON.stringify(snap);
+      return this.mem[id2] = JSON.parse(json), store.set(DOC(id2), json);
     }
     writeIndex() {
-      lsSet(IDX, JSON.stringify(this.docs)), lsSet(CUR, this.cur);
+      store.set(IDX, JSON.stringify(this.docs)), this.cur && store.set(CUR, this.cur);
     }
     current() {
       return this.read(this.cur);
+    }
+    // når det åbne dokument er vist: husk det, som editoren viser det (et dokument, der bare åbnes, tæller ikke som ændret)
+    shown() {
+      try {
+        this.cur && (this.mem[this.cur] = JSON.parse(JSON.stringify(this.snapshot())));
+      } catch {
+      }
+    }
+    entry(id2) {
+      return this.docs.find((d) => d.id === id2);
+    }
+    // dokumenterne, senest ændrede først
+    list() {
+      return this.docs.slice().sort((a, b) => b.updated - a.updated);
     }
     // ---------- Autogem ----------
     save() {
@@ -7692,24 +7880,36 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     saveNow() {
       if (clearTimeout(this.t), !this.cur || !this.docs.some((d) => d.id === this.cur)) return;
-      let snap = this.snapshot(), ok = this.write(this.cur, snap), e = this.docs.find((d) => d.id === this.cur);
-      e && (e.title = snap.meta.title || "Uden titel", e.updated = Date.now()), this.writeIndex(), this.onSaved && this.onSaved(ok ? "ok" : "mem"), this.render();
+      let snap = this.snapshot(), e = this.entry(this.cur), before = this.mem[this.cur] ? JSON.stringify(this.mem[this.cur]) : null, now = JSON.stringify(snap), ok = before === now ? !0 : this.write(this.cur, snap);
+      e && (e.title = snap.meta.title || "Uden titel", e.n = opgCount(snap), before !== now && (e.updated = Date.now(), delete e.fresh)), this.writeIndex(), this.onSaved && this.onSaved(ok ? "ok" : "mem"), this.render();
     }
     // ---------- Skift, opret, slet ----------
     open(id2) {
-      if (closePop(), id2 === this.cur) return;
+      if (closePop(), id2 === this.cur) {
+        this.onOpen && this.onOpen(id2);
+        return;
+      }
       this.saveNow();
       let s = this.read(id2);
       if (!s) {
         toast("Dokumentet kunne ikke \xE5bnes");
         return;
       }
-      this.cur = id2, this.writeIndex(), this.load(s), this.render();
+      this.dropFresh(), this.cur = id2, this.writeIndex(), this.load(s), this.shown(), this.render(), this.onOpen && this.onOpen(id2);
     }
     create(s, title) {
-      this.saveNow(), this.load(s);
+      this.saveNow(), this.dropFresh(), this.load(s);
+      try {
+        s = this.snapshot();
+      } catch {
+      }
       let id2 = uid("doc");
-      this.docs.unshift({ id: id2, title: title || s.meta.title || "Uden titel", updated: Date.now() }), this.write(id2, s), this.cur = id2, this.writeIndex(), this.render();
+      this.docs.unshift({ id: id2, title: title || s.meta.title || "Uden titel", updated: Date.now(), n: opgCount(s) }), this.write(id2, s), this.cur = id2, this.writeIndex(), this.render(), this.onOpen && this.onOpen(id2);
+    }
+    // et urørt, tomt dokument (fx det, appen startede med) fjernes, når man går videre til et andet
+    dropFresh() {
+      let e0 = this.cur && this.entry(this.cur);
+      e0 && e0.fresh && (this.docs = this.docs.filter((d) => d !== e0), store.del(DOC(e0.id)), delete this.mem[e0.id]);
     }
     newBlank() {
       this.create(blank(), "Uden titel");
@@ -7720,18 +7920,47 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     newExample(level) {
       this.create(level === "A" ? exampleA() : exampleB());
     }
-    remove(id2) {
+    // Ny aflevering: titel, navn, klasse, dato og et antal opgaver (evt. med delopgaver) – navn og klasse huskes
+    newFromSkeleton(o) {
+      o.name != null && pref.set("name", o.name), o.cls != null && pref.set("cls", o.cls), this.create(skeleton(o));
+    }
+    rename(id2, title) {
+      let e = this.entry(id2);
+      if (!e) return;
+      let t = String(title || "").trim();
+      if (id2 === this.cur) {
+        this.onRename && this.onRename(t), this.saveNow();
+        return;
+      }
+      let s = this.read(id2);
+      s && (s.meta = Object.assign({}, s.meta, { title: t }), this.write(id2, s), e.title = t || "Uden titel", e.updated = Date.now(), delete e.fresh, this.writeIndex(), this.render());
+    }
+    duplicate(id2) {
+      id2 === this.cur && this.saveNow();
+      let s = this.read(id2), e = this.entry(id2);
+      if (!s || !e) return;
+      let copy = JSON.parse(JSON.stringify(s));
+      copy.meta.title = (s.meta.title || "Uden titel") + " (kopi)";
+      let nid = uid("doc");
+      return this.docs.unshift({ id: nid, title: copy.meta.title, updated: Date.now(), n: opgCount(copy) }), this.write(nid, copy), this.writeIndex(), this.render(), toast('"' + copy.meta.title + '" er oprettet'), nid;
+    }
+    // stay: på startsiden skiftes der ikke til et andet dokument (det åbne dokument skifter kun, hvis det selv slettes)
+    remove(id2, { stay = !1 } = {}) {
       let i = this.docs.findIndex((d) => d.id === id2);
       if (i < 0) return;
-      let [gone] = this.docs.splice(i, 1), data = this.read(id2);
-      lsDel(DOC(id2)), delete this.mem[id2], id2 === this.cur && (this.cur = null), this.docs.length ? this.cur == null && (this.cur = this.docs[0].id, this.writeIndex(), this.load(this.read(this.cur) || blank())) : this.create(blank()), this.writeIndex(), this.render(), toast('"' + (gone.title || "Uden titel") + '" slettet', "Fortryd", () => {
-        this.docs.splice(i, 0, gone), this.write(id2, data), this.writeIndex(), this.open(id2);
+      let [gone] = this.docs.splice(i, 1), data = id2 === this.cur ? this.snapshot() : this.read(id2);
+      store.del(DOC(id2)), delete this.mem[id2];
+      let wasCur = id2 === this.cur;
+      wasCur && (this.cur = null), this.docs.length ? this.cur == null && !stay && (this.cur = this.list()[0].id, this.load(this.read(this.cur) || blank()), this.shown()) : stay ? this.cur = null : this.create(blank()), this.writeIndex(), this.render(), this.onChange && this.onChange(), toast('"' + (gone.title || "Uden titel") + '" er slettet', "Fortryd", () => {
+        this.docs.splice(i, 0, gone), this.write(id2, data), this.writeIndex(), this.render(), this.onChange && this.onChange(), stay ? wasCur && this.cur == null && (this.cur = id2, this.writeIndex(), this.render()) : this.open(id2);
       });
     }
     // ---------- Fil ----------
-    async saveFile() {
-      this.saveNow();
-      let snap = this.snapshot(), name = (snap.meta.title || "aflevering").replace(/[\\/:*?"<>|]+/g, "").trim() + ".vismat.json";
+    async saveFile(id2 = this.cur) {
+      id2 === this.cur && this.saveNow();
+      let snap = id2 === this.cur ? this.snapshot() : this.read(id2);
+      if (!snap) return;
+      let name = (snap.meta.title || "aflevering").replace(/[\\/:*?"<>|]+/g, "").trim() + ".vismat.json";
       try {
         await offerFile(name, JSON.stringify(snap, null, 1), "application/json") === "saved" && toast("Filen er gemt: " + name);
       } catch (e) {
@@ -7751,10 +7980,11 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         }
       }, rd.readAsText(file);
     }
-    // ---------- Listen i venstre side ----------
+    // ---------- Listen i dokumentmenuen ----------
     render() {
+      this.onRender && this.onRender();
       let box = document.getElementById("docList");
-      box && (box.innerHTML = "", this.docs.slice().sort((a, b) => b.updated - a.updated).forEach((d) => {
+      box && (box.innerHTML = "", this.list().forEach((d) => {
         let on2 = d.id === this.cur, del = h("button", { type: "button", class: "x", "aria-label": "Slet " + (d.title || "dokument"), title: "Slet dokument" }, "\xD7"), armed = !1;
         del.addEventListener("click", (e) => {
           if (e.stopPropagation(), !armed) {
@@ -7775,7 +8005,158 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   };
   function fmtWhen(t) {
     let d = new Date(t), now = /* @__PURE__ */ new Date(), hm = d.toLocaleTimeString("da-DK", { hour: "2-digit", minute: "2-digit" });
-    return d.toDateString() === now.toDateString() ? "i dag " + hm : d.toLocaleDateString("da-DK", { day: "numeric", month: "short" });
+    if (d.toDateString() === now.toDateString()) return "i dag " + hm;
+    let y = new Date(now);
+    return y.setDate(now.getDate() - 1), d.toDateString() === y.toDateString() ? "i g\xE5r " + hm : d.toLocaleDateString("da-DK", d.getFullYear() === now.getFullYear() ? { day: "numeric", month: "short" } : { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  // src/ui/start.js
+  var docs = null, el = null, listEl = null, q = "", visible = !1, hooks = {}, MD = ["januar", "februar", "marts", "april", "maj", "juni", "juli", "august", "september", "oktober", "november", "december"], today = () => {
+    let d = /* @__PURE__ */ new Date();
+    return d.getDate() + ". " + MD[d.getMonth()] + " " + d.getFullYear();
+  };
+  function initStart(store2, opts = {}) {
+    docs = store2, hooks = opts, el = document.getElementById("start"), el.addEventListener("dragover", (e) => {
+      [...e.dataTransfer.types || []].includes("Files") && (e.preventDefault(), el.classList.add("drop"));
+    }), el.addEventListener("dragleave", (e) => {
+      e.target === el && el.classList.remove("drop");
+    }), el.addEventListener("drop", (e) => {
+      e.preventDefault(), el.classList.remove("drop");
+      let f = e.dataTransfer.files && e.dataTransfer.files[0];
+      f && docs.openFile(f);
+    });
+  }
+  var startVisible = () => visible;
+  function showStart() {
+    el && (closePop(), visible = !0, q = "", el.hidden = !1, document.getElementById("app").setAttribute("inert", ""), document.body.classList.add("on-start"), render(), el.focus({ preventScroll: !0 }));
+  }
+  function hideStart() {
+    !el || !visible || (visible = !1, el.hidden = !0, document.getElementById("app").removeAttribute("inert"), document.body.classList.remove("on-start"));
+  }
+  function renderStart() {
+    visible && render();
+  }
+  var card = (cls, icon, title, desc, onclick) => h(
+    "button",
+    { type: "button", class: "st-card " + cls, onclick },
+    h("span", { class: "st-ic", "aria-hidden": "true" }, icon),
+    h("span", { class: "st-ct" }, title),
+    h("span", { class: "st-cd" }, desc)
+  );
+  function render() {
+    let all = docs.list().filter((d) => !d.fresh), cur2 = docs.entry(docs.cur), cont = cur2 && !cur2.fresh ? h(
+      "button",
+      { type: "button", class: "st-continue", onclick: () => docs.open(cur2.id) },
+      h("span", { class: "st-cl" }, "Forts\xE6t"),
+      h("span", { class: "st-ctitle" }, cur2.title || "Uden titel"),
+      h("span", { class: "st-cw" }, "\xE6ndret " + fmtWhen(cur2.updated))
+    ) : null;
+    listEl = h("div", { class: "st-list", role: "list" });
+    let search = all.length > 5 ? h("input", { type: "search", class: "st-search", placeholder: "S\xF8g i dine dokumenter", "aria-label": "S\xF8g i dine dokumenter", value: q }) : null;
+    search && search.addEventListener("input", () => {
+      q = search.value, fillList(all);
+    }), el.replaceChildren(h(
+      "div",
+      { class: "st-wrap" },
+      h(
+        "header",
+        { class: "st-head" },
+        h("div", { class: "brand st-brand" }, h("span", { class: "mark", "aria-hidden": "true" }, "\u221A"), h("span", null, "VisMat")),
+        h("span", { class: "spacer" }),
+        h("button", { type: "button", class: "ghost st-open", onclick: () => document.getElementById("fileIn").click(), title: "\xC5bn en VisMat-fil (.vismat.json) \u2013 eller tr\xE6k den ind her" }, "\xC5bn fil \u2026")
+      ),
+      all.length ? null : h("p", { class: "st-intro" }, "CAS, grafer, tabeller og statistik i \xE9t dokument \u2013 og en f\xE6rdig PDF til aflevering."),
+      cont,
+      h("h2", { class: "st-h" }, "Opret"),
+      h(
+        "div",
+        { class: "st-cards" },
+        card("blank", "+", "Tomt dokument", "Start med en tom side", () => {
+          docs.newBlank(), hooks.focusTitle && hooks.focusTitle();
+        }),
+        card("hand", "1 2 3", "Ny aflevering \u2026", "Titel, navn og et antal opgaver", () => newDialog()),
+        card("ex", "B", "Eksempel B-niveau", "Se en eksempelbesvarelse", () => docs.newExample("B")),
+        card("ex", "A", "Eksempel A-niveau", "Se en eksempelbesvarelse", () => docs.newExample("A"))
+      ),
+      h("div", { class: "st-lh" }, h("h2", { class: "st-h" }, "Dine dokumenter"), search),
+      listEl,
+      h("p", { class: "st-foot" }, 'Dokumenterne gemmes kun p\xE5 denne enhed. Brug "Gem som fil" for at tage en kopi med eller dele den.')
+    )), fillList(all);
+  }
+  function fillList(all) {
+    let words = q.trim().toLowerCase().split(/\s+/).filter(Boolean), rows = all.filter((d) => words.every((w) => (d.title || "uden titel").toLowerCase().includes(w)));
+    listEl.replaceChildren(...rows.length ? rows.map(row) : [h("p", { class: "st-empty" }, all.length ? "Ingen dokumenter passer til s\xF8gningen." : "Ingen dokumenter endnu. Opret et ovenfor \u2013 eller \xE5bn en fil.")]);
+  }
+  function row(d) {
+    let more = h("button", { type: "button", class: "st-more iconbtn", "aria-haspopup": "menu", "aria-label": "Mere for " + (d.title || "Uden titel"), title: "Omd\xF8b, kopi\xE9r, gem som fil, slet" }, "\u22EF"), title = h("span", { class: "st-t" }, d.title || "Uden titel"), open = h(
+      "button",
+      { type: "button", class: "st-row-open", onclick: () => docs.open(d.id) },
+      h("span", { class: "st-doc-ic", "aria-hidden": "true" }),
+      title,
+      h("span", { class: "st-w" }, (d.n ? d.n + (d.n === 1 ? " opgave" : " opgaver") + " \xB7 " : "") + fmtWhen(d.updated))
+    ), r = h("div", { class: "st-row", role: "listitem" }, open, more);
+    return more.addEventListener("click", () => {
+      if (currentPop() && currentPop()._anchor === more) {
+        closePop();
+        return;
+      }
+      let act = (label, fn, cls) => h("button", { type: "button", class: "pop-item" + (cls ? " " + cls : ""), onclick: () => {
+        closePop(), fn();
+      } }, h("span", { class: "grow" }, label));
+      openPop(more, h(
+        "div",
+        { class: "st-menu" },
+        act("Omd\xF8b", () => renameInline(r, d)),
+        act("Kopi\xE9r", () => docs.duplicate(d.id)),
+        act("Gem som fil", () => docs.saveFile(d.id)),
+        h("div", { class: "pop-sep" }),
+        act("Slet", () => {
+          let i = [...listEl.children].indexOf(r);
+          docs.remove(d.id, { stay: !0 }), refocus(i);
+        }, "danger")
+      ), { role: "menu", onclose: () => more.setAttribute("aria-expanded", "false") }), more.setAttribute("aria-expanded", "true");
+    }), r;
+  }
+  function refocus(i) {
+    let rows = listEl.querySelectorAll(".st-row-open"), t = rows[Math.min(i, rows.length - 1)] || el.querySelector(".st-card");
+    t && t.focus({ preventScroll: !0 });
+  }
+  function renameInline(r, d) {
+    let inp = h("input", { class: "st-rename", value: d.title === "Uden titel" ? "" : d.title || "", placeholder: "Titel", "aria-label": "Ny titel" }), open = r.querySelector(".st-row-open");
+    open.hidden = !0, open.after(inp), r.classList.add("renaming"), inp.focus(), inp.select();
+    let done = !1, finish = (ok) => {
+      if (done) return;
+      done = !0;
+      let i = [...listEl.children].indexOf(r);
+      ok && docs.rename(d.id, inp.value), render(), refocus(i);
+    };
+    inp.addEventListener("keydown", (e) => {
+      e.key === "Enter" && (e.preventDefault(), finish(!0)), e.key === "Escape" && (e.preventDefault(), finish(!1));
+    }), inp.addEventListener("blur", () => finish(!0));
+  }
+  function newDialog() {
+    let f = (label, input, hint) => h("label", { class: "st-f" }, h("span", { class: "st-fl" }, label), input, hint ? h("span", { class: "st-fh" }, hint) : null), title = h("input", { name: "title", placeholder: "Fx Aflevering 4", autocomplete: "off" }), name = h("input", { name: "name", value: pref.get("name") || "", placeholder: "Dit navn", autocomplete: "name" }), cls = h("input", { name: "cls", value: pref.get("cls") || "", placeholder: "Fx 2.b", autocomplete: "off" }), date = h("input", { name: "date", value: today(), autocomplete: "off" }), n2 = h("input", { name: "opgaver", type: "number", min: "1", max: "30", value: pref.get("opgaver") || "5", inputmode: "numeric" }), del = h("input", { name: "del", type: "number", min: "0", max: "10", value: "0", inputmode: "numeric" }), dlg = h(
+      "dialog",
+      { class: "st-dialog", "aria-labelledby": "stDlgH" },
+      h(
+        "form",
+        { method: "dialog" },
+        h("h2", { id: "stDlgH" }, "Ny aflevering"),
+        f("Titel", title),
+        h("div", { class: "st-2" }, f("Navn", name), f("Klasse", cls)),
+        f("Dato", date),
+        h("div", { class: "st-2" }, f("Antal opgaver", n2), f("Delopgaver pr. opgave", del, "0: ingen \xB7 2: a) og b) i hver opgave")),
+        h(
+          "div",
+          { class: "st-btns" },
+          h("button", { type: "button", class: "ghost", onclick: () => dlg.close() }, "Annuller"),
+          h("button", { type: "submit", class: "primary", value: "ok" }, "Opret")
+        )
+      )
+    );
+    dlg.addEventListener("close", () => {
+      dlg.returnValue === "ok" && (pref.set("opgaver", n2.value), docs.newFromSkeleton({ title: title.value.trim(), name: name.value.trim(), cls: cls.value.trim(), date: date.value.trim(), opgaver: n2.value, del: del.value }), hooks.focusFirst && hooks.focusFirst()), dlg.remove();
+    }), document.body.append(dlg), dlg.showModal(), title.focus();
   }
 
   // src/app.js
@@ -8493,15 +8874,15 @@ def punkt(fn, t):
   }
   var RES = (id2) => "vismat-res-" + id2;
   function saveResults() {
-    if (docs.cur)
+    if (!(!docs2 || !docs2.cur))
       try {
-        localStorage.setItem(RES(docs.cur), JSON.stringify(app.session.snapshot()));
+        store.set(RES(docs2.cur), JSON.stringify(app.session.snapshot()));
       } catch {
       }
   }
   function loadResults(id2) {
     try {
-      let x = JSON.parse(localStorage.getItem(RES(id2)) || "null");
+      let x = JSON.parse(store.get(RES(id2)) || "null");
       return x && typeof x == "object" ? x : {};
     } catch {
       return {};
@@ -8531,35 +8912,44 @@ def punkt(fn, t):
     } catch (e) {
       throw app.views = oldViews, e;
     }
-    oldView && oldView.destroy(), $3("editor").replaceChildren(...host.childNodes), app.meta = snap.meta, app.session.reset(), app.session.cache = Object.assign({}, CACHE, loadResults(docs.cur)), app.cas.reset(), app.pyOpen.clear(), app.activeOpg = null, app.activeBlock = null, app.lastPos = null, app.view = window.__view = view2, bindMeta(), replan();
+    oldView && oldView.destroy(), $3("editor").replaceChildren(...host.childNodes), app.meta = snap.meta, app.session.reset(), app.session.cache = Object.assign({}, CACHE, loadResults(docs2.cur)), app.cas.reset(), app.pyOpen.clear(), app.activeOpg = null, app.activeBlock = null, app.lastPos = null, app.view = window.__view = view2, bindMeta(), replan();
   }
   function makeEditor(host, pm) {
     return createEditor(host, pm, {
       onDocChange(tr) {
-        docs.save(), tr.getMeta("casResult") || schedulePlan(), renderSideSoon();
+        docs2.save(), tr.getMeta("casResult") || schedulePlan(), renderSideSoon();
       },
       onSelection(opgId) {
         opgId && opgId !== app.activeOpg && (app.activeOpg = opgId, renderSide());
       }
     });
   }
-  var docs = new DocStore({
-    load: (s) => {
-      mountDoc(s), closeRails(), app.view.focus();
-    },
-    snapshot: () => ({ v: 3, meta: app.meta, pm: app.view.state.doc.toJSON() }),
-    validate: validateDoc
-  });
-  docs.onSaved = (s) => {
-    let el = $3("saved");
-    el && (el.dataset.state = s, el.textContent = s === "saving" ? "Gemmer \u2026" : s === "ok" ? "Gemt i browseren" : "Gemmes kun i denne fane");
-  };
+  var docs2 = null;
+  function makeDocs() {
+    docs2 = new DocStore({
+      load: (s) => {
+        mountDoc(s), closeRails();
+      },
+      snapshot: () => ({ v: 3, meta: app.meta, pm: app.view.state.doc.toJSON() }),
+      validate: validateDoc
+    }), docs2.onOpen = () => {
+      let was = startVisible();
+      hideStart(), app.mode !== "write" && setMode("write"), was && setTimeout(() => app.view && app.view.focus(), 30);
+    }, docs2.onRender = renderStart, docs2.onChange = renderStart, docs2.onRename = (t) => {
+      app.meta.title = t;
+      let el2 = document.querySelector('[data-meta="title"]');
+      el2 && (el2.textContent = t), $3("docName").textContent = t || "Uden titel";
+    }, docs2.onSaved = (s) => {
+      let el2 = $3("saved");
+      el2 && (el2.dataset.state = s, el2.textContent = s === "saving" ? "Gemmer \u2026" : s === "ok" ? "Gemt p\xE5 denne enhed" : "Gemmes kun i denne fane");
+    };
+  }
   function bindMeta() {
-    document.querySelectorAll("[data-meta]").forEach((el) => {
-      let k = el.dataset.meta;
-      el.textContent = app.meta[k] || "", el.oninput = () => {
-        app.meta[k] = el.textContent, k === "title" && ($3("docName").textContent = app.meta.title || "Uden titel"), docs.save();
-      }, el.onkeydown = (e) => {
+    document.querySelectorAll("[data-meta]").forEach((el2) => {
+      let k = el2.dataset.meta;
+      el2.textContent = app.meta[k] || "", el2.oninput = () => {
+        app.meta[k] = el2.textContent, k === "title" && ($3("docName").textContent = app.meta.title || "Uden titel"), docs2.save();
+      }, el2.onkeydown = (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           let order = ["title", "name", "cls", "date"], nx = order[order.indexOf(k) + 1];
@@ -8578,7 +8968,7 @@ def punkt(fn, t):
   }
   function setMode(m) {
     if (app.mode = m, $3("app").dataset.mode = m, document.querySelectorAll("[data-mode-btn]").forEach((x) => x.setAttribute("aria-checked", String(x.dataset.modeBtn === m))), m === "hand") {
-      let o = extract(app.view.state.doc.toJSON()).find((q) => q.id === app.activeOpg);
+      let o = extract(app.view.state.doc.toJSON()).find((q2) => q2.id === app.activeOpg);
       renderHand(), pdf.start().catch(() => {
       }), o && setHandTarget(o.number), setTimeout(syncHandNav, 400);
     }
@@ -8588,7 +8978,7 @@ def punkt(fn, t):
     if (app.mode !== "hand" || Date.now() < (app.navUntil || 0)) return;
     let n2 = opgInView();
     if (!n2) return;
-    let o = extract(app.view.state.doc.toJSON()).find((q) => q.number === Number(n2));
+    let o = extract(app.view.state.doc.toJSON()).find((q2) => q2.number === Number(n2));
     o && o.id !== app.activeOpg && (app.activeOpg = o.id, renderSide());
   }
   on("side", renderSide);
@@ -8604,7 +8994,7 @@ def punkt(fn, t):
     });
   });
   on("setAngle", (v) => {
-    v === "auto" ? delete app.meta.angle : app.meta.angle = v, docs.save(), replan(), toast(v === "rad" ? "Vinkler regnes nu i radianer i hele dokumentet" : v === "deg" ? "Vinkler regnes nu i grader i hele dokumentet" : "Vinkler: grader i trekanter, radianer i funktioner og n\xE5r der st\xE5r \u03C0");
+    v === "auto" ? delete app.meta.angle : app.meta.angle = v, docs2.save(), replan(), toast(v === "rad" ? "Vinkler regnes nu i radianer i hele dokumentet" : v === "deg" ? "Vinkler regnes nu i grader i hele dokumentet" : "Vinkler: grader i trekanter, radianer i funktioner og n\xE5r der st\xE5r \u03C0");
   });
   on("gotoText", (find) => {
     setMode("write"), requestAnimationFrame(() => {
@@ -8640,9 +9030,9 @@ def punkt(fn, t):
     followT || app.mode !== "write" || Date.now() - (app.lastKey || 0) < 1500 || Date.now() < (app.navUntil || 0) || (followT = requestAnimationFrame(() => {
       followT = 0;
       let d = $3("desk").getBoundingClientRect(), top = d.top + 56, bottom = d.bottom, id2 = null, best = 0;
-      if (document.querySelectorAll("#editor .opgave").forEach((el) => {
-        let r = el.getBoundingClientRect(), seen = Math.min(r.bottom, bottom) - Math.max(r.top, top);
-        seen > best + 1 && (best = seen, id2 = el.dataset.opg);
+      if (document.querySelectorAll("#editor .opgave").forEach((el2) => {
+        let r = el2.getBoundingClientRect(), seen = Math.min(r.bottom, bottom) - Math.max(r.top, top);
+        seen > best + 1 && (best = seen, id2 = el2.dataset.opg);
       }), !id2) {
         let f = document.querySelector("#editor .opgave");
         id2 = f && f.dataset.opg;
@@ -8650,15 +9040,19 @@ def punkt(fn, t):
       id2 && id2 !== app.activeOpg && (app.activeOpg = id2, renderSide());
     }));
   }
-  function init() {
-    document.documentElement.lang = "da", app.session = new Session(CACHE), app.cas = new CasClient({ onState: onCasState, onResult, onIdle, onTimeout }), bar.build($3("toolbar"), $3("ftools")), /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) && (document.querySelectorAll("kbd").forEach((k) => {
+  async function init() {
+    await initStore(), makeDocs(), document.documentElement.lang = "da", app.session = new Session(CACHE), app.cas = new CasClient({ onState: onCasState, onResult, onIdle, onTimeout }), bar.build($3("toolbar"), $3("ftools")), /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) && (document.querySelectorAll("kbd").forEach((k) => {
       k.textContent === "Ctrl" && (k.textContent = "\u2318");
-    }), document.querySelectorAll('[title*="Ctrl"]').forEach((el) => {
-      el.title = el.title.replace(/Ctrl/g, "\u2318");
-    })), mountDoc(docs.current()), docs.render(), docs.onSaved("ok"), docs.firstRun && (setTimeout(() => {
+    }), document.querySelectorAll('[title*="Ctrl"]').forEach((el2) => {
+      el2.title = el2.title.replace(/Ctrl/g, "\u2318");
+    })), mountDoc(docs2.current()), docs2.shown(), docs2.onSaved("ok");
+    let focusTitle = () => setTimeout(() => {
       let t = document.querySelector(".doc-title");
       t && t.focus();
-    }, 60), setTimeout(() => toast("Velkommen til VisMat. Se en eksempelbesvarelse \u2013 eller begynd at skrive.", "Se et eksempel", () => docs.newExample("B"), 3e4), 600)), document.querySelectorAll("[data-mode-btn]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.modeBtn)));
+    }, 60);
+    initStart(docs2, { focusTitle, focusFirst: () => setTimeout(focusFirstTitle, 60) }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
+      docs2.saveNow(), closeRails(), showStart();
+    }), document.querySelectorAll("[data-mode-btn]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.modeBtn)));
     let pb = $3("pyAll");
     pb.addEventListener("click", () => {
       app.pyPanel = !app.pyPanel, pb.setAttribute("aria-pressed", String(app.pyPanel)), $3("app").classList.toggle("with-py", app.pyPanel), app.pyPanel ? (renderSide(), window.innerWidth < 1180 && openRail("pyRail")) : closeRails();
@@ -8667,7 +9061,7 @@ def punkt(fn, t):
     }), initGutter();
     let fileIn = $3("fileIn");
     fileIn.addEventListener("change", () => {
-      fileIn.files[0] && docs.openFile(fileIn.files[0]), fileIn.value = "";
+      fileIn.files[0] && docs2.openFile(fileIn.files[0]), fileIn.value = "";
     });
     let dmb = $3("docMenuBtn");
     dmb.addEventListener("click", () => {
@@ -8684,22 +9078,24 @@ def punkt(fn, t):
         h("div", { class: "pop-title" }, "Dine dokumenter"),
         h("div", { id: "docList", class: "doc-list" }),
         h("div", { class: "pop-sep" }),
+        act("Startside", () => {
+          docs2.saveNow(), showStart();
+        }),
         act("Nyt dokument", () => {
-          docs.newBlank(), setTimeout(() => {
-            let t = document.querySelector(".doc-title");
-            t && t.focus();
-          }, 60);
+          docs2.newBlank(), focusTitle();
         }),
         act("\xC5bn fil \u2026", () => fileIn.click()),
-        act("Gem som fil", () => docs.saveFile()),
+        act("Gem som fil", () => docs2.saveFile()),
         h("div", { class: "pop-sep" }),
         h("div", { class: "pop-title" }, "Eksempler"),
-        act("Eksempel B-niveau", () => docs.newExample("B")),
-        act("Eksempel A-niveau", () => docs.newExample("A")),
-        act("Kort eksempel", () => docs.newSample())
-      ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true"), docs.render();
-    }), window.addEventListener("pagehide", () => docs.saveNow()), document.addEventListener("visibilitychange", () => {
-      document.visibilityState === "hidden" && docs.saveNow();
+        act("Eksempel B-niveau", () => docs2.newExample("B")),
+        act("Eksempel A-niveau", () => docs2.newExample("A")),
+        act("Kort eksempel", () => docs2.newSample())
+      ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true"), docs2.render();
+    }), window.addEventListener("pagehide", () => {
+      docs2.saveNow(), store.flush();
+    }), document.addEventListener("visibilitychange", () => {
+      document.visibilityState === "hidden" && (docs2.saveNow(), store.flush());
     }), $3("desk").addEventListener("scroll", () => {
       currentPop() && !placePop() && closePop(), followScroll(), clearTimeout(handScrollT), handScrollT = setTimeout(syncHandNav, 120);
     }, { passive: !0 });

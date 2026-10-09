@@ -310,7 +310,9 @@ p.bar-room,li.bar-room{padding-bottom:calc(var(--bar-h,40px) + 10px);margin-bott
 
 /* ProseMirror-dokument */
 #editor .ProseMirror{outline:none;counter-reset:opg}
-.opgave{counter-increment:opg;counter-reset:del;margin-top:16px}
+.opgave{counter-increment:opg;counter-reset:del;margin-top:16px;cursor:text}
+/* (luft under den sidste opgave: et klik dér giver en ny linje i slutningen) */
+.opgave:last-child{padding-bottom:72px}
 .opgave:first-child{margin-top:0}
 /* Overskriften: "Opgave 2: Titel" – nummeret i gråt, titlen er valgfri */
 .opg-title{font:600 24px/1.3 var(--serif);margin:0 0 22px;text-wrap:balance}
@@ -322,21 +324,11 @@ p.bar-room,li.bar-room{padding-bottom:calc(var(--bar-h,40px) + 10px);margin-bott
 .opg-title.empty[data-ph]::after{content:attr(data-ph);color:var(--ink-3);opacity:.85;font-weight:400;font-style:italic;pointer-events:none}
 /* efter opgavens sidste linje: + Tilføj */
 /* vises kun, når musen er på den sidste linje eller under den */
-.opg-end{display:flex;align-items:center;gap:2px;margin:0 0 0 -24px;padding:2px 0 4px;min-height:30px;cursor:text;color:var(--ink-3);opacity:0;transition:opacity .15s;user-select:none}
-.opgave:last-child .opg-end:not(.mid){padding-bottom:72px}
-/* (kun når man peger på selve rækken: ved blokken over står håndtaget i margenen, og der står aldrig to ting dér) */
-.opg-end:hover,.opg-end:focus-within{opacity:1}
 /* mens man skriver, er margenen tom; + og håndtaget kommer igen, når musen flyttes */
-body.typing .opg-end{opacity:0!important}
 body.typing .gutter{opacity:0!important;pointer-events:none!important}
 /* efter en delopgave: en smal række, så afstanden til næste delopgave er som før */
 /* før en delopgave: "+" står tæt under det, den hører til, med luft ned til næste delopgave */
-.opg-end.mid{margin-top:-14px;padding:0;min-height:28px;align-items:center}
-.opg-end.mid + .delopg{margin-top:26px}
-.end-plus{width:22px;height:22px;flex:none;border:0;background:none;border-radius:4px;color:var(--ink-3);font:400 18px/1 var(--ui);cursor:pointer;display:grid;place-items:center;padding:0 0 1px}
 /* slutter opgaven med en tom linje, er den linje stedet at skrive (med sit eget +): ingen ekstra "Tilføj"-række */
-.opgave > p:has(> br:only-child) + .opg-end{visibility:hidden}
-.opg-end:hover .end-plus{color:var(--ink)}
 .empty[data-ph]::before{content:attr(data-ph);color:var(--ink-3);pointer-events:none;float:left;height:0;font-style:italic;font-weight:400}
 .ProseMirror p{font:17px/1.72 var(--serif);margin:0 0 .9em}
 /* en tom linje, man ikke står i, fylder mindre (den kommer heller ikke med i PDF'en) */
@@ -5189,37 +5181,46 @@ print(1 + 1)`, out: null } : {};
         return nv && nv.typeText && (nv.focus(!0), nv.typeText(text2)), !0;
       }
     }
-  });
-  function endRow(view2, getPos, mid) {
-    let plus = h("button", { type: "button", class: "end-plus", title: "Inds\xE6t formel, graf, tabel \u2026", "aria-label": "Inds\xE6t formel, graf, tabel \u2026" }, "+"), row2 = h("div", { class: "opg-end" + (mid ? " mid" : ""), contenteditable: "false", title: "Klik for at skrive her \xB7 + for formel, graf, tabel \u2026" }, plus), para = () => {
-      let end = getPos();
-      if (end == null) return null;
-      let tr = view2.state.tr, last2 = tr.doc.resolve(end).nodeBefore, p;
-      return last2 && last2.type === S.paragraph && last2.content.size === 0 ? p = end - 1 : (tr = tr.insert(end, S.paragraph.create()), p = end + 1), tr = tr.setSelection(TextSelection2.create(tr.doc, p)).scrollIntoView(), view2.dispatch(tr), view2.focus(), p;
-    };
-    return row2.addEventListener("mousedown", (e) => {
-      e.preventDefault(), e.stopPropagation();
-    }), row2.addEventListener("click", (e) => {
-      plus.contains(e.target) || para();
-    }), plus.addEventListener("click", () => {
-      showPalette(plus, { owner: "end", q: "", where: "text", search: !0, onPick: (it) => {
-        let p = para();
-        p != null && runTextItem(it, [p, p]);
-      } });
-    }), row2;
-  }
-  var phPlugin = new Plugin({
+  }), gapClick = new Plugin({
+    props: {
+      handleDOMEvents: {
+        mousedown(view2, e) {
+          if (e.button !== 0) return !1;
+          let t = e.target, sec = t && t.classList && t.classList.contains("opgave") ? t : null;
+          if (!sec && t === view2.dom) {
+            let all = view2.dom.querySelectorAll(":scope > .opgave"), last2 = all[all.length - 1];
+            last2 && e.clientY > last2.getBoundingClientRect().bottom - 80 && (sec = last2);
+          }
+          if (!sec) return !1;
+          let kids = [...sec.children], next = kids.find((k) => k.getBoundingClientRect().top > e.clientY);
+          if (next && !next.classList.contains("delopg")) return !1;
+          let prev = next ? kids[kids.indexOf(next) - 1] : kids[kids.length - 1];
+          if (!prev || prev.classList.contains("opg-title")) return !1;
+          let opgPos = null;
+          if (view2.state.doc.forEach((n2, p) => {
+            view2.nodeDOM(p) === sec && (opgPos = p);
+          }), opgPos == null) return !1;
+          let opg = view2.state.doc.nodeAt(opgPos), at = null, prevNode = null;
+          if (opg.forEach((c, off) => {
+            let p = opgPos + 1 + off;
+            view2.nodeDOM(p) === prev && (at = p + c.nodeSize, prevNode = c);
+          }), at == null) return !1;
+          e.preventDefault();
+          let tr = view2.state.tr, cur2;
+          return prevNode.type === S.paragraph && prevNode.content.size === 0 ? cur2 = at - 1 : (tr = tr.insert(at, S.paragraph.create()), cur2 = at + 1), view2.dispatch(tr.setSelection(TextSelection2.create(tr.doc, cur2))), view2.focus(), !0;
+        }
+      }
+    }
+  }), phPlugin = new Plugin({
     props: {
       decorations(state) {
         let decos = [], sel = state.selection, d = state.doc, o0 = d.childCount === 1 && d.firstChild, emptyDoc = !!(o0 && o0.childCount === 2 && o0.child(1).type === S.paragraph && o0.child(1).content.size === 0), ph = (n2, pos, text2) => decos.push(Decoration.node(pos, pos + n2.nodeSize, { class: "empty", "data-ph": text2 }));
-        return state.doc.descendants((n2, pos) => (n2.type === S.opgtitle && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 ? ph(n2, pos, "Titel (valgfri)") : decos.push(Decoration.node(pos, pos + n2.nodeSize, { class: "untitled" }))), n2.type === S.opgave && (decos.push(Decoration.widget(pos + n2.nodeSize - 1, endRow, { side: 1, key: "end-" + (n2.attrs.id || pos), ignoreSelection: !0, stopEvent: () => !0 })), n2.forEach((c, off, i) => {
-          c.type === S.delopgave && i > 1 && decos.push(Decoration.widget(pos + 1 + off, (v, gp) => endRow(v, gp, !0), { side: -1, key: "mid-" + (c.attrs.id || off), ignoreSelection: !0, stopEvent: () => !0 }));
-        })), n2.type === S.delopgave && n2.content.size === 0 && ph(n2, pos, "Sp\xF8rgsm\xE5let (valgfrit) \u2013 Enter for at svare"), n2.type === S.paragraph && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 || emptyDoc) && ph(n2, pos, "Skriv, eller tast \\ for at inds\xE6tte formel, graf, tabel \u2026"), n2.type === S.doc || n2.type === S.opgave)), DecorationSet.create(state.doc, decos);
+        return state.doc.descendants((n2, pos) => (n2.type === S.opgtitle && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 ? ph(n2, pos, "Titel (valgfri)") : decos.push(Decoration.node(pos, pos + n2.nodeSize, { class: "untitled" }))), n2.type === S.delopgave && n2.content.size === 0 && ph(n2, pos, "Sp\xF8rgsm\xE5let (valgfrit) \u2013 Enter for at svare"), n2.type === S.paragraph && n2.content.size === 0 && (sel.empty && sel.$from.parent === n2 || emptyDoc) && ph(n2, pos, "Skriv, eller tast \\ for at inds\xE6tte formel, graf, tabel \u2026"), n2.type === S.doc || n2.type === S.opgave)), DecorationSet.create(state.doc, decos);
       }
     }
   });
   function plugins() {
-    return [palettePlugin, numberPlugin, atomGuard, rules, keys, keymap(PM.commands.baseKeymap), PM.history.history(), idPlugin, phPlugin, PM.dropcursor.dropCursor(), PM.gapcursor.gapCursor()];
+    return [gapClick, palettePlugin, numberPlugin, atomGuard, rules, keys, keymap(PM.commands.baseKeymap), PM.history.history(), idPlugin, phPlugin, PM.dropcursor.dropCursor(), PM.gapcursor.gapCursor()];
   }
 
   // src/core/precision.js
@@ -5491,9 +5492,8 @@ print(1 + 1)`, out: null } : {};
   }
 
   // src/editor/gutter.js
-  var { TextSelection: TextSelection3 } = PM.state, blocks = () => [...document.querySelectorAll("#editor .opgave > *:not(.opg-end)")];
+  var { TextSelection: TextSelection3 } = PM.state, blocks = () => [...document.querySelectorAll("#editor .opgave > *")];
   function blockAt(e) {
-    if (e.target && e.target.closest && e.target.closest(".opg-end")) return null;
     let direct = e.target && e.target.closest ? e.target.closest("#editor .opgave > *") : null;
     return direct || blocks().find((el2) => {
       let r = el2.getBoundingClientRect();

@@ -3,7 +3,7 @@
    - index.html og de to workers: netværket først (så en ny udgave kommer med det samme), ellers cachen
    - alt andet (Pyodide, Python-pakker, Typst, skrifter, pdf.js): cachen først – de ændrer sig kun med en ny udgave
    - MathLive og Google Fonts (andre servere): fra cachen, og opdateres i baggrunden */
-const VERSION = '3a76f1d0775a';
+const VERSION = 'a82f583ad11f';
 const FILES = ["cas-worker.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon.svg","icons/maskable-512.png","manifest.webmanifest","pdf-worker.js","pdfjs/pdf.min.js","pdfjs/pdf.worker.min.js","py/pkgs-1.json","py/pkgs-2.json","py/stdlib-1.json","pyodide/pyodide-lock.json","pyodide/pyodide.asm.js","pyodide/pyodide.asm.wasm","pyodide/pyodide.js","typst/compiler-1.wasm","typst/compiler-2.wasm","typst/fonts/DejaVuSansMono.ttf","typst/fonts/InstrumentSans-Regular.ttf","typst/fonts/InstrumentSans-Semibold.ttf","typst/fonts/NewCMMath-Regular.otf","typst/fonts/SourceSerif4-Italic.ttf","typst/fonts/SourceSerif4-Regular.ttf","typst/fonts/SourceSerif4-Semibold.ttf","typst/fonts/SourceSerif4-SemiboldItalic.ttf"];
 const CACHE = 'vismat-' + VERSION;
 const FRESH = new Set(['', 'index.html', 'cas-worker.js', 'pdf-worker.js', 'manifest.webmanifest']);

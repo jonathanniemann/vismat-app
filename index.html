@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="da">
+<html lang="da" translate="no" class="notranslate">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -9,6 +9,7 @@
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="google" content="notranslate">
 <meta name="theme-color" content="#F7F7F5" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#202020" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
@@ -184,8 +185,8 @@ code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2
 .cas-pill{display:inline-flex;align-items:center;gap:7px;border:0;background:none;border-radius:999px;padding:6px 8px;font-size:12px;color:var(--ink-3);cursor:pointer;white-space:nowrap}
 .cas-pill:hover{background:var(--rule-2)}
 .cas-pill[data-state=ready]:not(.busy) .cas-txt{display:none}
-.cas-pill[data-state=ready]:not(.busy):not(:hover){opacity:.0}
-.cas-pill[data-state=ready]:not(.busy):focus-visible{opacity:1}
+/* (når CAS er klar, er knappen væk – også for tastatur og tryk – men pladsen bevares, så topbjælken ikke hopper) */
+.cas-pill[data-state=ready]:not(.busy){visibility:hidden}
 .cas-pill .lamp{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
 .cas-pill[data-state=loading] .lamp{background:var(--s2);animation:pulse 1.2s ease-in-out infinite}
 .cas-pill[data-state=ready] .lamp{background:var(--cas)}
@@ -203,7 +204,15 @@ code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2
 .br{font-family:var(--mono);font-size:11.5px;letter-spacing:-.04em;font-variant-ligatures:none}
 .py-top .br{font-weight:600}
 /* PDF-visningen: en knap ind (Gem som PDF) og en tilbage; Python-knappen hører til skrivevisningen */
-.app[data-mode=write] #btnBack,.app[data-mode=hand] #btnToPdf,.app[data-mode=hand] #pyAll{display:none}
+.app[data-mode=write] #btnBack,.app[data-mode=hand] #btnToPdf,.app[data-mode=hand] #pyAll,.app[data-mode=write] .bar-hand,.app[data-mode=hand] #saved{display:none}
+.bar-hand{display:flex;align-items:center;gap:6px 12px;min-width:0}
+.bar-hand label{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+.bar-hand label[hidden]{display:none}
+.bar-hand input[type=checkbox]{accent-color:var(--accent)}
+.bar-hand .primary{height:30px;font-size:13px}
+/* Gem som PDF er appens mål: den ene udfyldte knap i topbjælken */
+.pdf-top{background:var(--accent);color:var(--accent-ink)}
+.pdf-top:hover{background:color-mix(in srgb,var(--accent) 88%,#000);color:var(--accent-ink)}
 .back-btn{color:var(--ink);background:var(--hover)}
 .back-btn:hover{background:var(--rule-2)}
 .only-narrow{display:none}
@@ -221,7 +230,8 @@ code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2
 .nav-main:hover{background:var(--hover)}
 .nav-n{font:600 12px var(--ui);color:var(--ink-3);min-width:12px}
 .nav-opg.on .nav-n{color:var(--ink-3)}
-.nav-t{line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-t{line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nav-main{box-sizing:border-box;min-width:0}
 .nav-t.untitled{color:var(--ink-3)}
 .nav-subs{display:flex;gap:4px;padding:0 10px 4px 24px;flex-wrap:wrap}
 .nav-sub{border:0;background:none;border-radius:6px;min-width:26px;height:22px;font:500 12px var(--ui);cursor:pointer;color:var(--ink-3)}
@@ -263,8 +273,9 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;user-select:none}
 .linkish.warn{color:var(--warn);text-decoration-color:var(--warn)}
 
 /* Midte */
-.desk{overflow:auto;min-width:0;position:relative}
-.write,.hand{padding:0 24px 160px}
+.desk{overflow:auto;min-width:0;position:relative;overflow-anchor:none}
+.write{padding:0 24px 160px}
+.hand{padding:16px 24px 160px}
 .app[data-mode=write] .desk{background:var(--paper)}
 .app[data-mode=hand] .desk{background:var(--desk)}
 .app[data-mode=write] .hand,.app[data-mode=hand] .write{display:none}
@@ -720,13 +731,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .pp-cell .py-out{padding:5px 12px 7px}
 
 /* Aflevering */
-.hand-bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;justify-content:center;padding:12px 0;pointer-events:none}
-.hand-bar .inner{pointer-events:auto}
-.hand-bar .inner{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;background:var(--pop,var(--paper));border:0;border-radius:8px;padding:4px 4px 4px 14px;box-shadow:var(--pop-shadow)}
-.hand-bar label{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2)}
-.hand-bar input[type=checkbox]{accent-color:var(--accent)}
-.hand-bar .ghost{min-height:32px;padding:5px 12px;font-size:12.5px}
-.hand-check{display:inline-flex;align-items:center;gap:7px;border:0;background:none;border-radius:6px;padding:5px 8px;font:500 12.5px var(--ui);color:var(--ink-2);cursor:pointer}
+.hand-check{min-width:10.6em;justify-content:center;display:inline-flex;align-items:center;gap:7px;border:0;background:none;border-radius:6px;padding:5px 8px;font:500 12.5px var(--ui);color:var(--ink-2);cursor:pointer}
 .hand-check:hover:not(:disabled){background:var(--hover)}
 .hand-check:disabled{cursor:default}
 .hc-lamp{width:8px;height:8px;border-radius:50%;background:var(--cas)}
@@ -748,7 +753,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
 #pages.updating .pdfpage{opacity:.75;transition:opacity .2s}
 /* afleveringen opdateres: siderne nedtonet og en status over dem, til alt er klar */
 #pages.busy .page-wrap{opacity:.45;transition:opacity .25s}
-.hand-busy{position:sticky;top:64px;z-index:4;display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 32px);margin:0 auto 10px;padding:7px 15px;border-radius:999px;background:var(--pop,var(--paper));box-shadow:var(--pop-shadow);font:500 12.5px var(--ui);color:var(--ink-2)}
+.hand-busy{position:sticky;top:12px;z-index:4;display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 32px);margin:0 auto 10px;padding:7px 15px;border-radius:999px;background:var(--pop,var(--paper));box-shadow:var(--pop-shadow);font:500 12.5px var(--ui);color:var(--ink-2)}
 .hand-busy[hidden]{display:none}
 .hand-check[data-level=busy] .hc-lamp{background:var(--ink-3);opacity:.5}
 .hand-check[data-level=ok]{color:var(--cas)}
@@ -835,7 +840,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
 @media print{
   @page{size:A4;margin:0}
   body{background:#fff}
-  .bar,.rail,.hand-bar,.write,.scrim,.toast,.start{display:none!important}
+  .bar,.rail,.write,.scrim,.toast,.start{display:none!important}
   .app{display:block;height:auto}
   .desk{overflow:visible}
   .hand{display:block!important;padding:0}
@@ -863,7 +868,6 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .itools .tool .lbl::after{content:attr(data-short);font-size:10px;font-weight:500;color:var(--ink-2)}
   .itools .tsep{display:none}
   #btnRedo{display:none}
-  .hand-bar{position:static}
   .m-main{gap:0 8px}
   .m-out{gap:8px}
   math-field.mf{min-width:0;flex:1 1 60%}
@@ -888,9 +892,8 @@ math-field::part(virtual-keyboard-toggle){display:none}
   #btnToPdf{padding:5px 8px}
   .cas-pill .cas-txt{display:none}
   .cas-pill{padding:6px 8px}
-  .hand-bar .inner{justify-content:center}
   #pageCount{display:none}
-  .hand-bar label{font-size:12px}
+  .back-btn .lbl,.bar-hand label,.app[data-mode=hand] #docMenuBtn{display:none!important}
 }
 @media (pointer:coarse){
   .cas-chip{height:32px;font-size:13px}
@@ -976,6 +979,7 @@ body.pop-cover #toolbar{visibility:hidden}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
+<meta name="google" content="notranslate">
 <!-- (startsiden er synlig fra første øjeblik, så dokumentet ikke blinker frem, mens appen starter) -->
 <section id="start" class="start" aria-label="Startside" tabindex="-1"><div class="st-wrap"><header class="st-head"><div class="brand st-brand"><span class="mark" aria-hidden="true">√</span><span>VisMat</span></div></header></div></section>
 <div class="app" id="app" data-mode="write" inert>
@@ -984,6 +988,13 @@ body.pop-cover #toolbar{visibility:hidden}
     <button type="button" class="tbtn back-btn" id="btnBack" title="Tilbage til dokumentet (Esc)"><span aria-hidden="true">←</span><span class="lbl">Tilbage til dokumentet</span></button>
     <button type="button" class="docname" id="docMenuBtn" aria-haspopup="menu" title="Dokument: startside, omdøb, kopi, gem som fil"><span id="docName"></span><span class="dn-c" aria-hidden="true">▾</span></button>
     <span class="spacer"></span>
+    <!-- PDF-visningen: sideantal, tjek og Gem PDF står i topbjælken (så intet dækker siderne) -->
+    <div class="bar-hand" id="barHand">
+      <span id="pageCount"></span>
+      <button type="button" class="hand-check" id="handCheck" data-level="ok" aria-haspopup="menu"><span class="hc-lamp" aria-hidden="true"></span><span class="hc-t">Tjek før aflevering</span></button>
+      <label class="hand-py" id="handPyL" hidden><input type="checkbox" id="handPy" checked> Medtag Python-blokke</label>
+      <button type="button" class="primary" id="btnPdf">Gem PDF</button>
+    </div>
     <span id="saved" data-state="ok">Gemt i browseren</span>
     <button type="button" class="cas-pill" id="casPill" data-state="loading" title="Om CAS-motoren"><span class="lamp"></span><span class="cas-txt">Starter CAS …</span></button>
     <button type="button" class="tbtn pdf-top" id="btnToPdf" title="Se siderne, tjek afleveringen og gem den som PDF"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.8h5.2L12.5 5v9.2H4z"/><path d="M9 1.8V5h3.5"/><path d="M6 8.5h4.5M6 11h4.5"/></svg><span class="lbl">Gem som PDF</span></button>
@@ -1028,12 +1039,6 @@ body.pop-cover #toolbar{visibility:hidden}
       </article>
     </div>
     <div class="hand">
-      <div class="hand-bar"><div class="inner">
-        <span id="pageCount"></span>
-        <button type="button" class="hand-check" id="handCheck" data-level="ok" aria-haspopup="menu"><span class="hc-lamp" aria-hidden="true"></span><span class="hc-t">Tjek før aflevering</span></button>
-        <label><input type="checkbox" id="handPy" checked> Medtag Python-blokke</label>
-        <button type="button" class="primary" id="btnPdf">Gem PDF</button>
-      </div></div>
       <div id="pages"></div>
     </div>
   </main>
@@ -4646,7 +4651,17 @@ print(1 + 1)`, out: null } : {};
       this.toolbar && !this.toolbar.classList.contains("formula") && (this.swapAt = Date.now()), this.field = mf, this.toolbar && this.toolbar.classList.add("formula"), this.sync(mf, !0), this.room(mf.closest(".blk-math_line") || mf.closest(".blk-head") || mf.closest(".im") && mf.closest("p, li")), this.place();
     },
     room(el2) {
-      this.roomEl !== el2 && (this.roomEl && this.roomEl.classList.remove("bar-room"), this.roomEl = el2 || null, el2 && el2.classList.add("bar-room"));
+      if (this.roomEl === el2) return;
+      let desk = document.getElementById("desk"), anchor = el2;
+      if (!anchor) {
+        let sel = window.getSelection && window.getSelection(), n2 = sel && sel.anchorNode;
+        anchor = n2 && (n2.nodeType === 1 ? n2 : n2.parentElement), anchor = anchor && anchor.closest && anchor.closest("#editor .opgave > *");
+      }
+      let y0 = anchor && desk && desk.contains(anchor) ? anchor.getBoundingClientRect().top : null;
+      if (this.roomEl && this.roomEl.classList.remove("bar-room"), this.roomEl = el2 || null, el2 && el2.classList.add("bar-room"), y0 != null) {
+        let d = anchor.getBoundingClientRect().top - y0;
+        Math.abs(d) > 1 && (desk.scrollTop += d);
+      }
     },
     // Bjælken står lige under formlen (eller over den, hvis der ikke er plads under)
     place() {
@@ -7067,8 +7082,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
           continue;
         }
         if (c.type === "paragraph") {
-          let parts = rich(c);
-          parts.some((q2) => q2.text && q2.text.trim() || q2.math) && blocks2.push({ t: "p", parts, ids: parts.filter((q2) => q2.id).map((q2) => q2.id) });
+          let parts = rich(c), lastText = parts.length && parts[parts.length - 1].text != null ? parts[parts.length - 1].text : "";
+          parts.some((q2) => q2.text && q2.text.trim() || q2.math) && blocks2.push(Object.assign({ t: "p", parts, ids: parts.filter((q2) => q2.id).map((q2) => q2.id) }, /:\s*$/.test(lastText) ? { keep: !0 } : {}));
           continue;
         }
         if (c.type === "math_line") {
@@ -7076,7 +7091,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
           check(a.id);
           let info = session.infoFor(a.id), r = fresh(a.id);
           !r && session.codeOf(a.id) && missing++;
-          let stm = statement(a, info, r && !r.error ? r : null), res = stm.res || stm.tail || "", cas = chipText(a, info) || null, split = cas && res && stm.full.endsWith(res) ? { input: stm.full.slice(0, stm.full.length - res.length), res } : null;
+          let stm = statement(a, info, r && !r.error ? r : null), res = stm.res || stm.tail || "", cas = info && info.error && !info.soft || r && r.error ? null : chipText(a, info) || null, split = cas && res && stm.full.endsWith(res) ? { input: stm.full.slice(0, stm.full.length - res.length), res } : null;
           blocks2.push(Object.assign({ t: "m", latex: stm.full, cas, id: a.id }, split));
           continue;
         }
@@ -7141,13 +7156,28 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
 
   // src/core/check.js
   var UNITS = /målt i|(?<!\p{L})(?:cm|mm|km|kg|kr|timer|minutter|sekunder|døgn|år|°C|mL|liter|meter|gram)(?!\p{L})/iu, txt = (n2) => (n2.content || []).map((x) => x.text || x.type === "math_inline" && x.attrs.latex || "").join(""), blank2 = (n2) => n2.type === "paragraph" && !(n2.content || []).some((x) => x.type === "text" && x.text.trim() || x.type === "math_inline"), COORD = /(?:^|[^A-Za-z}\\'])(?:\\left)?\(\s*-?\d+\{,\}\d+\s*(?:\\right)?\)/, COORD_TIP = "Et tal i parentes med komma, fx (4,3), l\xE6ses som decimaltallet 4,3. Er det et punkt, s\xE5 defin\xE9r det med A := (4, 3)", DECPT = /(^|[^\d.])(\d+\.\d{1,2})(?![\d.])/;
+  function plainTex(t) {
+    let s = String(t || "");
+    for (let i = 0; i < 4; i++) s = s.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, "($1)/($2)");
+    return s.replace(/\(([^()+\-*/ ]+)\)\//g, "$1/").replace(/\/\(([^()+\-*/ ]+)\)/g, "/$1").replace(/\\left|\\right/g, "").replace(/\{,\}/g, ",").replace(/\\cdot/g, "\xB7").replace(/\\sqrt\{([^{}]*)\}/g, "\u221A($1)").replace(/\\(?:operatorname|mathrm|text)\{([^{}]*)\}/g, "$1").replace(/\\([a-zA-Z]+)/g, "$1").replace(/[{}]/g, "").replace(/\s+/g, " ").trim();
+  }
   function handinChecks(docJSON, model, session, badIds = []) {
     let out = [], add2 = (level, text2, id2, find) => out.push({ level, text: text2, id: id2 || null, find: find || null }), where = (id2) => {
       let o = session.opgOf && session.opgOf(id2);
       return o && o.number ? " (opgave " + o.number + ")" : "";
+    }, latexOf = {}, scan = (n2) => {
+      n2.attrs && n2.attrs.id && n2.attrs.latex != null && (latexOf[n2.attrs.id] = n2.attrs.latex), (n2.content || []).forEach(scan);
+    };
+    scan(docJSON);
+    let why = (id2) => {
+      let info = session.infoFor && session.infoFor(id2), r = session.resultFor && session.resultFor(id2).fresh, e = String(info && info.error || r && r.error || "").split(/\.\s/)[0].replace(/\.$/, "");
+      return e.length > 70 ? e.slice(0, 68) + " \u2026" : e;
+    }, errText = (id2) => {
+      let f = plainTex(latexOf[id2] || ""), e = why(id2);
+      return (f ? (f.length > 28 ? f.slice(0, 26) + " \u2026" : f) + ": " : "En linje har en fejl: ") + (e || "kan ikke regnes") + where(id2);
     };
     (model.errors || []).forEach((id2, i) => {
-      i < 5 && add2("err", "En linje har en fejl" + where(id2), id2);
+      i < 5 && add2("err", errText(id2), id2);
     }), (model.errors || []).length > 5 && add2("err", "Og " + (model.errors.length - 5) + " linjer mere med fejl", model.errors[5]), badIds.forEach((id2) => add2("err", "En formel kan ikke s\xE6ttes p\xE6nt i PDF'en og st\xE5r som kode" + where(id2), id2));
     let num2 = 0, dec = 0, coords = 0, axes = 0;
     return (docJSON.content || []).forEach((o) => {
@@ -7348,8 +7378,10 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     return n2;
   }
   function renderHand(quiet = !1) {
-    let model = currentModel();
-    updateNote(model);
+    let model = currentModel(), hasPy = !1;
+    app.view.state.doc.descendants((n2) => (n2.type.name === "python" && (hasPy = !0), !hasPy));
+    let pyL = $("handPyL");
+    pyL && (pyL.hidden = !hasPy), updateNote(model);
     let key = JSON.stringify(pdfInput(model)), host = $("pages");
     if (shownKey === key && host.querySelector(".pdfpage")) {
       pdfBusy = !1, showBusy(model);
@@ -7374,7 +7406,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let key = JSON.stringify(pdfInput(model)), bad = last.key === key ? last.badIds || [] : [];
     checks = handinChecks(app.view.state.doc.toJSON(), model, app.session, bad), app.meta.name || checks.unshift({ level: "warn", text: "Dit navn mangler", meta: "name" }), app.meta.title || checks.unshift({ level: "warn", text: "Titlen mangler", meta: "title" });
     let busy = busyState(model), nErr = checks.filter((c) => c.level === "err").length, nWarn = checks.filter((c) => c.level === "warn").length, n2 = checks.length;
-    btn.dataset.level = busy ? "busy" : nErr ? "err" : nWarn ? "warn" : n2 ? "tip" : "ok", btn.querySelector(".hc-t").textContent = n2 + " ting at tjekke", btn.disabled = !n2, currentPop() && currentPop()._anchor === btn && showChecks(btn);
+    btn.dataset.level = busy ? "busy" : nErr ? "err" : nWarn ? "warn" : n2 ? "tip" : "ok", btn.querySelector(".hc-t").textContent = n2 || busy ? n2 + " ting at tjekke" : "Klar til aflevering", btn.disabled = !n2, currentPop() && currentPop()._anchor === btn && showChecks(btn);
   }
   function showChecks(btn) {
     let icon = { err: "\u25CF", warn: "\u25CF", tip: "\u25CB" }, go = (c) => () => {
@@ -7500,7 +7532,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       }, li = h(
         "li",
         { class: "nav-opg" + (on2 ? " on" : "") },
-        h("button", { type: "button", class: "nav-main", onclick: go(null), "aria-current": on2 ? "true" : null }, h("span", { class: "nav-n" }, String(o.number)), h("span", { class: "nav-t" + (o.title ? "" : " untitled") }, o.title || "Opgave " + o.number))
+        h("button", { type: "button", class: "nav-main", onclick: go(null), "aria-current": on2 ? "true" : null }, h("span", { class: "nav-n" }, String(o.number)), h("span", { class: "nav-t" + (o.title ? "" : " untitled"), title: o.title || null }, o.title || "Opgave " + o.number))
       ), dx = on2 ? defsBox(o, oi) : null;
       dx && li.append(dx), nav.append(li);
     });
@@ -8018,7 +8050,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       ),
       all.length ? null : h("p", { class: "st-intro" }, "CAS, grafer, tabeller og statistik i \xE9t dokument \u2013 og en f\xE6rdig PDF til aflevering."),
       cont,
-      h("h2", { class: "st-h" }, "Opret"),
+      h("h2", { class: "st-h" }, "Kom i gang"),
       h(
         "div",
         { class: "st-cards" },
@@ -8057,7 +8089,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         "div",
         { class: "st-menu" },
         act("Omd\xF8b", () => renameInline(r, d)),
-        act("Kopi\xE9r", () => docs.duplicate(d.id)),
+        act("Lav en kopi", () => docs.duplicate(d.id)),
         act("Gem som fil", () => docs.saveFile(d.id)),
         h("div", { class: "pop-sep" }),
         act("Slet", () => {
@@ -8838,7 +8870,7 @@ def punkt(fn, t):
     } catch (e) {
       throw app.views = oldViews, e;
     }
-    oldView && oldView.destroy(), $3("editor").replaceChildren(...host.childNodes), app.meta = snap.meta, app.session.reset(), app.session.cache = Object.assign({}, CACHE, loadResults(docs2.cur)), app.cas.reset(), app.activeOpg = null, app.activeBlock = null, app.lastPos = null, app.view = window.__view = view2, bindMeta(), replan();
+    oldView && oldView.destroy(), $3("editor").replaceChildren(...host.childNodes), $3("desk").scrollTop = 0, app.meta = snap.meta, app.session.reset(), app.session.cache = Object.assign({}, CACHE, loadResults(docs2.cur)), app.cas.reset(), app.activeOpg = null, app.activeBlock = null, app.lastPos = null, app.view = window.__view = view2, bindMeta(), replan();
   }
   function makeEditor(host, pm) {
     return createEditor(host, pm, {
@@ -8996,7 +9028,7 @@ def punkt(fn, t):
     }));
   }
   async function init() {
-    await initStore(), makeDocs(), document.documentElement.lang = "da", app.session = new Session(CACHE), app.cas = new CasClient({ onState: onCasState, onResult, onIdle, onTimeout }), bar.build($3("toolbar"), $3("ftools")), /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) && (document.querySelectorAll("kbd").forEach((k) => {
+    await initStore(), makeDocs(), document.documentElement.lang = "da", document.documentElement.setAttribute("translate", "no"), document.documentElement.classList.add("notranslate"), document.querySelector("meta[name=google]") || document.head.append(Object.assign(document.createElement("meta"), { name: "google", content: "notranslate" })), app.session = new Session(CACHE), app.cas = new CasClient({ onState: onCasState, onResult, onIdle, onTimeout }), bar.build($3("toolbar"), $3("ftools")), /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) && (document.querySelectorAll("kbd").forEach((k) => {
       k.textContent === "Ctrl" && (k.textContent = "\u2318");
     }), document.querySelectorAll('[title*="Ctrl"]').forEach((el2) => {
       el2.title = el2.title.replace(/Ctrl/g, "\u2318");

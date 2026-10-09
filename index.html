@@ -949,8 +949,10 @@ body.on-start{overflow:hidden}
 .st-empty{margin:0;padding:14px 12px;color:var(--ink-3);font-size:13px}
 .st-foot{margin:14px 2px 0;font-size:12px;color:var(--ink-3)}
 .start.drop::after{content:"Slip filen for at åbne den";position:fixed;inset:12px;border:2px dashed var(--accent);border-radius:14px;background:color-mix(in srgb,var(--accent-soft) 80%,transparent);display:grid;place-items:center;font:600 16px var(--ui);color:var(--accent);pointer-events:none}
-.nav-home{cursor:pointer;border:0;background:none;border-radius:6px;text-align:left;font:inherit;color:inherit}
+.nav-home{cursor:pointer;border:0;background:none;border-radius:6px;text-align:left;font:inherit;font-weight:600;color:inherit;align-self:flex-start;padding:5px 10px 5px 6px;margin:0 0 10px}
 .nav-home:hover{background:var(--hover)}
+/* (en menu, der er åbnet fra dokumentet, står aldrig oven på formelbjælken: bjælken er væk, så længe menuen er åben) */
+body.pop-cover #toolbar{visibility:hidden}
 @media (max-width:760px){
   .st-wrap{padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}
   .st-cards{grid-template-columns:1fr;gap:8px}
@@ -1165,7 +1167,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
   function closePop() {
     if (document.removeEventListener("pointerdown", onAway, !0), !pop) return;
     let p = pop;
-    pop = null, p.remove(), p._onclose && p._onclose();
+    pop = null, p.remove(), document.body.classList.remove("pop-cover"), p._onclose && p._onclose();
   }
   function makeRoom(scroller) {
     if (!pop || !scroller) return;
@@ -1178,11 +1180,11 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     if (!pop) return !1;
     let a = pop._anchor, r = a.getBoundingClientRect ? a.getBoundingClientRect() : a;
     if (a.getBoundingClientRect && (r.bottom < 0 || r.top > window.innerHeight)) return !1;
-    let w = pop.offsetWidth, ph = pop.offsetHeight, x = Math.min(r.left, window.innerWidth - w - 12), tb = a.closest && a.closest("#desk") && document.getElementById("toolbar"), minTop = tb ? Math.max(8, tb.getBoundingClientRect().bottom + 4) : 8, y = r.bottom + 6;
+    let w = pop.offsetWidth, ph = pop.offsetHeight, x = Math.min(r.left, window.innerWidth - w - 12), tb = a.closest && a.closest("#desk") && !document.body.classList.contains("pop-cover") && document.getElementById("toolbar"), minTop = tb ? Math.max(8, tb.getBoundingClientRect().bottom + 4) : 8, y = r.bottom + 6;
     return y + ph > window.innerHeight - 8 && (y = r.top - ph - 6 >= minTop ? r.top - ph - 6 : Math.max(minTop, window.innerHeight - 8 - ph)), pop.style.left = Math.max(12, x) + "px", pop.style.top = y + "px", !0;
   }
   function openPop(anchor, content, opts = {}) {
-    closePop(), pop = h("div", { class: "pop", role: opts.role || "dialog" }, content), pop._anchor = anchor, pop._onclose = opts.onclose, pop._owner = opts.owner || null, pop._prev = document.activeElement && document.activeElement.tagName === "MATH-FIELD" ? document.activeElement : null, document.body.append(pop), placePop();
+    closePop(), pop = h("div", { class: "pop", role: opts.role || "dialog" }, content), pop._anchor = anchor, pop._onclose = opts.onclose, pop._owner = opts.owner || null, pop._prev = document.activeElement && document.activeElement.tagName === "MATH-FIELD" ? document.activeElement : null, document.body.append(pop), anchor && anchor.closest && anchor.closest("#toolbar") || document.body.classList.add("pop-cover"), placePop();
     let mine = pop;
     setTimeout(() => {
       pop === mine && document.addEventListener("pointerdown", onAway, !0);
@@ -4642,7 +4644,7 @@ print(1 + 1)`, out: null } : {};
     place() {
       let tb = this.toolbar, mf = this.field;
       if (!tb || !mf || !tb.classList.contains("formula")) return;
-      let r = (mf.closest(".m-row, .im") || mf.closest(".blk-head") || mf).getBoundingClientRect(), desk = document.getElementById("desk"), top0 = desk ? desk.getBoundingClientRect().top : 0, w = tb.offsetWidth, hgt = tb.offsetHeight;
+      let r0 = (mf.closest(".m-row, .im") || mf.closest(".blk-head") || mf).getBoundingClientRect(), tip = mf.closest(".im-editor") && mf.closest(".im-editor").querySelector(".im-tip"), tr = tip && tip.getBoundingClientRect(), r = tr && tr.height ? { left: r0.left, top: r0.top, bottom: Math.max(r0.bottom, tr.bottom) } : r0, desk = document.getElementById("desk"), top0 = desk ? desk.getBoundingClientRect().top : 0, w = tb.offsetWidth, hgt = tb.offsetHeight;
       document.documentElement.style.setProperty("--bar-h", hgt + "px");
       let y = r.bottom + 6;
       y + hgt > window.innerHeight - 8 && (y = Math.max(top0 + 6, r.top - hgt - 6));

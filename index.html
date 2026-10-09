@@ -171,9 +171,11 @@ code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2
 .docname #docName{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dn-c{font-size:9px;color:var(--ink-3)}
 .bar .spacer{flex:1}
-.doc-menu{width:280px}
-.doc-menu .doc-list{max-height:320px;overflow:auto;margin:0 0 4px}
+.doc-menu{width:260px}
 .doc-menu .pop-item{padding:6px 10px}
+.dm-head{padding:8px 10px 6px}
+.dm-t{font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm-w{font-size:11.5px;color:var(--ink-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #saved{font-size:12px;color:var(--ink-3);white-space:nowrap}
 #saved[data-state=ok],#saved[data-state=saving]{display:none}
 #saved::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cas);margin-right:6px;vertical-align:1px}
@@ -808,17 +810,6 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .ProseMirror-gapcursor:after{border-top-color:var(--ink)}
 
 /* Dokumentliste */
-.doc-list{display:grid;gap:2px;margin-bottom:8px}
-.doc-item{display:flex;align-items:center;border-radius:9px}
-.doc-item.on{background:var(--paper);box-shadow:0 1px 2px rgba(23,32,49,.07)}
-.doc-item:not(.on):hover{background:var(--hover)}
-.doc-open{flex:1;min-width:0;display:grid;text-align:left;border:0;background:none;padding:6px 8px;cursor:pointer;border-radius:9px}
-.doc-t{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.doc-item.on .doc-t{color:var(--accent)}
-.doc-w{font-size:11px;color:var(--ink-3)}
-.doc-item .x{opacity:0}
-.doc-item:hover .x,.doc-item .x.armed,.doc-item .x:focus-visible{opacity:1}
-.x.armed{color:var(--warn);font-size:11.5px;font-weight:600}
 .doc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .doc-row .ghost{padding:4px 6px}
 .pp-actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:2px 2px 4px}
@@ -978,7 +969,7 @@ body.on-start{overflow:hidden}
 <div class="app" id="app" data-mode="write">
   <header class="bar">
     <button type="button" class="tbtn only-narrow" id="btnNav" aria-label="Opgaver">☰</button>
-    <button type="button" class="docname" id="docMenuBtn" aria-haspopup="menu" title="Dine afleveringer"><span id="docName"></span><span class="dn-c" aria-hidden="true">▾</span></button>
+    <button type="button" class="docname" id="docMenuBtn" aria-haspopup="menu" title="Dokument: startside, omdøb, kopi, gem som fil"><span id="docName"></span><span class="dn-c" aria-hidden="true">▾</span></button>
     <span class="spacer"></span>
     <span id="saved" data-state="ok">Gemt i browseren</span>
     <button type="button" class="cas-pill" id="casPill" data-state="loading" title="Om CAS-motoren"><span class="lamp"></span><span class="cas-txt">Starter CAS …</span></button>
@@ -7980,27 +7971,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         }
       }, rd.readAsText(file);
     }
-    // ---------- Listen i dokumentmenuen ----------
+    // ---------- Startsiden tegnes igen, når listen ændres ----------
     render() {
       this.onRender && this.onRender();
-      let box = document.getElementById("docList");
-      box && (box.innerHTML = "", this.list().forEach((d) => {
-        let on2 = d.id === this.cur, del = h("button", { type: "button", class: "x", "aria-label": "Slet " + (d.title || "dokument"), title: "Slet dokument" }, "\xD7"), armed = !1;
-        del.addEventListener("click", (e) => {
-          if (e.stopPropagation(), !armed) {
-            armed = !0, del.textContent = "Slet?", del.classList.add("armed"), setTimeout(() => {
-              armed = !1, del.textContent = "\xD7", del.classList.remove("armed");
-            }, 3e3);
-            return;
-          }
-          this.remove(d.id);
-        }), box.append(h(
-          "div",
-          { class: "doc-item" + (on2 ? " on" : "") },
-          h("button", { type: "button", class: "doc-open", "aria-current": on2 ? "true" : null, onclick: () => this.open(d.id) }, h("span", { class: "doc-t" }, d.title || "Uden titel"), h("span", { class: "doc-w" }, fmtWhen(d.updated))),
-          del
-        ));
-      }));
     }
   };
   function fmtWhen(t) {
@@ -9045,12 +9018,10 @@ def punkt(fn, t):
       k.textContent === "Ctrl" && (k.textContent = "\u2318");
     }), document.querySelectorAll('[title*="Ctrl"]').forEach((el2) => {
       el2.title = el2.title.replace(/Ctrl/g, "\u2318");
-    })), mountDoc(docs2.current()), docs2.shown(), docs2.onSaved("ok");
-    let focusTitle = () => setTimeout(() => {
+    })), mountDoc(docs2.current()), docs2.shown(), docs2.onSaved("ok"), initStart(docs2, { focusTitle: () => setTimeout(() => {
       let t = document.querySelector(".doc-title");
       t && t.focus();
-    }, 60);
-    initStart(docs2, { focusTitle, focusFirst: () => setTimeout(focusFirstTitle, 60) }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
+    }, 60), focusFirst: () => setTimeout(focusFirstTitle, 60) }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
       docs2.saveNow(), closeRails(), showStart();
     }), document.querySelectorAll("[data-mode-btn]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.modeBtn)));
     let pb = $3("pyAll");
@@ -9069,29 +9040,38 @@ def punkt(fn, t):
         closePop();
         return;
       }
-      let act = (label, fn, cls) => h("button", { type: "button", class: "pop-item" + (cls ? " " + cls : ""), onclick: () => {
+      let act = (label, fn, cls, hint) => h("button", { type: "button", class: "pop-item" + (cls ? " " + cls : ""), onclick: () => {
         closePop(), fn();
-      } }, h("span", { class: "grow" }, label));
+      } }, h("span", { class: "grow" }, label), hint ? h("span", { class: "pop-hint" }, hint) : null);
+      docs2.saveNow();
+      let e = docs2.entry(docs2.cur);
       openPop(dmb, h(
         "div",
         { class: "doc-menu" },
-        h("div", { class: "pop-title" }, "Dine dokumenter"),
-        h("div", { id: "docList", class: "doc-list" }),
+        h("div", { class: "dm-head" }, h("div", { class: "dm-t" }, app.meta.title || "Uden titel"), h("div", { class: "dm-w" }, "Gemt" + (e ? " \xB7 \xE6ndret " + fmtWhen(e.updated) : " p\xE5 denne enhed"))),
         h("div", { class: "pop-sep" }),
-        act("Startside", () => {
-          docs2.saveNow(), showStart();
-        }),
-        act("Nyt dokument", () => {
-          docs2.newBlank(), focusTitle();
-        }),
-        act("\xC5bn fil \u2026", () => fileIn.click()),
-        act("Gem som fil", () => docs2.saveFile()),
+        act("Startside", () => showStart(), "", "alle dokumenter"),
         h("div", { class: "pop-sep" }),
-        h("div", { class: "pop-title" }, "Eksempler"),
-        act("Eksempel B-niveau", () => docs2.newExample("B")),
-        act("Eksempel A-niveau", () => docs2.newExample("A")),
-        act("Kort eksempel", () => docs2.newSample())
-      ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true"), docs2.render();
+        act("Omd\xF8b", () => {
+          let t = document.querySelector(".doc-title");
+          if (!t) return;
+          t.scrollIntoView({ block: "center" }), t.focus();
+          let r = document.createRange();
+          r.selectNodeContents(t);
+          let sel = window.getSelection();
+          sel.removeAllRanges(), sel.addRange(r);
+        }),
+        act("Lav en kopi", () => {
+          let id2 = docs2.duplicate(docs2.cur);
+          id2 && docs2.open(id2);
+        }),
+        act("Gem som fil \u2026", () => docs2.saveFile(), "", ".vismat.json"),
+        h("div", { class: "pop-sep" }),
+        act("Slet dokumentet", () => {
+          let id2 = docs2.cur;
+          showStart(), docs2.remove(id2, { stay: !0 });
+        }, "danger")
+      ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true");
     }), window.addEventListener("pagehide", () => {
       docs2.saveNow(), store.flush();
     }), document.addEventListener("visibilitychange", () => {

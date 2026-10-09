@@ -202,6 +202,10 @@ code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2
 .tbtn[aria-pressed=true]{background:var(--hover);color:var(--ink)}
 .br{font-family:var(--mono);font-size:11.5px;letter-spacing:-.04em;font-variant-ligatures:none}
 .py-top .br{font-weight:600}
+/* PDF-visningen: en knap ind (Gem som PDF …) og en tilbage; Python-knappen hører til skrivevisningen */
+.app[data-mode=write] #btnBack,.app[data-mode=hand] #btnToPdf,.app[data-mode=hand] #pyAll{display:none}
+.back-btn{color:var(--ink);background:var(--hover)}
+.back-btn:hover{background:var(--rule-2)}
 .only-narrow{display:none}
 
 /* Venstre: disposition */
@@ -352,6 +356,7 @@ math-field.mf-inline{display:inline-block;font-size:17px;min-width:40px;border:0
 /* Blokke */
 .blk{position:relative;margin:10px 0 18px;border-radius:10px;transition:background .3s,box-shadow .15s}
 .blk.flash{background:var(--accent-soft)}
+.im.flash{background:var(--accent-soft);border-radius:4px;box-shadow:0 0 0 3px var(--accent-soft)}
 .blk-math_line{margin:8px -12px 14px;padding:2px 12px;border:1px solid transparent;border-radius:4px}
 .blk-math_line.active{background:var(--hover);border-color:transparent}
 .blk-math_line.has-err:not(.active){border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
@@ -667,7 +672,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .t-rbtn[aria-checked="true"]{background:var(--cas-soft);color:var(--cas)}
 .t-edit .t-kum{font:13px var(--mono);color:var(--cas);padding:5px 8px;text-align:right}
 .t-edit th.t-kum{font:500 13px var(--ui);color:var(--ink-2)}
-.p-code,.py-code,.pycell{box-sizing:border-box;font-variant-ligatures:none}
+.p-code,.py-code{box-sizing:border-box;font-variant-ligatures:none}
 .p-code{display:block;width:100%;border:0;border-radius:8px;background:var(--py-bg);resize:none;font:13px/1.6 var(--mono);padding:10px 12px;outline:none;color:var(--py-ink);tab-size:4;white-space:pre;overflow:auto hidden}
 .p-out{margin:6px 0 0;padding:8px 12px;font:12.5px/1.55 var(--mono);color:var(--ink-2);white-space:pre-wrap;max-height:260px;overflow:auto;border-left:2px solid var(--rule)}
 .perr{color:var(--warn);display:block}
@@ -680,16 +685,8 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .py-ctx{color:var(--ink-3);font-size:12px}
 
 /* Python-celle */
-.pybox{margin:2px 0 6px}
-.pybox[hidden]{display:none}
-.pycell{background:var(--py-bg);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
-.py-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:6px 8px 6px 12px;border-bottom:1px solid var(--rule);font-size:12px}
-.py-tag{font:600 11px var(--mono);color:var(--py-k)}
-.linkbtn{border:0;background:none;color:var(--ink-2);cursor:pointer;font-size:12px;padding:2px 4px;border-radius:5px}
-.linkbtn:hover{background:var(--paper)}
 .ghost.sm{padding:2px 8px;font-size:11.5px}
 .py-code{margin:0;padding:10px 14px;font:12.8px/1.6 var(--mono);color:var(--py-ink);overflow-x:auto;white-space:pre;tab-size:4;background:transparent}
-.py-code.ctx{opacity:.62;border-bottom:1px dashed var(--rule)}
 .py-code .k{color:var(--py-k)} .py-code .f{color:var(--py-f)} .py-code .s{color:var(--py-s)} .py-code .n{color:var(--py-n)} .py-code .c,.c{color:var(--py-c);font-style:italic}
 .py-out{display:flex;gap:10px;align-items:baseline;padding:7px 14px 9px;border-top:1px dashed var(--rule);font-size:12px;overflow-x:auto}
 .py-out code{background:none;padding:0;color:var(--py-ink);white-space:pre}
@@ -711,6 +708,8 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .pp-cell{display:block;width:100%;text-align:left;border:1px solid var(--rule);background:var(--py-bg);border-radius:9px;padding:0;cursor:pointer;overflow:hidden}
 .pp-cell:hover{border-color:var(--ink-3)}
 .pp-cell.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.pp-more{display:none;padding:0 8px 6px;justify-content:flex-end}
+.pp-cell.on .pp-more{display:flex}
 .pp-k{display:block;font:500 10.5px var(--ui);color:var(--ink-3);padding:6px 12px 0;letter-spacing:.04em}
 .pp-cell .py-code{padding:4px 12px 8px;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
 .pp-cell .py-out{padding:5px 12px 7px}
@@ -787,6 +786,14 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .h-cas{position:absolute;right:calc(100% + 6px);top:50%;transform:translateY(-50%);font:500 9px var(--ui);color:#0A7568;white-space:nowrap}
 .h-res{color:#0A7568}
 .h-frame{border:1px solid #E9E9E7;border-radius:4px;padding:6px 10px}
+.h-nrows{display:grid;grid-template-columns:repeat(3,auto);gap:4px 14px;justify-content:center;align-items:center;font-size:13px;margin-top:8px}
+.h-nrows .nk{text-align:right;color:#73726E;font-size:12px}
+.h-nrows .nk:nth-child(3n){text-align:left}
+.h-nrows .nv{color:#0F7B6C}
+.h-nline{text-align:center;font-size:12px;color:#73726E;margin-top:8px}
+.h-five{margin:4px auto 0;border-collapse:collapse;font-size:12.5px}
+.h-five th,.h-five td{border:.5px solid #E9E9E7;padding:3px 9px;text-align:center;font-weight:400}
+.h-five td{color:#0F7B6C}
 
 /* Popover, toast */
 .pop{position:fixed;z-index:60;background:var(--pop,var(--paper));border:0;border-radius:6px;box-shadow:var(--pop-shadow);padding:4px;min-width:220px;max-width:min(330px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto}
@@ -873,7 +880,8 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .blk-math_line{margin-left:-8px;margin-right:-8px;padding:2px 8px}
   .t-grid{grid-template-columns:minmax(0,1fr)}
   #pyAll{padding:5px 8px}
-  #pyAll .lbl{display:none}
+  #pyAll .lbl,#btnToPdf .lbl{display:none}
+  #btnToPdf{padding:5px 8px}
   .cas-pill .cas-txt{display:none}
   .cas-pill{padding:6px 8px}
   .hand-bar .inner{justify-content:center}
@@ -884,7 +892,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .cas-chip{height:32px;font-size:13px}
   .nav-sub{min-width:36px;height:36px}
   .x,.iconbtn{min-width:40px;min-height:40px}
-  .ghost,.linkbtn,.act,.py-btn,.run{min-height:36px}
+  .ghost,.act,.py-btn,.run{min-height:36px}
   .tool,.ftool{min-width:44px;height:44px}
   .t-edit input{height:40px}
   .mini{height:36px}
@@ -968,15 +976,13 @@ body.pop-cover #toolbar{visibility:hidden}
 <div class="app" id="app" data-mode="write">
   <header class="bar">
     <button type="button" class="tbtn only-narrow" id="btnNav" aria-label="Opgaver">☰</button>
+    <button type="button" class="tbtn back-btn" id="btnBack" title="Tilbage til dokumentet (Esc)"><span aria-hidden="true">←</span><span class="lbl">Tilbage til dokumentet</span></button>
     <button type="button" class="docname" id="docMenuBtn" aria-haspopup="menu" title="Dokument: startside, omdøb, kopi, gem som fil"><span id="docName"></span><span class="dn-c" aria-hidden="true">▾</span></button>
     <span class="spacer"></span>
     <span id="saved" data-state="ok">Gemt i browseren</span>
     <button type="button" class="cas-pill" id="casPill" data-state="loading" title="Om CAS-motoren"><span class="lamp"></span><span class="cas-txt">Starter CAS …</span></button>
-    <div class="seg" role="radiogroup" aria-label="Visning">
-      <button type="button" role="radio" aria-checked="true" data-mode-btn="write">Skriv</button>
-      <button type="button" role="radio" aria-checked="false" data-mode-btn="hand">Aflevering</button>
-    </div>
-    <button type="button" class="tbtn py-top" id="pyAll" aria-pressed="false" title="Vis hele opgaven som et Python-program"><span class="br" aria-hidden="true">{ }</span></button>
+    <button type="button" class="tbtn pdf-top" id="btnToPdf" title="Se siderne, tjek afleveringen og gem den som PDF"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.8h5.2L12.5 5v9.2H4z"/><path d="M9 1.8V5h3.5"/><path d="M6 8.5h4.5M6 11h4.5"/></svg><span class="lbl">Gem som PDF …</span></button>
+    <button type="button" class="tbtn py-top" id="pyAll" aria-pressed="false" title="Vis hele opgaven som et Python-program i et panel til højre"><span class="br" aria-hidden="true">{ }</span><span class="lbl">Vis Python-kode</span></button>
   </header>
 
   <nav class="rail left" id="nav" aria-label="Disposition">
@@ -1022,7 +1028,7 @@ body.pop-cover #toolbar{visibility:hidden}
         <button type="button" class="hand-check" id="handCheck" data-level="ok" aria-haspopup="menu"><span class="hc-lamp" aria-hidden="true"></span><span class="hc-t">Tjek før aflevering</span></button>
         <label><input type="checkbox" id="handPy" checked> Medtag Python-blokke</label>
         <button type="button" class="ghost" id="btnPrint" hidden>Udskriv</button>
-        <button type="button" class="primary" id="btnPdf">Hent PDF</button>
+        <button type="button" class="primary" id="btnPdf">Gem PDF</button>
       </div></div>
       <div id="pages"></div>
     </div>
@@ -1115,8 +1121,6 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     // 'write' | 'hand'
     pyPanel: !1,
     handOpts: { python: !0 },
-    pyOpen: /* @__PURE__ */ new Set(),
-    // blokke med åben Python-celle
     views: /* @__PURE__ */ new Map(),
     // blok-id -> NodeView
     activeOpg: null,
@@ -4949,11 +4953,6 @@ print(1 + 1)`, out: null } : {};
       tr = tr.insert(pos, S.paragraph.create(null, im)), at = pos + 1;
     tr.setSelection(NodeSelection.create(tr.doc, at)), v.dispatch(tr.scrollIntoView()), v.focus();
   }
-  function togglePy(id2) {
-    app.pyOpen.has(id2) ? app.pyOpen.delete(id2) : app.pyOpen.add(id2);
-    let nv = app.views.get(id2);
-    nv && nv.refresh();
-  }
   function moveNodeTo(src, gap) {
     let v = view(), st = v.state, node = st.doc.nodeAt(src);
     if (!node || gap === src || gap === src + node.nodeSize || gap > src && gap < src + node.nodeSize) return !1;
@@ -5237,10 +5236,8 @@ print(1 + 1)`, out: null } : {};
     if (v == null || String(v).trim() === "") return d;
     let x = Number(String(v).replace(",", ".").replace("\u2212", "-"));
     return isFinite(x) ? x : d;
-  }, joinDa = (list) => {
-    let l = [...new Set(list)];
-    return l.length < 2 ? l.join("") : l.slice(0, -1).join(", ") + " og " + l[l.length - 1];
-  }, normTex = (x) => String(x || "").replace(/\^\{?\\circ\}?|\\degree(?![a-zA-Z])|°/g, "DEG").replace(/\\left|\\right|\\cdot|\\,|\\\s|\s|[{}]/g, "").replace(/(\d)\.(\d)/g, "$1,$2");
+  };
+  var normTex = (x) => String(x || "").replace(/\^\{?\\circ\}?|\\degree(?![a-zA-Z])|°/g, "DEG").replace(/\\left|\\right|\\cdot|\\,|\\\s|\s|[{}]/g, "").replace(/(\d)\.(\d)/g, "$1,$2");
   function isFnCall(latex) {
     let s = normalize(latex), m = /^([A-Za-z](?:_\{?[A-Za-z0-9]+\}?)?)\(([A-Za-z])\)$/.exec(s);
     return m ? { f: m[1], v: m[2] } : null;
@@ -5455,11 +5452,9 @@ print(1 + 1)`, out: null } : {};
     };
     if (tb("conv", host.inline ? "Til egen linje" : "Ind i teksten", () => {
       closePop(), host.convert();
-    }).title = "Ctrl+Shift+M", !host.inline) {
-      let pyOn = app.pyOpen.has(host.id), p = tb("py", "{ } Python", () => togglePy(host.id), pyOn ? "on" : "");
-      p.setAttribute("aria-pressed", String(pyOn)), p.title = "Vis den Python-kode, der laver beregningen";
-    }
-    if (tb("del", "Slet", () => {
+    }).title = "Ctrl+Shift+M", tb("py", "{ } Python", () => {
+      closePop(), emit("showPy", host.id);
+    }).title = "Vis Python-koden bag beregningen i panelet til h\xF8jre", tb("del", "Slet", () => {
       closePop(), host.remove();
     }, "danger"), box.append(foot), box._keys || (box._keys = !0, box.addEventListener("keydown", (e) => {
       if ((e.key === "ArrowDown" || e.key === "ArrowUp") && document.activeElement === box) {
@@ -5474,42 +5469,6 @@ print(1 + 1)`, out: null } : {};
       let el2 = box.querySelector("#" + CSS.escape(focusKeep)) || box.querySelector('[data-k="' + focusKeep + '"]');
       el2 && el2.focus({ preventScroll: !0 });
     }
-  }
-
-  // src/core/pyexport.js
-  var KW = /^(for|in|if|else|elif|import|from|def|return|lambda|not|is|and|or|True|False|None|while|print|range|zip|sum|abs|float|len)$/, PYFN = /^(solve|Eq|diff|integrate|bestemt_integral|nløs|Lambda|symbols|simplify|factor|expand|lambdify|Matrix|linear_regression|mean|correlation|exp|log|sqrt|root|sin|cos|tan|Abs|Rational|S|re|im|punkt|evalf|subs|solve_least_squares|math)$/;
-  function highlight(code) {
-    let re = /(#[^\n]*)|('[^'\n]*'|"[^"\n]*")|(\b\d+(?:\.\d+)?\b)|([A-Za-zæøåÆØÅ_][A-Za-z0-9_æøåÆØÅ]*)|([\s\S])/g, out = "", m;
-    for (; m = re.exec(code); )
-      m[1] ? out += '<span class="c">' + esc(m[1]) + "</span>" : m[2] ? out += '<span class="s">' + esc(m[2]) + "</span>" : m[3] ? out += '<span class="n">' + esc(m[3]) + "</span>" : m[4] ? out += KW.test(m[4]) ? '<span class="k">' + esc(m[4]) + "</span>" : PYFN.test(m[4]) ? '<span class="f">' + esc(m[4]) + "</span>" : esc(m[4]) : out += esc(m[5]);
-    return out;
-  }
-  function contextSteps(plan, id2) {
-    if (!plan) return [];
-    let idx = plan.steps.findIndex((s) => s.id === id2);
-    if (idx < 0) return [];
-    let idents = (code) => new Set(code.replace(/#[^\n]*/g, "").match(/[A-Za-zæøå_][\wæøå]*/g) || []), need = idents(plan.steps[idx].code), picked = [];
-    for (let i = idx - 1; i >= 0; i--) {
-      let st = plan.steps[i];
-      st.kind !== "python" && (st.meta.assigns || []).some((a) => need.has(a)) && (picked.unshift(st), idents(st.code).forEach((x) => need.add(x)));
-    }
-    return picked;
-  }
-  function programText(o, plan, title, prelude) {
-    let out = ["# " + (title || "Aflevering") + " \u2013 opgave " + o.number + (o.title ? ": " + o.title : ""), prelude.trim(), ""];
-    for (let b of o.blocks) {
-      if (b.type === "head") {
-        out.push("", "# --- " + o.number + b.label + " ---");
-        continue;
-      }
-      let st = plan.steps.find((x) => x.id === b.id), code = st ? st.code : b.type === "python" ? b.code : null;
-      if (!code) continue;
-      out.push(code);
-      let info = plan.infos[b.id];
-      info && info.resVar && b.type !== "python" && out.push("print(" + info.resVar + ")"), out.push("");
-    }
-    return out.join(`
-`);
   }
 
   // src/editor/gutter.js
@@ -5770,51 +5729,20 @@ print(1 + 1)`, out: null } : {};
       let b = h("button", { type: "button", class: "iconbtn", "aria-label": "Flere valg", title: "Flere valg", "aria-haspopup": "menu" }, "\u22EF");
       return b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => openBlockMenu(b, this.dom)), b;
     }
+    // { } Python: åbner Python-panelet til højre ved blokkens kode
     pyToggle() {
-      let b = h("button", { type: "button", class: "py-btn", title: "Vis den Python-kode, der laver beregningen", "aria-label": "Vis Python-kode" }, h("span", { class: "br", "aria-hidden": "true" }, "{ }"), h("span", { class: "lbl" }, "Python"));
-      return b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => togglePy(this.id)), b;
-    }
-    fillPy(box, btn, kind) {
-      let open = app.pyOpen.has(this.id);
-      btn.setAttribute("aria-pressed", String(open)), box.hidden = !open, box.innerHTML = "", open && box.append(pyCell(this.id, kind));
+      let b = h("button", { type: "button", class: "py-btn", title: "Vis Python-koden bag beregningen i panelet til h\xF8jre", "aria-label": "Vis Python-kode" }, h("span", { class: "br", "aria-hidden": "true" }, "{ }"), h("span", { class: "lbl" }, "Python"));
+      return b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => emit("showPy", this.id)), b;
     }
   };
-  function pyCell(id2, kind) {
-    let { info, code, fresh: r } = lookup(id2), o = app.session.opgOf(id2), ctx = code ? contextSteps(o && app.session.planOf(o.id), id2) : [], cell = h("div", { class: "pycell" }), ctxBox = h("pre", { class: "py-code ctx", hidden: !0, html: ctx.map((s) => highlight(s.code)).join(`
-`) }), names = info && info.above ? info.above : [], ctxBtn = ctx.length ? h(
-      "button",
-      { type: "button", class: "linkbtn", "aria-expanded": "false", onclick: (e) => {
-        let on2 = ctxBox.hidden;
-        ctxBox.hidden = !on2, e.currentTarget.setAttribute("aria-expanded", String(on2)), e.currentTarget.firstChild.textContent = on2 ? "\u25BE " : "\u25B8 ";
-      } },
-      h("span", null, "\u25B8 "),
-      "Fra tidligere i opgaven" + (names.length ? ": " + joinDa(names) : "")
-    ) : h("span", { class: "py-ctx" }, "K\xF8rer i opgavens f\xE6lles milj\xF8"), full = () => (ctx.length ? `# Fra tidligere i opgaven
-` + ctx.map((s) => s.code).join(`
-`) + `
-
-` : `from sympy import *
-
-`) + (code || ""), copy = h("button", { type: "button", class: "ghost sm", onclick: async (e) => {
-      let b = e.currentTarget;
-      try {
-        await navigator.clipboard.writeText(full()), b.textContent = "Kopieret";
-      } catch {
-        b.textContent = "Kunne ikke kopiere";
-      }
-      setTimeout(() => b.textContent = "Kopi\xE9r", 1600);
-    } }, "Kopi\xE9r"), make = code ? h("button", { type: "button", class: "ghost sm", onclick: () => {
-      let src = `# Kopi af beregningen \u2013 ret i koden og tryk K\xF8r
+  function pyAsBlock(id2, kind) {
+    let { info, code } = lookup(id2);
+    if (!code) return;
+    let src = `# Kopi af beregningen \u2013 ret i koden og tryk K\xF8r
 ` + code;
-      kind === "graph" ? src += `
+    kind === "graph" ? src += `
 print(kurver[0][:5])  # de f\xF8rste fem punkter` : info && info.resVar && (src += `
 print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"), code: src, out: null }));
-    } }, "\xC5bn som Python-blok") : null;
-    return cell.append(
-      h("div", { class: "py-head" }, h("span", { class: "py-tag" }, "Python"), ctxBtn, h("span", { class: "spacer" }), copy, make),
-      ctxBox,
-      h("pre", { class: "py-code", html: code ? highlight(code) : '<span class="c"># Linjen kan ikke l\xE6ses endnu, s\xE5 der er ingen kode</span>' })
-    ), r && !r.error && r.py != null && cell.append(h("div", { class: "py-out" }, h("span", { class: "py-out-l" }, "Output"), h("code", null, r.py))), r && r.error && cell.append(h("div", { class: "py-out err" }, h("span", { class: "py-out-l" }, "Fejl"), h("code", null, r.error))), cell;
   }
 
   // src/editor/views/mathline.js
@@ -5836,9 +5764,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         { type: "button", class: "cas-chip", "aria-haspopup": "menu", "aria-expanded": "false", title: "V\xE6lg hvad CAS skal g\xF8re med formlen (Alt+Enter, eller skriv \\ i formlen)" },
         h("span", { class: "cas-chip-t" }),
         h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE")
-      ), this.chip.addEventListener("mousedown", (e) => e.preventDefault()), this.chip.addEventListener("click", (e) => this.openMenu(e.detail === 0)), this.sym = h("span", { class: "m-sym" }), this.res = h("span", { class: "m-res" }), this.out = h("div", { class: "m-out" }, this.sym, this.res), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.py.classList.add("py-mini"), this.pybox = h("div", { class: "pybox" }), this.hint = h("span", { class: "m-hint", "aria-hidden": "true" }, "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter");
+      ), this.chip.addEventListener("mousedown", (e) => e.preventDefault()), this.chip.addEventListener("click", (e) => this.openMenu(e.detail === 0)), this.sym = h("span", { class: "m-sym" }), this.res = h("span", { class: "m-res" }), this.out = h("div", { class: "m-out" }, this.sym, this.res), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.py.classList.add("py-mini"), this.hint = h("span", { class: "m-hint", "aria-hidden": "true" }, "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter");
       let main = h("div", { class: "m-main" }, this.ph, mf, this.out, this.hint), row2 = h("div", { class: "m-row" }, this.chip, main, this.py);
-      this.dom.append(row2, this.err, this.pybox), this.out.title = "Klik: ret formlen \xB7 Dobbeltklik: kopi\xE9r resultatet", this.out.addEventListener("dblclick", (e) => {
+      this.dom.append(row2, this.err), this.out.title = "Klik: ret formlen \xB7 Dobbeltklik: kopi\xE9r resultatet", this.out.addEventListener("dblclick", (e) => {
         e.preventDefault();
         let t = this.lastRes;
         if (!t) return;
@@ -5963,7 +5891,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         o.classList.toggle("more", o.scrollLeft + o.clientWidth < o.scrollWidth - 2);
       }, { passive: !0 }));
       let label = chipText(a, info);
-      this.chip.firstChild.textContent = label || "CAS", this.chip.classList.toggle("none", !label), this.dom.classList.toggle("has-latex", !!a.latex.trim()), this.hint.textContent = label ? "Enter: tekst \xB7 Shift+Enter: ny formel" : "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter", this.hint.hidden = !a.latex.trim(), this.chip.setAttribute("aria-label", label ? "CAS: " + label + ". Skift handling" : "V\xE6lg hvad CAS skal g\xF8re med formlen"), this.fillPy(this.pybox, this.py, "math"), currentPop() && currentPop()._owner === this && this.menuBody();
+      this.chip.firstChild.textContent = label || "CAS", this.chip.classList.toggle("none", !label), this.dom.classList.toggle("has-latex", !!a.latex.trim()), this.hint.textContent = label ? "Enter: tekst \xB7 Shift+Enter: ny formel" : "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter", this.hint.hidden = !a.latex.trim(), this.chip.setAttribute("aria-label", label ? "CAS: " + label + ". Skift handling" : "V\xE6lg hvad CAS skal g\xF8re med formlen"), currentPop() && currentPop()._owner === this && this.menuBody();
     }
     // Med tastaturet får den valgte handling fokus; med musen står menuen bare åben (tasterne virker stadig)
     openMenu(kbd) {
@@ -6521,7 +6449,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   // src/editor/views/graph.js
   var GraphView = class extends BlockView {
     build() {
-      this.list = h("div", { class: "g-fns" }), this.plot = h("div", { class: "g-plot" }), this.legend = h("div", { class: "g-legend" }), this.marksEl = h("div", { class: "g-marks", "aria-live": "polite" }), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.pybox = h("div", { class: "pybox" }), this.precision = precisionControl(this.node.attrs.digits, (digits) => this.set({ digits }), this.id), enablePlotLabels(this);
+      this.list = h("div", { class: "g-fns" }), this.plot = h("div", { class: "g-plot" }), this.legend = h("div", { class: "g-legend" }), this.marksEl = h("div", { class: "g-marks", "aria-live": "polite" }), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.precision = precisionControl(this.node.attrs.digits, (digits) => this.set({ digits }), this.id), enablePlotLabels(this);
       let num2 = (k, lab) => {
         let inp = h("input", { id: "g-" + k + "-" + this.id, class: "mini", value: this.node.attrs[k] || "", placeholder: "auto", inputmode: "decimal", "aria-label": lab });
         return inp.addEventListener("input", () => this.set({ [k]: inp.value })), inp.addEventListener("focus", () => inp.select()), this["in_" + k] = inp, inp;
@@ -6542,8 +6470,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         h("div", { class: "g-axes" }, axis("1. akse", "xlab", "xmin", "xmax", "F\xF8rsteaksen"), axis("2. akse", "ylab", "ymin", "ymax", "Andenaksen")),
         // betydende cifre nederst til venstre (som i tabeller)
         h("div", { class: "blk-opts" }, this.precision),
-        this.err,
-        this.pybox
+        this.err
       ), this.watchWidth(this.plot), is3 && this.rotation();
     }
     // 3D-plot: træk med musen (eller piletasterne) drejer fladen; vinklen gemmes i dokumentet og bruges i PDF'en
@@ -6701,7 +6628,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let mt = dt.length ? [] : svg2 ? marksText(shown, info && info.srcs || b.fns, b.digits) : [];
       this.marksEl.innerHTML = dt.length ? dt.map((t) => '<span class="mk dist">' + t + "</span>").join("") : mt.map((m) => '<span class="mk"><i style="background:' + LIVE.s[m.i % 4] + '"></i>' + m.text + "</span>").join(""), this.marksEl.hidden = !mt.length && !dt.length, svg2 && !dt.length && (b.marks || []).length && !mt.length && (this.marksEl.hidden = !1, this.marksEl.innerHTML = '<span class="mk none">Ingen punkter at afl\xE6se i det viste interval</span>'), this.readRow.hidden = this.readBtn.hidden && this.marksEl.hidden, shown && shown.ts && shown.ts.length && (this.in_xmin.placeholder = markNum(shown.ts[0]), this.in_xmax.placeholder = markNum(shown.ts[shown.ts.length - 1]));
       let ax = axisNames({}, info);
-      this.in_xlab && (this.in_xlab.placeholder = ax.x), this.in_ylab && (this.in_ylab.placeholder = ax.y), this.readBtn.classList.toggle("on", !!(b.marks || []).length), this.fillPy(this.pybox, this.py, "graph");
+      this.in_xlab && (this.in_xlab.placeholder = ax.x), this.in_ylab && (this.in_ylab.placeholder = ax.y), this.readBtn.classList.toggle("on", !!(b.marks || []).length);
     }
   }, num = (v, d) => {
     let x = Number(String(v ?? "").replace(",", "."));
@@ -6733,7 +6660,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
   var TableView = class extends BlockView {
     build() {
-      this.body = h("tbody"), this.head = h("thead"), this.totW = h("td", { class: "t-tot" }), this.totF = h("td", { class: "t-d t-dfrek t-tot" }), this.foot = h("tfoot", null, h("tr", null, h("td"), h("td", { class: "t-tot-l" }, "I alt"), this.totW, this.totF, h("td", { class: "t-d t-dkum" }), h("td"))), this.plot = h("div", { class: "g-plot t-plot" }), enablePlotLabels(this), this.stmt = h("div", { class: "t-stmt" }), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.pybox = h("div", { class: "pybox" }), this.models = h("span", { class: "seg sm", role: "radiogroup", "aria-label": "Model" }), Object.entries(MODELS).filter(([k]) => k !== "none").forEach(([k, t]) => {
+      this.body = h("tbody"), this.head = h("thead"), this.totW = h("td", { class: "t-tot" }), this.totF = h("td", { class: "t-d t-dfrek t-tot" }), this.foot = h("tfoot", null, h("tr", null, h("td"), h("td", { class: "t-tot-l" }, "I alt"), this.totW, this.totF, h("td", { class: "t-d t-dkum" }), h("td"))), this.plot = h("div", { class: "g-plot t-plot" }), enablePlotLabels(this), this.stmt = h("div", { class: "t-stmt" }), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.models = h("span", { class: "seg sm", role: "radiogroup", "aria-label": "Model" }), Object.entries(MODELS).filter(([k]) => k !== "none").forEach(([k, t]) => {
         let b = h("button", { type: "button", role: "radio", title: k === "none" ? "En almindelig tabel uden regression" : MODEL_FORM[k], dataset: { m: k } }, t);
         b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => this.set({ model: k })), this.models.append(b);
       }), this.nameIn = h("input", { id: "tn-" + this.id, class: "mini", value: this.node.attrs.name, maxlength: 4, "aria-label": "Funktionsnavn" }), this.varIn = h("input", { id: "tv-" + this.id, class: "mini v", value: this.node.attrs.v, maxlength: 4, "aria-label": "Variabel" }), this.nameIn.addEventListener("input", () => this.set({ name: this.nameIn.value.trim() })), this.varIn.addEventListener("input", () => this.set({ v: this.varIn.value.trim() }));
@@ -6779,8 +6706,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         this.rplot,
         // betydende cifre nederst til venstre (som i Plot)
         h("div", { class: "blk-opts" }, this.precision),
-        this.err,
-        this.pybox
+        this.err
       ), this.watchWidth(this.plot);
     }
     // "Gemmes som" og forskriften: f(x) = a·x + b, f(x) = b·aˣ, f(x) = b·xᵃ, f(x) = a·x² + b·x + c – eller F(x) for en sumkurve
@@ -6972,7 +6898,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let shown = hard ? null : fresh && fresh.params ? fresh : r && r.params ? r : null, pick2 = (k) => fresh && fresh[k] ? fresh : r && r[k] ? r : null, shownSum = hard ? null : grouped ? pick2("ivs") : view2 === "qq" ? pick2("qq") : null, shownStat = view2 === "stat" && !hard && (pick2("stat") || {}).stat || null;
       this.stmt.innerHTML = shown ? tableStmtHTML(a, shown) : shownSum ? tableStmtHTML(a, shownSum) : shownStat ? '<span class="t-model">' + tex(statTex(a, shownStat), !0) + "</span>" : "";
       let rr = a.resid && !plain && fresh && fresh.resid ? fresh : null, rw = Math.min(640, Math.max(300, (this.dom.clientWidth || 640) - 40)), kvG = grouped && shownSum && shownSum.kv ? shownSum.kv : null;
-      this.rplot.contains(document.activeElement) && document.activeElement.dataset.rn || (this.rplot.innerHTML = rr ? residHTML(a, rr, rw) : shownStat ? fiveHTML(shownStat.kv, a.digits) : kvG ? boxSVG(kvG, LIVE, screenSize(rw), "Boksplot ud fra sumkurven") + fiveHTML(kvG, a.digits, !0) : ""), this.rplot.hidden = !rr && !shownStat && !kvG, this.stmt.classList.toggle("stale", !!stale && !!this.stmt.innerHTML), this.stmt.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026", this.plot.innerHTML = hard ? "" : tablePlot(a, fresh && !fresh.error ? fresh : null, LIVE, screenSize(this.plot.clientWidth || 400)), this.fillPy(this.pybox, this.py, "table");
+      this.rplot.contains(document.activeElement) && document.activeElement.dataset.rn || (this.rplot.innerHTML = rr ? residHTML(a, rr, rw) : shownStat ? fiveHTML(shownStat.kv, a.digits) : kvG ? boxSVG(kvG, LIVE, screenSize(rw), "Boksplot ud fra sumkurven") + fiveHTML(kvG, a.digits, !0) : ""), this.rplot.hidden = !rr && !shownStat && !kvG, this.stmt.classList.toggle("stale", !!stale && !!this.stmt.innerHTML), this.stmt.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026", this.plot.innerHTML = hard ? "" : tablePlot(a, fresh && !fresh.error ? fresh : null, LIVE, screenSize(this.plot.clientWidth || 400));
     }
   };
 
@@ -7050,7 +6976,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         let ns = view2.state.apply(tr);
         if (view2.updateState(ns), tr.docChanged && onDocChange && onDocChange(tr), tr.selectionSet && onSelection) {
           let $f = ns.selection.$from;
-          $f.depth >= 1 && (app.lastPos = ns.selection.from, onSelection($f.node(1).attrs.id));
+          $f.depth >= 1 && (app.lastPos = ns.selection.from, onSelection($f.node(1).attrs.id, ns));
         }
         onAny && onAny(tr);
       },
@@ -7063,6 +6989,31 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
   function validateDoc(json) {
     schema.nodeFromJSON(json);
+  }
+
+  // src/core/pyexport.js
+  var KW = /^(for|in|if|else|elif|import|from|def|return|lambda|not|is|and|or|True|False|None|while|print|range|zip|sum|abs|float|len)$/, PYFN = /^(solve|Eq|diff|integrate|bestemt_integral|nløs|Lambda|symbols|simplify|factor|expand|lambdify|Matrix|linear_regression|mean|correlation|exp|log|sqrt|root|sin|cos|tan|Abs|Rational|S|re|im|punkt|evalf|subs|solve_least_squares|math)$/;
+  function highlight(code) {
+    let re = /(#[^\n]*)|('[^'\n]*'|"[^"\n]*")|(\b\d+(?:\.\d+)?\b)|([A-Za-zæøåÆØÅ_][A-Za-z0-9_æøåÆØÅ]*)|([\s\S])/g, out = "", m;
+    for (; m = re.exec(code); )
+      m[1] ? out += '<span class="c">' + esc(m[1]) + "</span>" : m[2] ? out += '<span class="s">' + esc(m[2]) + "</span>" : m[3] ? out += '<span class="n">' + esc(m[3]) + "</span>" : m[4] ? out += KW.test(m[4]) ? '<span class="k">' + esc(m[4]) + "</span>" : PYFN.test(m[4]) ? '<span class="f">' + esc(m[4]) + "</span>" : esc(m[4]) : out += esc(m[5]);
+    return out;
+  }
+  function programText(o, plan, title, prelude) {
+    let out = ["# " + (title || "Aflevering") + " \u2013 opgave " + o.number + (o.title ? ": " + o.title : ""), prelude.trim(), ""];
+    for (let b of o.blocks) {
+      if (b.type === "head") {
+        out.push("", "# --- " + o.number + b.label + " ---");
+        continue;
+      }
+      let st = plan.steps.find((x) => x.id === b.id), code = st ? st.code : b.type === "python" ? b.code : null;
+      if (!code) continue;
+      out.push(code);
+      let info = plan.infos[b.id];
+      info && info.resVar && b.type !== "python" && out.push("print(" + info.resVar + ")"), out.push("");
+    }
+    return out.join(`
+`);
   }
 
   // src/core/printmodel.js
@@ -7284,6 +7235,14 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let t = esc(q2.text);
     return q2.bold && (t = "<strong>" + t + "</strong>"), q2.em && (t = "<em>" + t + "</em>"), t;
   }).join("");
+  function notesHtml(notes) {
+    let out = [], rows = [], flush2 = () => {
+      rows.length && (out.push('<div class="h-nrows">' + rows.map((r) => '<span class="nk">' + (r.k ? esc(r.k) : "") + (r.km ? " " + tex(r.km, !0) : "") + '</span><span class="nv">' + (r.t ? esc(r.t) : "") + (r.m ? tex(r.m, !0) : "") + (r.t2 ? ' <span class="nk">' + esc(r.t2) + "</span>" : "") + '</span><span class="nk">' + (r.save ? 'gemt som <span class="nv">' + tex(r.save, !0) + "</span>" : "") + "</span>").join("") + "</div>"), rows = []);
+    };
+    for (let n2 of notes)
+      n2 && typeof n2 == "object" && n2.five ? (flush2(), out.push((n2.title ? '<div class="h-nline">' + esc(n2.title) + "</div>" : "") + '<table class="h-five"><tr>' + n2.five.map(([l]) => "<th>" + esc(l) + "</th>").join("") + "</tr><tr>" + n2.five.map(([, v]) => "<td>" + tex(v, !0) + "</td>").join("") + "</tr></table>")) : n2 && typeof n2 == "object" ? rows.push(n2) : n2 && (flush2(), out.push('<div class="h-nline">' + esc(n2) + "</div>"));
+    return flush2(), out.join("");
+  }
   function blockHTML(b, meta) {
     switch (b.t) {
       case "title":
@@ -7297,7 +7256,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       case "m":
         return { cls: "h-m", html: (b.cas ? '<span class="h-cas">' + esc(b.cas) + "</span>" : "") + (b.res ? tex(b.input || "", !1) + '<span class="h-res">' + tex(b.res) + "</span>" : tex(b.latex)) };
       case "img":
-        return { cls: "h-g h-frame", html: '<div class="h-svg" style="width:' + b.width + '">' + b.svg + '</div><div class="h-legend">' + (b.caption || []).map((c) => '<span class="lg">' + (c.color ? '<i style="background:' + c.color + '"></i>' : "") + tex(c.latex, !0) + "</span>").join("") + "</div>" + (b.notes && b.notes.length ? '<div class="h-legend h-notes">' + b.notes.map(esc).join(" \xB7 ") + "</div>" : "") };
+        return { cls: "h-g h-frame", html: '<div class="h-svg" style="width:' + b.width + '">' + b.svg + '</div><div class="h-legend">' + (b.caption || []).map((c) => '<span class="lg">' + (c.color ? '<i style="background:' + c.color + '"></i>' : "") + tex(c.latex, !0) + "</span>").join("") + "</div>" + (b.notes && b.notes.length ? notesHtml(b.notes) : "") };
       case "table": {
         let hd = (k) => b.headText && b.headText[k] ? esc(b.headText[k]) : tex(b.head[k], !0);
         return { cls: "h-t h-frame", glue: b.glue, html: '<table class="h-tbl"><tr><th>' + hd(0) + "</th>" + b.rows.map((x) => "<td>" + esc(x[0]) + "</td>").join("") + "</tr><tr><th>" + hd(1) + "</th>" + b.rows.map((x) => "<td>" + esc(x[1]) + "</td>").join("") + "</tr></table>" };
@@ -7587,13 +7546,29 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       }
       let st = plan.steps.find((x) => x.id === b.id);
       if (!st && b.type !== "python") continue;
-      let r = s.resultFor(b.id).fresh, cell = h(
-        "button",
-        { type: "button", class: "pp-cell" + (app.activeBlock === b.id ? " on" : ""), dataset: { for: b.id }, onclick: () => flash(blockEl(b.id)) },
+      let r = s.resultFor(b.id).fresh, go = () => {
+        flash(blockEl(b.id)), highlightPyCell(b.id);
+      }, cell = h(
+        "div",
+        {
+          class: "pp-cell" + (app.activeBlock === b.id ? " on" : ""),
+          role: "button",
+          tabindex: "0",
+          dataset: { for: b.id },
+          title: "Vis i dokumentet",
+          onclick: go,
+          onkeydown: (e) => {
+            (e.key === "Enter" || e.key === " ") && e.target === e.currentTarget && (e.preventDefault(), go());
+          }
+        },
         h("span", { class: "pp-k" }, b.type === "math" && plan.infos[b.id] && ACT_TXT[plan.infos[b.id].action] ? ACT_TXT[plan.infos[b.id].action] : KIND_TXT[b.type] || b.type),
         h("pre", { class: "py-code", html: highlight((st ? st.code : b.code) || "") }),
         r && r.py != null && !r.error ? h("div", { class: "py-out" }, h("span", { class: "py-out-l" }, "Output"), h("code", null, r.py)) : null,
-        r && r.error ? h("div", { class: "py-out err" }, h("span", { class: "py-out-l" }, "Fejl"), h("code", null, r.error)) : null
+        r && r.error ? h("div", { class: "py-out err" }, h("span", { class: "py-out-l" }, "Fejl"), h("code", null, r.error)) : null,
+        // (den markerede celle: kopiér beregningen ind i dokumentet som en Python-blok, man selv kan rette i)
+        st && b.type !== "python" ? h("div", { class: "pp-more" }, h("button", { type: "button", class: "ghost sm", title: "Inds\xE6t en kopi af koden som en Python-blok under beregningen", onclick: (e) => {
+          e.stopPropagation(), pyAsBlock(b.id, b.type);
+        } }, "\xC5bn som Python-blok")) : null
       );
       box.append(cell);
     }
@@ -8849,15 +8824,15 @@ def punkt(fn, t):
     } catch (e) {
       throw app.views = oldViews, e;
     }
-    oldView && oldView.destroy(), $3("editor").replaceChildren(...host.childNodes), app.meta = snap.meta, app.session.reset(), app.session.cache = Object.assign({}, CACHE, loadResults(docs2.cur)), app.cas.reset(), app.pyOpen.clear(), app.activeOpg = null, app.activeBlock = null, app.lastPos = null, app.view = window.__view = view2, bindMeta(), replan();
+    oldView && oldView.destroy(), $3("editor").replaceChildren(...host.childNodes), app.meta = snap.meta, app.session.reset(), app.session.cache = Object.assign({}, CACHE, loadResults(docs2.cur)), app.cas.reset(), app.activeOpg = null, app.activeBlock = null, app.lastPos = null, app.view = window.__view = view2, bindMeta(), replan();
   }
   function makeEditor(host, pm) {
     return createEditor(host, pm, {
       onDocChange(tr) {
         docs2.save(!tr.getMeta("casResult")), tr.getMeta("casResult") || schedulePlan(), renderSideSoon();
       },
-      onSelection(opgId) {
-        opgId && opgId !== app.activeOpg && (app.activeOpg = opgId, renderSide());
+      onSelection(opgId, st) {
+        opgId && opgId !== app.activeOpg && (app.activeOpg = opgId, renderSide()), app.pyPanel && pyNearest(st);
       }
     });
   }
@@ -8913,7 +8888,8 @@ def punkt(fn, t):
     v.dispatch(v.state.tr.setSelection(PM.state.TextSelection.create(v.state.doc, 2)).scrollIntoView()), v.focus();
   }
   function setMode(m) {
-    if (app.mode = m, $3("app").dataset.mode = m, document.querySelectorAll("[data-mode-btn]").forEach((x) => x.setAttribute("aria-checked", String(x.dataset.modeBtn === m))), m === "hand") {
+    if (app.mode = m, $3("app").dataset.mode = m, m === "hand") {
+      app.pyPanel && $3("pyAll").click();
       let o = extract(app.view.state.doc.toJSON()).find((q2) => q2.id === app.activeOpg);
       renderHand(), pdf.start().catch(() => {
       }), o && setHandTarget(o.number), setTimeout(syncHandNav, 400);
@@ -8927,12 +8903,31 @@ def punkt(fn, t):
     let o = extract(app.view.state.doc.toJSON()).find((q2) => q2.number === Number(n2));
     o && o.id !== app.activeOpg && (app.activeOpg = o.id, renderSide());
   }
+  function pyNearest(st) {
+    let from = st.selection.from, sel = st.selection.node;
+    if (sel && sel.attrs && sel.attrs.id && document.querySelector('.pp-cell[data-for="' + sel.attrs.id + '"]')) {
+      app.activeBlock = sel.attrs.id, highlightPyCell(sel.attrs.id);
+      return;
+    }
+    let before = null, after = null;
+    st.doc.nodesBetween(0, st.doc.content.size, (n2, pos) => {
+      let id3 = n2.attrs && n2.attrs.id;
+      return id3 && n2.type.name !== "opgave" && n2.type.name !== "delopgave" && document.querySelector('.pp-cell[data-for="' + id3 + '"]') && (pos < from ? before = id3 : after || (after = id3)), !0;
+    });
+    let id2 = before || after;
+    id2 && id2 !== app.activeBlock && (app.activeBlock = id2, highlightPyCell(id2));
+  }
   on("side", renderSide);
   on("active", (id2) => {
     let o = app.session.opgOf(id2);
     o && o.id !== app.activeOpg && (app.activeOpg = o.id, renderSide()), app.pyPanel && highlightPyCell(id2);
   });
   on("runPython", (id2) => replan(id2));
+  on("showPy", (id2) => {
+    app.pyPanel ? window.innerWidth < 1180 && openRail("pyRail") : $3("pyAll").click();
+    let o = app.session.opgOf(id2);
+    app.activeBlock = id2, o && o.id !== app.activeOpg && (app.activeOpg = o.id), renderSide(), requestAnimationFrame(() => highlightPyCell(id2));
+  });
   on("editMeta", (k) => {
     setMode("write"), requestAnimationFrame(() => {
       let t = document.querySelector('[data-meta="' + k + '"]');
@@ -8996,10 +8991,12 @@ def punkt(fn, t):
       t && t.focus();
     }, 60), title: () => app.meta.title || "Eksempel" }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
       docs2.saveNow(), closeRails(), showStart();
-    }), document.querySelectorAll("[data-mode-btn]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.modeBtn)));
+    }), $3("btnToPdf").addEventListener("click", () => setMode("hand")), $3("btnBack").addEventListener("click", () => setMode("write")), document.addEventListener("keydown", (e) => {
+      e.key === "Escape" && app.mode === "hand" && !currentPop() && !startVisible() && !e.defaultPrevented && setMode("write");
+    });
     let pb = $3("pyAll");
     pb.addEventListener("click", () => {
-      app.pyPanel = !app.pyPanel, pb.setAttribute("aria-pressed", String(app.pyPanel)), $3("app").classList.toggle("with-py", app.pyPanel), app.pyPanel ? (renderSide(), window.innerWidth < 1180 && openRail("pyRail")) : closeRails();
+      app.pyPanel = !app.pyPanel, pb.setAttribute("aria-pressed", String(app.pyPanel)), pb.querySelector(".lbl").textContent = app.pyPanel ? "Skjul Python-kode" : "Vis Python-kode", $3("app").classList.toggle("with-py", app.pyPanel), app.pyPanel ? (renderSide(), window.innerWidth < 1180 && openRail("pyRail")) : closeRails();
     }), $3("pyClose").addEventListener("click", () => pb.click()), $3("btnNav").addEventListener("click", () => openRail("nav")), $3("scrim").addEventListener("click", closeRails), $3("newOpg").addEventListener("click", () => {
       addOpgave(), closeRails();
     }), initGutter();
@@ -9027,6 +9024,7 @@ def punkt(fn, t):
           act("Startside", () => showStart(), "", "alle dokumenter"),
           h("div", { class: "pop-sep" }),
           act(docs2.exDirty ? "Gem som mit dokument" : "Lav min egen kopi", () => docs2.keepExample()),
+          act("Gem som PDF \u2026", () => setMode("hand")),
           act("Gem som fil \u2026", () => docs2.saveFile(), "", ".vismat.json")
         ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true");
         return;
@@ -9051,6 +9049,7 @@ def punkt(fn, t):
           let id2 = docs2.duplicate(docs2.cur);
           id2 && docs2.open(id2);
         }),
+        act("Gem som PDF \u2026", () => setMode("hand")),
         act("Gem som fil \u2026", () => docs2.saveFile(), "", ".vismat.json"),
         h("div", { class: "pop-sep" }),
         act("Slet dokumentet", () => {

@@ -896,6 +896,14 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .app.with-py .rail.left .rail-close{display:block}
   .app.with-py .only-narrow{display:inline-flex}
 }
+.ex-banner{position:sticky;top:0;z-index:6;box-sizing:border-box;max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:10px 16px 10px 20px;background:var(--accent-soft);color:var(--ink);font-size:13px;border-bottom:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
+.ex-banner[hidden]{display:none}
+.ex-banner .exb-t{flex:1;min-width:220px;line-height:1.4}
+.ex-banner b{font-weight:600}
+.ex-banner.dirty{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}
+.ex-banner .primary{height:30px;font-size:13px;white-space:nowrap}
+.dm-tag{display:inline-block;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font:600 11px/18px var(--ui);vertical-align:1px}
+#docMenuBtn .dm-tag{margin-left:2px}
 /* Startside */
 .start{position:fixed;inset:0;z-index:50;background:var(--desk);overflow:auto;-webkit-overflow-scrolling:touch}
 .start[hidden]{display:none}
@@ -913,12 +921,11 @@ body.on-start{overflow:hidden}
 .st-ctitle{font:600 19px var(--serif);color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .st-cw{font-size:12.5px;color:var(--ink-3)}
 .st-h{font-size:13px;font-weight:600;color:var(--ink-2);margin:0 0 10px}
-.st-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:30px}
+.st-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:30px}
 .st-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:0;background:var(--paper);box-shadow:var(--shadow);border-radius:10px;padding:14px 14px 14px;cursor:pointer;min-height:118px;box-sizing:border-box;transition:box-shadow .12s,transform .12s}
 .st-card:hover{box-shadow:var(--shadow),0 0 0 2px var(--accent-soft);transform:translateY(-1px)}
 .st-ic{display:grid;place-items:center;min-width:34px;height:34px;padding:0 6px;box-sizing:border-box;border-radius:8px;margin-bottom:auto;font:600 15px var(--serif);background:var(--rule-2);color:var(--ink-2)}
 .st-card.blank .st-ic{background:var(--accent);color:var(--accent-ink);font:400 22px var(--ui)}
-.st-card.hand .st-ic{background:var(--accent-soft);color:var(--accent);font:600 11.5px var(--ui);letter-spacing:.06em}
 .st-card.ex .st-ic{font-style:italic}
 .st-ct{font-weight:600;color:var(--ink);margin-top:12px}
 .st-cd{font-size:12.5px;color:var(--ink-3);line-height:1.35}
@@ -942,26 +949,16 @@ body.on-start{overflow:hidden}
 .st-empty{margin:0;padding:14px 12px;color:var(--ink-3);font-size:13px}
 .st-foot{margin:14px 2px 0;font-size:12px;color:var(--ink-3)}
 .start.drop::after{content:"Slip filen for at åbne den";position:fixed;inset:12px;border:2px dashed var(--accent);border-radius:14px;background:color-mix(in srgb,var(--accent-soft) 80%,transparent);display:grid;place-items:center;font:600 16px var(--ui);color:var(--accent);pointer-events:none}
-.st-dialog{border:0;border-radius:12px;padding:22px 22px 18px;width:min(440px,calc(100vw - 32px));box-sizing:border-box;background:var(--paper);color:var(--ink);box-shadow:var(--pop-shadow)}
-.st-dialog::backdrop{background:rgba(14,17,22,.35)}
-.st-dialog h2{margin:0 0 14px;font:600 18px var(--ui)}
-.st-f{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;min-width:0}
-.st-fl{font-size:12px;font-weight:500;color:var(--ink-2)}
-.st-f input{height:34px;box-sizing:border-box;border:1px solid var(--rule);border-radius:6px;background:var(--paper);padding:0 10px;font-size:14px;width:100%}
-.st-f input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
-.st-fh{font-size:11.5px;color:var(--ink-3)}
-.st-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.st-btns{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
-.st-btns .ghost{height:32px;padding:0 12px;font-size:13px}
 .nav-home{cursor:pointer;border:0;background:none;border-radius:6px;text-align:left;font:inherit;color:inherit}
 .nav-home:hover{background:var(--hover)}
 @media (max-width:760px){
   .st-wrap{padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}
-  .st-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .st-card{min-height:104px}
+  .st-cards{grid-template-columns:1fr;gap:8px}
+  .st-card{min-height:0;display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center;padding:12px}
+  .st-ic{grid-row:span 2;margin:0}
+  .st-ct{margin:0}
   .st-w{display:none}
 }
-@media (max-width:420px){.st-2{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
 
@@ -1004,6 +1001,7 @@ body.on-start{overflow:hidden}
       <div class="toolbar" id="toolbar">
         <div class="tools ftools" role="toolbar" aria-label="Formelbjælke" id="ftools"></div>
       </div>
+      <div class="ex-banner" id="exBanner" role="status" hidden></div>
       <article class="paper" aria-label="Dokument">
         <header class="doc-head">
           <h1 class="doc-title" contenteditable="plaintext-only" spellcheck="false" data-meta="title" data-ph="Titel"></h1>
@@ -3273,45 +3271,6 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
 
   // src/core/docmodel.js
   var n = 0, id = (p) => p + ++n, T = (s) => ({ type: "text", text: s }), M = (latex, action, opts) => ({ type: "math_inline", attrs: { id: id("i"), latex, action: action || null, opts: opts || {} } }), P = (...parts) => ({ type: "paragraph", content: parts.filter(Boolean).map((x) => typeof x == "string" ? T(x) : x) }), D = (...parts) => ({ type: "delopgave", attrs: { id: id("d") }, content: parts.filter(Boolean).map((x) => typeof x == "string" ? T(x) : x) }), ML = (latex, action, opts) => ({ type: "math_line", attrs: { id: id("m"), latex, action: action || null, opts: opts || {} } }), O = (title, ...blocks2) => ({ type: "opgave", attrs: { id: id("o") }, content: [{ type: "opgtitle", content: title ? [T(title)] : [] }, ...blocks2] });
-  function sample() {
-    return n = 0, {
-      v: 3,
-      meta: { title: "Eksponentiel v\xE6kst og optimering", name: "Ida Mortensen", cls: "3.b \xB7 Matematik A", date: "26. september 2026" },
-      pm: {
-        type: "doc",
-        content: [
-          O(
-            "Brugere af en app",
-            P("Tabellen viser antallet af brugere ", M("N"), " (i tusinder) af en app ", M("t"), " \xE5r efter 2020. Udviklingen antages at kunne beskrives ved en model af typen ", M("N(t)=b\\cdot a^{t}"), "."),
-            D("Bestem a og b ved regression."),
-            { type: "table", attrs: { id: id("t"), rows: [["0", "12,1"], ["1", "14,6"], ["2", "17,4"], ["3", "21,0"], ["4", "25,3"], ["5", "30,2"]], model: "exp", name: "N", v: "t" } },
-            P("Med eksponentiel regression f\xE5s ", M("a", "calc", { digits: "4" }), " og ", M("b", "calc", { digits: "4" }), ". Modellen passer godt til data, da R\xB2 er meget t\xE6t p\xE5 1."),
-            D("Bestem, hvorn\xE5r antallet af brugere if\xF8lge modellen n\xE5r 100.000."),
-            ML("N(t)=100", "solve", { mode: "decimal" }),
-            P("Antallet af brugere n\xE5r alts\xE5 100.000 ca. 11,5 \xE5r efter 2020, dvs. i l\xF8bet af 2031.")
-          ),
-          O(
-            "Et tredjegradspolynomium",
-            P("En funktion ", M("f"), " er givet ved"),
-            ML("f(x)=x^3-6x^2+9x+1", "define"),
-            D("Bestem de x-v\xE6rdier, hvor grafen for f har vandret tangent."),
-            ML("f(x)", "diff"),
-            ML("f'(x)=0", "solve"),
-            P("Grafen for ", M("f"), " har alts\xE5 vandret tangent i ", M("x=1"), " og ", M("x=3"), "."),
-            D("Tegn grafen for f, og bestem de lokale ekstrema."),
-            { type: "graph", attrs: { id: id("g"), fns: ["f(x)"], v: "x", xmin: "-0,5", xmax: "4,5", ymin: "", ymax: "" } },
-            P("Grafen har lokalt maksimum i ", M("x=1"), ", hvor ", M("f(1)", "calc"), ", og lokalt minimum i ", M("x=3"), ", hvor ", M("f(3)", "calc"), "."),
-            D("Bestem arealet af omr\xE5det mellem grafen for f og x-aksen i intervallet [0;3]."),
-            ML("A=\\int_{0}^{3}f(x)\\,\\mathrm{d}x", "define"),
-            P("Arealet er alts\xE5 ", M("A", "calc", { mode: "decimal" }), "."),
-            { type: "python", attrs: { id: id("p"), code: `# Kontrol: en tabel over funktionsv\xE6rdier
-for k in range(0, 5):
-    print(k, f(k))`, out: null } }
-          )
-        ]
-      }
-    };
-  }
   var G = (fns, o) => ({ type: "graph", attrs: Object.assign({ id: id("g"), fns, v: "x", xmin: "", xmax: "", ymin: "", ymax: "", xlab: "", ylab: "", marks: [], dim: "", az: "", el: "" }, o || {}) }), TB = (rows, o) => ({ type: "table", attrs: Object.assign({ id: id("t"), rows, model: "lin", name: "f", v: "x", plot: "none", hx: "", hy: "", resid: !1 }, o || {}) }), V2 = (a, b) => "\\begin{pmatrix}" + a + "\\\\" + b + "\\end{pmatrix}";
   function exampleB() {
     return n = 0, {
@@ -3602,10 +3561,6 @@ for k in range(0, 5):
       meta: { title: "", name: "", cls: "", date: d.getDate() + ". " + md[d.getMonth()] + " " + d.getFullYear() },
       pm: { type: "doc", content: [O("", P())] }
     };
-  }
-  function skeleton({ title = "", name = "", cls = "", date = "", opgaver = 1, del = 0 } = {}) {
-    let b = blank(), nO = Math.max(1, Math.min(30, Number(opgaver) || 1)), nD = Math.max(0, Math.min(10, Number(del) || 0)), opg = () => nD ? O("", P(), ...Array.from({ length: nD }, () => [D(), P()]).flat()) : O("", P());
-    return b.pm.content = Array.from({ length: nO }, opg), b.meta = Object.assign(b.meta, { title, name, cls }, date ? { date } : {}), b;
   }
   function text(node) {
     return (node.content || []).map((c) => c.text || c.type === "math_inline" && c.attrs.latex || "").join("");
@@ -7846,7 +7801,11 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       return this.mem[id2] = JSON.parse(json), store.set(DOC(id2), json);
     }
     writeIndex() {
-      store.set(IDX, JSON.stringify(this.docs)), this.cur && store.set(CUR, this.cur);
+      store.set(IDX, JSON.stringify(this.docs)), this.cur && !this.isExample() && store.set(CUR, this.cur);
+    }
+    // Et eksempel åbnes altid som originalen og står ikke i listen; ændringer i det gemmes først, når man laver sin egen kopi
+    isExample() {
+      return !!this.cur && this.cur.startsWith("ex-");
     }
     current() {
       return this.read(this.cur);
@@ -7866,11 +7825,16 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       return this.docs.slice().sort((a, b) => b.updated - a.updated);
     }
     // ---------- Autogem ----------
-    save() {
+    // user: ændringen er lavet af brugeren (ikke et CAS-resultat, der skrives ind)
+    save(user = !0) {
+      if (this.isExample()) {
+        user && !this.exDirty && (this.exDirty = !0, this.onExample && this.onExample());
+        return;
+      }
       this.onSaved && this.onSaved("saving"), clearTimeout(this.t), this.t = setTimeout(() => this.saveNow(), 250);
     }
     saveNow() {
-      if (clearTimeout(this.t), !this.cur || !this.docs.some((d) => d.id === this.cur)) return;
+      if (clearTimeout(this.t), this.isExample() || !this.cur || !this.docs.some((d) => d.id === this.cur)) return;
       let snap = this.snapshot(), e = this.entry(this.cur), before = this.mem[this.cur] ? JSON.stringify(this.mem[this.cur]) : null, now = JSON.stringify(snap), ok = before === now ? !0 : this.write(this.cur, snap);
       e && (e.title = snap.meta.title || "Uden titel", e.n = opgCount(snap), before !== now && (e.updated = Date.now(), delete e.fresh)), this.writeIndex(), this.onSaved && this.onSaved(ok ? "ok" : "mem"), this.render();
     }
@@ -7880,40 +7844,60 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         this.onOpen && this.onOpen(id2);
         return;
       }
-      this.saveNow();
+      this.leaveExample(), this.saveNow();
       let s = this.read(id2);
       if (!s) {
         toast("Dokumentet kunne ikke \xE5bnes");
         return;
       }
-      this.dropFresh(), this.cur = id2, this.writeIndex(), this.load(s), this.shown(), this.render(), this.onOpen && this.onOpen(id2);
+      this.dropFresh(), this.cur = id2, this.writeIndex(), this.load(s), this.shown(), this.render(), this.onExample && this.onExample(), this.onOpen && this.onOpen(id2);
     }
-    create(s, title) {
-      this.saveNow(), this.dropFresh(), this.load(s);
+    // fresh: et nyt, tomt dokument, der forsvinder igen, hvis man går videre uden at skrive i det
+    create(s, title, fresh = !1) {
+      this.leaveExample(), this.saveNow(), this.dropFresh(), this.load(s);
       try {
         s = this.snapshot();
       } catch {
       }
       let id2 = uid("doc");
-      this.docs.unshift({ id: id2, title: title || s.meta.title || "Uden titel", updated: Date.now(), n: opgCount(s) }), this.write(id2, s), this.cur = id2, this.writeIndex(), this.render(), this.onOpen && this.onOpen(id2);
+      this.docs.unshift(Object.assign({ id: id2, title: title || s.meta.title || "Uden titel", updated: Date.now(), n: opgCount(s) }, fresh ? { fresh: !0 } : {})), this.write(id2, s), this.cur = id2, this.writeIndex(), this.render(), this.onExample && this.onExample(), this.onOpen && this.onOpen(id2);
     }
     // et urørt, tomt dokument (fx det, appen startede med) fjernes, når man går videre til et andet
     dropFresh() {
       let e0 = this.cur && this.entry(this.cur);
       e0 && e0.fresh && (this.docs = this.docs.filter((d) => d !== e0), store.del(DOC(e0.id)), delete this.mem[e0.id]);
     }
+    // et tomt dokument får navn og klasse fra sidst (de huskes, når man skriver dem)
     newBlank() {
-      this.create(blank(), "Uden titel");
+      let b = blank();
+      b.meta.name = pref.get("name") || "", b.meta.cls = pref.get("cls") || "", this.create(b, "Uden titel", !0);
     }
-    newSample() {
-      this.create(sample());
+    openExample(level) {
+      closePop();
+      let id2 = "ex-" + level;
+      if (this.cur === id2) {
+        this.onOpen && this.onOpen(id2);
+        return;
+      }
+      this.leaveExample(), this.saveNow(), this.dropFresh(), this.load(level === "A" ? exampleA() : exampleB()), this.cur = id2, this.exDirty = !1, this.render(), this.onExample && this.onExample(), this.onOpen && this.onOpen(id2);
     }
-    newExample(level) {
-      this.create(level === "A" ? exampleA() : exampleB());
+    // Lav min egen kopi: eksemplet, som det står nu (med ændringerne), bliver et almindeligt dokument
+    keepExample() {
+      if (!this.isExample()) return;
+      let snap = JSON.parse(JSON.stringify(this.snapshot()));
+      snap.meta.title = (snap.meta.title || "Eksempel") + " (min kopi)", this.onRename && this.onRename(snap.meta.title);
+      let id2 = uid("doc");
+      this.docs.unshift({ id: id2, title: snap.meta.title, updated: Date.now(), n: opgCount(snap) }), this.write(id2, snap), this.cur = id2, this.exDirty = !1, this.writeIndex(), this.render(), this.onExample && this.onExample(), this.onSaved && this.onSaved("ok"), toast('"' + snap.meta.title + '" er gemt i dine dokumenter');
     }
-    // Ny aflevering: titel, navn, klasse, dato og et antal opgaver (evt. med delopgaver) – navn og klasse huskes
-    newFromSkeleton(o) {
-      o.name != null && pref.set("name", o.name), o.cls != null && pref.set("cls", o.cls), this.create(skeleton(o));
+    // Man forlader et eksempel, man har ændret: ændringerne kan stadig gemmes (fra beskeden)
+    leaveExample() {
+      if (!this.isExample() || !this.exDirty) return;
+      let snap = JSON.parse(JSON.stringify(this.snapshot()));
+      this.exDirty = !1, this.onExample && this.onExample(), toast("\xC6ndringerne i eksemplet er ikke gemt", "Gem som mit dokument", () => {
+        snap.meta.title = (snap.meta.title || "Eksempel") + " (min kopi)";
+        let id2 = uid("doc");
+        this.docs.unshift({ id: id2, title: snap.meta.title, updated: Date.now(), n: opgCount(snap) }), this.write(id2, snap), this.writeIndex(), this.render(), this.onChange && this.onChange(), toast('"' + snap.meta.title + '" er gemt i dine dokumenter');
+      }, 12e3);
     }
     rename(id2, title) {
       let e = this.entry(id2);
@@ -7984,10 +7968,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
 
   // src/ui/start.js
-  var docs = null, el = null, listEl = null, q = "", visible = !1, hooks = {}, MD = ["januar", "februar", "marts", "april", "maj", "juni", "juli", "august", "september", "oktober", "november", "december"], today = () => {
-    let d = /* @__PURE__ */ new Date();
-    return d.getDate() + ". " + MD[d.getMonth()] + " " + d.getFullYear();
-  };
+  var docs = null, el = null, listEl = null, q = "", visible = !1, hooks = {};
   function initStart(store2, opts = {}) {
     docs = store2, hooks = opts, el = document.getElementById("start"), el.addEventListener("dragover", (e) => {
       [...e.dataTransfer.types || []].includes("Files") && (e.preventDefault(), el.classList.add("drop"));
@@ -8023,6 +8004,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       h("span", { class: "st-cl" }, "Forts\xE6t"),
       h("span", { class: "st-ctitle" }, cur2.title || "Uden titel"),
       h("span", { class: "st-cw" }, "\xE6ndret " + fmtWhen(cur2.updated))
+    ) : docs.isExample() && docs.exDirty ? h(
+      "button",
+      { type: "button", class: "st-continue", onclick: () => docs.openExample(docs.cur.slice(3)) },
+      h("span", { class: "st-cl" }, "Forts\xE6t"),
+      h("span", { class: "st-ctitle" }, hooks.title ? hooks.title() : "Eksempel"),
+      h("span", { class: "st-cw" }, "eksempel \xB7 dine \xE6ndringer er ikke gemt")
     ) : null;
     listEl = h("div", { class: "st-list", role: "list" });
     let search = all.length > 5 ? h("input", { type: "search", class: "st-search", placeholder: "S\xF8g i dine dokumenter", "aria-label": "S\xF8g i dine dokumenter", value: q }) : null;
@@ -8047,9 +8034,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         card("blank", "+", "Tomt dokument", "Start med en tom side", () => {
           docs.newBlank(), hooks.focusTitle && hooks.focusTitle();
         }),
-        card("hand", "1 2 3", "Ny aflevering \u2026", "Titel, navn og et antal opgaver", () => newDialog()),
-        card("ex", "B", "Eksempel B-niveau", "Se en eksempelbesvarelse", () => docs.newExample("B")),
-        card("ex", "A", "Eksempel A-niveau", "Se en eksempelbesvarelse", () => docs.newExample("A"))
+        card("ex", "B", "Eksempel B-niveau", "En eksempelbesvarelse \u2013 \xE5bnes altid som original", () => docs.openExample("B")),
+        card("ex", "A", "Eksempel A-niveau", "En eksempelbesvarelse \u2013 \xE5bnes altid som original", () => docs.openExample("A"))
       ),
       h("div", { class: "st-lh" }, h("h2", { class: "st-h" }, "Dine dokumenter"), search),
       listEl,
@@ -8106,30 +8092,6 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     inp.addEventListener("keydown", (e) => {
       e.key === "Enter" && (e.preventDefault(), finish(!0)), e.key === "Escape" && (e.preventDefault(), finish(!1));
     }), inp.addEventListener("blur", () => finish(!0));
-  }
-  function newDialog() {
-    let f = (label, input, hint) => h("label", { class: "st-f" }, h("span", { class: "st-fl" }, label), input, hint ? h("span", { class: "st-fh" }, hint) : null), title = h("input", { name: "title", placeholder: "Fx Aflevering 4", autocomplete: "off" }), name = h("input", { name: "name", value: pref.get("name") || "", placeholder: "Dit navn", autocomplete: "name" }), cls = h("input", { name: "cls", value: pref.get("cls") || "", placeholder: "Fx 2.b", autocomplete: "off" }), date = h("input", { name: "date", value: today(), autocomplete: "off" }), n2 = h("input", { name: "opgaver", type: "number", min: "1", max: "30", value: pref.get("opgaver") || "5", inputmode: "numeric" }), del = h("input", { name: "del", type: "number", min: "0", max: "10", value: "0", inputmode: "numeric" }), dlg = h(
-      "dialog",
-      { class: "st-dialog", "aria-labelledby": "stDlgH" },
-      h(
-        "form",
-        { method: "dialog" },
-        h("h2", { id: "stDlgH" }, "Ny aflevering"),
-        f("Titel", title),
-        h("div", { class: "st-2" }, f("Navn", name), f("Klasse", cls)),
-        f("Dato", date),
-        h("div", { class: "st-2" }, f("Antal opgaver", n2), f("Delopgaver pr. opgave", del, "0: ingen \xB7 2: a) og b) i hver opgave")),
-        h(
-          "div",
-          { class: "st-btns" },
-          h("button", { type: "button", class: "ghost", onclick: () => dlg.close() }, "Annuller"),
-          h("button", { type: "submit", class: "primary", value: "ok" }, "Opret")
-        )
-      )
-    );
-    dlg.addEventListener("close", () => {
-      dlg.returnValue === "ok" && (pref.set("opgaver", n2.value), docs.newFromSkeleton({ title: title.value.trim(), name: name.value.trim(), cls: cls.value.trim(), date: date.value.trim(), opgaver: n2.value, del: del.value }), hooks.focusFirst && hooks.focusFirst()), dlg.remove();
-    }), document.body.append(dlg), dlg.showModal(), title.focus();
   }
 
   // src/app.js
@@ -8890,7 +8852,7 @@ def punkt(fn, t):
   function makeEditor(host, pm) {
     return createEditor(host, pm, {
       onDocChange(tr) {
-        docs2.save(), tr.getMeta("casResult") || schedulePlan(), renderSideSoon();
+        docs2.save(!tr.getMeta("casResult")), tr.getMeta("casResult") || schedulePlan(), renderSideSoon();
       },
       onSelection(opgId) {
         opgId && opgId !== app.activeOpg && (app.activeOpg = opgId, renderSide());
@@ -8908,7 +8870,7 @@ def punkt(fn, t):
     }), docs2.onOpen = () => {
       let was = startVisible();
       hideStart(), app.mode !== "write" && setMode("write"), was && setTimeout(() => app.view && app.view.focus(), 30);
-    }, docs2.onRender = renderStart, docs2.onChange = renderStart, docs2.onRename = (t) => {
+    }, docs2.onRender = renderStart, docs2.onExample = renderExample, docs2.onChange = renderStart, docs2.onRename = (t) => {
       app.meta.title = t;
       let el2 = document.querySelector('[data-meta="title"]');
       el2 && (el2.textContent = t), $3("docName").textContent = t || "Uden titel";
@@ -8917,11 +8879,20 @@ def punkt(fn, t):
       el2 && (el2.dataset.state = s, el2.textContent = s === "saving" ? "Gemmer \u2026" : s === "ok" ? "Gemt p\xE5 denne enhed" : "Gemmes kun i denne fane");
     };
   }
+  function renderExample() {
+    let b = $3("exBanner"), ex = docs2.isExample(), dirty2 = !!(ex && docs2.exDirty);
+    b.hidden = !ex, b.classList.toggle("dirty", dirty2), ex && b.replaceChildren(
+      h("span", { class: "exb-t" }, dirty2 ? [h("b", null, "Du har \xE6ndret eksemplet. "), "\xC6ndringerne gemmes ikke, f\xF8r du gemmer det som dit eget dokument."] : [h("b", null, "Eksempel \u2013 du ser originalen. "), "Pr\xF8v dig bare frem: \xE6ndringer gemmes ikke, og eksemplet er som nyt, n\xE6ste gang du \xE5bner det."]),
+      h("button", { type: "button", class: "primary", onclick: () => docs2.keepExample() }, dirty2 ? "Gem som mit dokument" : "Lav min egen kopi")
+    );
+    let tag = $3("docMenuBtn").querySelector(".dm-tag");
+    ex && !tag ? $3("docName").after(h("span", { class: "dm-tag" }, "Eksempel")) : !ex && tag && tag.remove();
+  }
   function bindMeta() {
     document.querySelectorAll("[data-meta]").forEach((el2) => {
       let k = el2.dataset.meta;
       el2.textContent = app.meta[k] || "", el2.oninput = () => {
-        app.meta[k] = el2.textContent, k === "title" && ($3("docName").textContent = app.meta.title || "Uden titel"), docs2.save();
+        app.meta[k] = el2.textContent, k === "title" && ($3("docName").textContent = app.meta.title || "Uden titel"), (k === "name" || k === "cls") && !docs2.isExample() && pref.set(k, el2.textContent.trim()), docs2.save();
       }, el2.onkeydown = (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -9021,7 +8992,7 @@ def punkt(fn, t):
     })), mountDoc(docs2.current()), docs2.shown(), docs2.onSaved("ok"), initStart(docs2, { focusTitle: () => setTimeout(() => {
       let t = document.querySelector(".doc-title");
       t && t.focus();
-    }, 60), focusFirst: () => setTimeout(focusFirstTitle, 60) }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
+    }, 60), title: () => app.meta.title || "Eksempel" }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
       docs2.saveNow(), closeRails(), showStart();
     }), document.querySelectorAll("[data-mode-btn]").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.modeBtn)));
     let pb = $3("pyAll");
@@ -9045,6 +9016,19 @@ def punkt(fn, t):
       } }, h("span", { class: "grow" }, label), hint ? h("span", { class: "pop-hint" }, hint) : null);
       docs2.saveNow();
       let e = docs2.entry(docs2.cur);
+      if (docs2.isExample()) {
+        openPop(dmb, h(
+          "div",
+          { class: "doc-menu" },
+          h("div", { class: "dm-head" }, h("div", { class: "dm-t" }, app.meta.title || "Eksempel"), h("div", { class: "dm-w" }, docs2.exDirty ? "Eksempel \xB7 dine \xE6ndringer er ikke gemt" : "Eksempel \xB7 \xE5bnes altid som original")),
+          h("div", { class: "pop-sep" }),
+          act("Startside", () => showStart(), "", "alle dokumenter"),
+          h("div", { class: "pop-sep" }),
+          act(docs2.exDirty ? "Gem som mit dokument" : "Lav min egen kopi", () => docs2.keepExample()),
+          act("Gem som fil \u2026", () => docs2.saveFile(), "", ".vismat.json")
+        ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true");
+        return;
+      }
       openPop(dmb, h(
         "div",
         { class: "doc-menu" },
@@ -9074,6 +9058,8 @@ def punkt(fn, t):
       ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true");
     }), window.addEventListener("pagehide", () => {
       docs2.saveNow(), store.flush();
+    }), window.addEventListener("beforeunload", (e) => {
+      docs2.isExample() && docs2.exDirty && (e.preventDefault(), e.returnValue = "");
     }), document.addEventListener("visibilitychange", () => {
       document.visibilityState === "hidden" && (docs2.saveNow(), store.flush());
     }), $3("desk").addEventListener("scroll", () => {

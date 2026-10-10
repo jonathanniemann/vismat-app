@@ -590,6 +590,13 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .g-marks .mk i{width:7px;height:7px;border-radius:50%;display:inline-block}
 .g-marks .mk.none{color:var(--ink-3)}
 .g-axes{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12px;color:var(--ink-3);padding-top:8px}
+.g-axpop{padding:0 6px 6px;min-width:300px}
+.pop:has(> .g-axpop){max-width:min(470px,calc(100vw - 24px))}
+.blk-graph .g-read-row{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.g-axpop .g-axes{flex-direction:column;gap:8px;padding:2px 2px 6px}
+.g-axpop .g-ax .ax-l{min-width:74px}
+.g-axpop .blk-opts{padding:6px 2px 0}
+.g-axbtn.set::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-left:6px;vertical-align:1px}
 .g-ax{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .g-ax .ax-l{font:500 12px var(--ui);color:var(--ink-3);min-width:44px}
 .g-ax .ax-r{color:var(--ink-3)}
@@ -5569,6 +5576,10 @@ print(1 + 1)`, out: null } : {};
         away();
         return;
       }
+      if (el2.classList.contains("blk") && el2.querySelector(":scope .cas-chip:not(.im-chip)")) {
+        away();
+        return;
+      }
       el2 !== target && show(el2);
     }), paper.addEventListener("mouseleave", hide), paper.addEventListener("focusin", () => {
       target && editing(target) && away();
@@ -5593,7 +5604,9 @@ print(1 + 1)`, out: null } : {};
       }
       e.preventDefault();
       let el2 = target, at = posOf(el2);
-      if (!at) return;
+      at && startDrag(e, el2, at, () => menu(el2, at));
+    });
+    function startDrag(e, el2, at, noMove) {
       let x0 = e.clientX, y0 = e.clientY, moved = !1, gap = null, list = null, onMove = (ev) => {
         if (!moved && Math.abs(ev.clientY - y0) + Math.abs(ev.clientX - x0) < 5) return;
         moved || (moved = !0, dragging = at, list = gaps(at.whole), (at.whole ? el2.parentElement : el2).classList.add("dragging"), document.body.classList.add("is-dragging")), gap = list.reduce((b, g) => !b || Math.abs(g.y - ev.clientY) < Math.abs(b.y - ev.clientY) ? g : b, null);
@@ -5603,15 +5616,24 @@ print(1 + 1)`, out: null } : {};
         ev.clientY < dr.top + 60 ? desk.scrollTop -= 12 : ev.clientY > dr.bottom - 60 && (desk.scrollTop += 12);
       }, onUp = () => {
         if (document.removeEventListener("mousemove", onMove, !0), document.removeEventListener("mouseup", onUp, !0), document.removeEventListener("keydown", onKey, !0), line.hidden = !0, document.body.classList.remove("is-dragging"), document.querySelectorAll(".dragging").forEach((x) => x.classList.remove("dragging")), dragging = null, !moved) {
-          menu(el2, at);
+          noMove && noMove();
           return;
         }
-        gap && moveNodeTo(at.pos, gap.pos), gut.classList.remove("on"), target = null;
+        let eat = (ev) => {
+          ev.stopPropagation(), ev.preventDefault();
+        };
+        window.addEventListener("click", eat, { capture: !0, once: !0 }), setTimeout(() => window.removeEventListener("click", eat, { capture: !0 }), 0), gap && moveNodeTo(at.pos, gap.pos), gut.classList.remove("on"), target = null;
       }, onKey = (ev) => {
         ev.key === "Escape" && (gap = null, onUp());
       };
       document.addEventListener("mousemove", onMove, !0), document.addEventListener("mouseup", onUp, !0), document.addEventListener("keydown", onKey, !0);
-    }), blockMenuFn = (anchor, el2) => {
+    }
+    paper.addEventListener("mousedown", (e) => {
+      let chip = e.button === 0 && e.target.closest && e.target.closest(".blk .cas-chip:not(.im-chip)");
+      if (!chip || app.mode !== "write") return;
+      let el2 = chip.closest(".blk"), at = el2 && posOf(el2);
+      at && startDrag(e, el2, at, null);
+    }, !0), blockMenuFn = (anchor, el2) => {
       let at = posOf(el2);
       at && menu(el2, at, anchor);
     };
@@ -5723,7 +5745,7 @@ print(1 + 1)`, out: null } : {};
     // CAS-mærket i margenen på et Plot eller en tabel: viser, hvad CAS gør med blokken, og skifter til de andre muligheder
     // (som formellinjernes CAS-knap). menu() giver punkterne: { label, desc, on, disabled, note, act }
     modeChip(menu) {
-      let t = h("span", { class: "cas-chip-t" }), b = h("button", { type: "button", class: "cas-chip blk-cas", "aria-haspopup": "menu", "aria-expanded": "false", title: "V\xE6lg, hvad CAS skal g\xF8re med blokken" }, t, h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE"));
+      let t = h("span", { class: "cas-chip-t" }), b = h("button", { type: "button", class: "cas-chip blk-cas", "aria-haspopup": "menu", "aria-expanded": "false", title: "Klik: v\xE6lg, hvad CAS skal g\xF8re med blokken \xB7 Tr\xE6k: flyt blokken" }, t, h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE"));
       return b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => {
         b.setAttribute("aria-expanded", "true");
         let items = menu().map((it) => {
@@ -5778,7 +5800,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         e.preventDefault(), d === "downward" ? leaveDown(this.id) : d === "upward" && leaveUp(this.id);
       }), this.chip = h(
         "button",
-        { type: "button", class: "cas-chip", "aria-haspopup": "menu", "aria-expanded": "false", title: "V\xE6lg hvad CAS skal g\xF8re med formlen (Alt+Enter, eller skriv \\ i formlen)" },
+        { type: "button", class: "cas-chip", "aria-haspopup": "menu", "aria-expanded": "false", title: "Klik: v\xE6lg hvad CAS skal g\xF8re (Alt+Enter, eller skriv \\ i formlen) \xB7 Tr\xE6k: flyt linjen" },
         h("span", { class: "cas-chip-t" }),
         h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE")
       ), this.chip.addEventListener("mousedown", (e) => e.preventDefault()), this.chip.addEventListener("click", (e) => this.openMenu(e.detail === 0)), this.sym = h("span", { class: "m-sym" }), this.res = h("span", { class: "m-res" }), this.out = h("div", { class: "m-out" }, this.sym, this.res), this.err = h("div", { class: "m-err", role: "status" }), this.py = this.pyToggle(), this.py.classList.add("py-mini"), this.hint = h("span", { class: "m-hint", "aria-hidden": "true" }, "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter");
@@ -6482,13 +6504,24 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         h("div", { class: "blk-head" }, this.list, h("span", { class: "spacer" }), this.menuBtn()),
         this.plot,
         h("div", { class: "g-foot" }, this.legend, this.hint3, h("span", { class: "spacer" }), this.py),
-        // Aflæs under grafen, med aflæsningerne lige efter knappen
-        this.readRow = h("div", { class: "g-read-row" }, this.readBtn, this.marksEl),
-        h("div", { class: "g-axes" }, axis("1. akse", "xlab", "xmin", "xmax", "F\xF8rsteaksen"), axis("2. akse", "ylab", "ymin", "ymax", "Andenaksen")),
-        // betydende cifre nederst til venstre (som i tabeller)
-        h("div", { class: "blk-opts" }, this.precision),
+        // Aflæs under grafen, med aflæsningerne lige efter knappen; akser og cifre i en lille menu til højre
+        // (blokken har samme højde, uanset om man retter i den – intet hopper)
+        this.readRow = h("div", { class: "g-read-row" }, this.readBtn, this.marksEl, h("span", { class: "spacer" }), this.axBtn = h("button", { type: "button", class: "ghost sm g-axbtn", "aria-haspopup": "dialog", title: "Aksernes navne og intervaller, og antal betydende cifre" }, "Akser og cifre \u2026")),
         this.err
-      ), this.watchWidth(this.plot), is3 && this.rotation();
+      ), this.axBox = h(
+        "div",
+        { class: "g-axpop" },
+        h("div", { class: "pop-title" }, "Akser"),
+        h("div", { class: "g-axes" }, axis("F\xF8rsteakse", "xlab", "xmin", "xmax", "F\xF8rsteaksen"), axis("Andenakse", "ylab", "ymin", "ymax", "Andenaksen")),
+        h("div", { class: "pop-sep" }),
+        h("div", { class: "blk-opts" }, this.precision)
+      ), this.axBtn.addEventListener("mousedown", (e) => e.preventDefault()), this.axBtn.addEventListener("click", () => {
+        if (currentPop() && currentPop()._anchor === this.axBtn) {
+          closePop();
+          return;
+        }
+        openPop(this.axBtn, this.axBox, { noFocus: !0, owner: this });
+      }), this.watchWidth(this.plot), is3 && this.rotation();
     }
     // 3D-plot: træk med musen (eller piletasterne) drejer fladen; vinklen gemmes i dokumentet og bruges i PDF'en
     rotation() {
@@ -6643,9 +6676,13 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let dt = svg2 ? distText(shown, info, b.digits) : [];
       this.readBtn.hidden = b.dim === "3" || dt.length > 0;
       let mt = dt.length ? [] : svg2 ? marksText(shown, info && info.srcs || b.fns, b.digits) : [];
-      this.marksEl.innerHTML = dt.length ? dt.map((t) => '<span class="mk dist">' + t + "</span>").join("") : mt.map((m) => '<span class="mk"><i style="background:' + LIVE.s[m.i % 4] + '"></i>' + m.text + "</span>").join(""), this.marksEl.hidden = !mt.length && !dt.length, svg2 && !dt.length && (b.marks || []).length && !mt.length && (this.marksEl.hidden = !1, this.marksEl.innerHTML = '<span class="mk none">Ingen punkter at afl\xE6se i det viste interval</span>'), this.readRow.hidden = this.readBtn.hidden && this.marksEl.hidden, shown && shown.ts && shown.ts.length && (this.in_xmin.placeholder = markNum(shown.ts[0]), this.in_xmax.placeholder = markNum(shown.ts[shown.ts.length - 1]));
+      this.marksEl.innerHTML = dt.length ? dt.map((t) => '<span class="mk dist">' + t + "</span>").join("") : mt.map((m) => '<span class="mk"><i style="background:' + LIVE.s[m.i % 4] + '"></i>' + m.text + "</span>").join(""), this.marksEl.hidden = !mt.length && !dt.length, svg2 && !dt.length && (b.marks || []).length && !mt.length && (this.marksEl.hidden = !1, this.marksEl.innerHTML = '<span class="mk none">Ingen punkter at afl\xE6se i det viste interval</span>'), shown && shown.ts && shown.ts.length && (this.in_xmin.placeholder = markNum(shown.ts[0]), this.in_xmax.placeholder = markNum(shown.ts[shown.ts.length - 1]));
       let ax = axisNames({}, info);
-      this.in_xlab && (this.in_xlab.placeholder = ax.x), this.in_ylab && (this.in_ylab.placeholder = ax.y), this.readBtn.classList.toggle("on", !!(b.marks || []).length);
+      if (this.in_xlab && (this.in_xlab.placeholder = ax.x), this.axBtn) {
+        let A = this.node.attrs;
+        this.axBtn.classList.toggle("set", ["xlab", "ylab", "xmin", "xmax", "ymin", "ymax", "digits"].some((k) => A[k] != null && String(A[k]).trim() !== ""));
+      }
+      this.in_ylab && (this.in_ylab.placeholder = ax.y), this.readBtn.classList.toggle("on", !!(b.marks || []).length);
     }
   }, num = (v, d) => {
     let x = Number(String(v ?? "").replace(",", "."));
@@ -6682,7 +6719,15 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => this.set({ model: k })), this.models.append(b);
       }), this.nameIn = h("input", { id: "tn-" + this.id, class: "mini", value: this.node.attrs.name, maxlength: 4, "aria-label": "Funktionsnavn" }), this.varIn = h("input", { id: "tv-" + this.id, class: "mini v", value: this.node.attrs.v, maxlength: 4, "aria-label": "Variabel" }), this.nameIn.addEventListener("input", () => this.set({ name: this.nameIn.value.trim() })), this.varIn.addEventListener("input", () => this.set({ v: this.varIn.value.trim() }));
       for (let inp of [this.nameIn, this.varIn]) inp.addEventListener("focus", () => inp.select());
-      this.pointsBtn = h("button", { type: "button", class: "ghost sm t-rbtn", role: "switch", title: "Plot punkterne fra tabellen" }, "Plot punkterne"), this.pointsBtn.addEventListener("mousedown", (e) => e.preventDefault()), this.pointsBtn.addEventListener("click", () => this.set({ plot: ["points", "line"].includes(this.node.attrs.plot) ? "none" : "points" })), this.dtype = h("span", { class: "t-dtype" }), this.plots = h("span", { class: "seg sm", role: "radiogroup", "aria-label": "Statistik" });
+      this.pointsBtn = h("button", { type: "button", class: "ghost sm t-rbtn", role: "switch", title: "Plot punkterne fra tabellen" }, "Plot punkterne"), this.pointsBtn.addEventListener("mousedown", (e) => e.preventDefault()), this.pointsBtn.addEventListener("click", () => this.set({ plot: ["points", "line"].includes(this.node.attrs.plot) ? "none" : "points" }));
+      let go = (label, title) => {
+        let b = h("button", { type: "button", class: "ghost sm t-rbtn", title }, label);
+        return b.addEventListener("mousedown", (e) => e.preventDefault()), b.addEventListener("click", () => {
+          let it = this.modes().find((m) => m.label === label);
+          it && !it.disabled && it.act();
+        }), b;
+      };
+      this.toReg = go("Regression", "Lav regression p\xE5 data: line\xE6r, eksponentiel, potens eller andengrad"), this.toStat = go("Statistik", "Middelv\xE6rdi, spredning, kvartils\xE6t, boksplot, sumkurve \u2026"), this.dtype = h("span", { class: "t-dtype" }), this.plots = h("span", { class: "seg sm", role: "radiogroup", "aria-label": "Statistik" });
       let TIPS = {
         stat: "Middelv\xE6rdi, spredning, kvartils\xE6t og boksplot af observationerne",
         qq: "Observationerne mod normalfordelingens fraktiler: ligger punkterne p\xE5 en ret linje, er data normalfordelte",
@@ -6715,7 +6760,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       this.drawRows(), this.casLbl = this.modeChip(() => this.modes()), this.dom.append(
         this.casLbl,
         // (ingen fast "Tabel"-etiket: den lignede et valg i rækken; mærket i margenen viser og skifter Tabel/Regression/Statistik)
-        h("div", { class: "blk-head" }, this.models, this.dtype, this.plots, this.pointsBtn, h("span", { class: "spacer" }), this.menuBtn()),
+        h("div", { class: "blk-head" }, this.models, this.dtype, this.plots, this.pointsBtn, this.toReg, this.toStat, h("span", { class: "spacer" }), this.menuBtn()),
         this.saveRow,
         h("div", { class: "t-grid" }, h("div", { class: "t-left" }, h("div", { class: "t-scroll" }, h("table", { class: "t-edit" }, this.head, this.body, this.foot)), add2), this.plot),
         h("div", { class: "g-foot" }, this.stmt, h("span", { class: "spacer" }), this.py),
@@ -6907,7 +6952,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let nm = sum ? sumName(a) : a.name;
       document.activeElement !== this.nameIn && this.nameIn.value !== nm && (this.nameIn.value = nm), fit(this.nameIn), fit(this.varIn), this.saveRow.querySelectorAll(".t-sv").forEach((el2) => {
         el2.innerHTML = tex(nameTex(a.v || "x"), !0);
-      }), this.plots.hidden = mode2 !== "stat", this.pointsBtn.hidden = mode2 !== "tabel", this.pointsBtn.setAttribute("aria-checked", String(["points", "line"].includes(a.plot))), this.casLbl.setLabel(mode2 === "reg" ? "Regression" : mode2 === "stat" ? "Statistik" : "Tabel"), this.casLbl.classList.toggle("none", mode2 === "tabel"), this.residBtn.setAttribute("aria-checked", String(!!a.resid)), this.residBtn.textContent = a.resid ? "\u2212 Skjul residualer" : "+ Vis residualer";
+      }), this.plots.hidden = mode2 !== "stat", this.pointsBtn.hidden = mode2 !== "tabel";
+      let md = this.modes(), reg = md.find((m) => m.label === "Regression");
+      this.toReg.hidden = this.toStat.hidden = mode2 !== "tabel", this.toReg.disabled = !!(reg && reg.disabled), this.toReg.title = reg && reg.disabled ? reg.note : "Lav regression p\xE5 data: line\xE6r, eksponentiel, potens eller andengrad", this.pointsBtn.setAttribute("aria-checked", String(["points", "line"].includes(a.plot))), this.casLbl.setLabel(mode2 === "reg" ? "Regression" : mode2 === "stat" ? "Statistik" : "Tabel"), this.casLbl.classList.toggle("none", mode2 === "tabel"), this.residBtn.setAttribute("aria-checked", String(!!a.resid)), this.residBtn.textContent = a.resid ? "\u2212 Skjul residualer" : "+ Vis residualer";
       let R = this.showRoles(mode2), view2 = mode2 === "stat" ? R.view : null, grouped = view2 === "sum" || view2 === "hist";
       this.dom.classList.toggle("t-plain", plain && (a.plot || "none") === "none"), this.dom.classList.toggle("t-sum", grouped), this.dom.classList.toggle("t-qq", view2 === "qq"), this.dom.classList.toggle("t-stat", view2 === "stat");
       let hard = info && info.error && !info.soft ? info.error : fresh && fresh.error ? fresh.error : "";

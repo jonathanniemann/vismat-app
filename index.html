@@ -9130,14 +9130,14 @@ def punkt(fn, t):
       return el2.addEventListener("mousedown", (e) => e.preventDefault()), el2.addEventListener("click", () => go(id2)), el2;
     };
     host.append(
+      b("opgave", "Opgave", "Ny opgave (\\opgave)"),
+      b("delopgave", "Delopgave", "a), b), c) \u2026 (\\delopgave)"),
+      h("span", { class: "tsep", "aria-hidden": "true" }),
       b("math_line", "Formel", "Formel p\xE5 egen linje ($$ eller \\formel)"),
       b("inline", "Formel i tekst", "Formel midt i en s\xE6tning ($)"),
       b("graph", "Plot", "Grafer, punkter, vektorer (\\plot)"),
       b("table", "Tabel", "Data, regression og statistik (\\tabel)"),
-      b("python", "Python", "Egen Python-kode (\\python)"),
-      h("span", { class: "tsep", "aria-hidden": "true" }),
-      b("delopgave", "Delopgave", "a), b), c) \u2026 (\\delopgave)"),
-      b("opgave", "Opgave", "Ny opgave (\\opgave)")
+      b("python", "Python", "Egen Python-kode (\\python)")
     );
   }
   async function init() {

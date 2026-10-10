@@ -914,10 +914,11 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .app.with-py .rail.left .rail-close{display:block}
   .app.with-py .only-narrow{display:inline-flex}
 }
-.ex-banner{position:relative;box-sizing:border-box;max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:10px 16px 10px 20px;background:var(--accent-soft);color:var(--ink);font-size:13px;border-bottom:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
+/* (et kort for sig med luft over – ikke hæftet på topbjælken) */
+.ex-banner{position:relative;box-sizing:border-box;max-width:860px;margin:18px auto 4px;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:12px 14px 12px 18px;background:var(--accent-soft);color:var(--ink);font-size:13px;border:1px solid color-mix(in srgb,var(--accent) 20%,transparent);border-radius:10px}
 .ex-banner[hidden]{display:none}
 .ex-banner.kept{background:var(--cas-soft)}
-.ex-banner.closing{height:0!important;padding-top:0;padding-bottom:0;opacity:0;overflow:hidden;border-width:0;transition:height .3s ease,padding .3s ease,opacity .2s ease}
+.ex-banner.closing{height:0!important;padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;opacity:0;overflow:hidden;border-width:0;transition:height .3s ease,padding .3s ease,margin .3s ease,opacity .2s ease}
 .ex-banner .exb-t{flex:1;min-width:220px;line-height:1.4}
 .ex-banner b{font-weight:600}
 .ex-banner.dirty{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}

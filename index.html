@@ -105,7 +105,7 @@ img.ProseMirror-separator {
 </style>
 <style>
 :root{
-  --desk:#F7F7F5; --paper:#FFFFFF; --ink:#37352F; --ink-2:#6B6A65; --ink-3:#75746F;
+  --desk:#F7F7F5; --paper:#FFFFFF; --ink:#37352F; --ink-2:#6B6A65; --ink-3:#71706B;
   --field:#D3D2CE;
   --rule:#E9E9E7; --rule-2:#F1F1EF; --hover:rgba(55,53,47,.06); --pop:#FFFFFF;
   --accent:#2383E2; --accent-ink:#FFFFFF; --accent-soft:#E7F1FB;
@@ -370,7 +370,7 @@ math-field.mf-inline{display:inline-block;font-size:17px;min-width:24px;border:0
 .m-main{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:2px 14px;min-height:40px}
 /* CAS-knappen hænger i margenen, så formlerne flugter med teksten */
 .cas-chip{position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;gap:3px;height:26px;box-sizing:border-box;border:1px solid transparent;background:none;color:var(--cas);border-radius:7px;padding:0 6px;cursor:pointer;font:600 12.5px var(--ui);white-space:nowrap}
-.cas-chip-c{font-size:8px;opacity:0;width:0;overflow:hidden;transition:opacity .1s}
+.cas-chip-c{font-size:8px;opacity:.35;transition:opacity .1s}
 .cas-chip:hover,.cas-chip[aria-expanded=true]{background:var(--cas-soft)}
 .cas-chip:hover .cas-chip-c,.cas-chip[aria-expanded=true] .cas-chip-c,.cas-chip:focus-visible .cas-chip-c{opacity:.7;width:auto}
 /* uden handling: kun synlig, når man er på linjen */
@@ -424,7 +424,7 @@ math-field.mf-inline{display:inline-block;font-size:17px;min-width:24px;border:0
 .pal-d{font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .pop.pal-pop{width:min(440px,calc(100vw - 24px));max-width:none}
 @media (max-width:420px){.pal-d{display:none}}
-.cas-desc{font-size:11.5px;line-height:1.4;color:var(--ink-3);padding:6px 10px 0;margin-top:5px;border-top:1px solid var(--rule-2);min-height:2.8em}
+.cas-desc{font-size:11.5px;line-height:1.4;color:var(--ink-3);padding:6px 10px;margin-top:5px;border-top:1px solid var(--rule-2);min-height:calc(2.8em + 12px);box-sizing:border-box;display:flex;align-items:center}
 .pal-foot{position:sticky;bottom:-4px;background:var(--pop,var(--paper));font-size:11px;color:var(--ink-3);padding:5px 10px 4px;border-top:1px solid var(--rule-2);margin-top:3px}
 .pop-item .chk{width:14px;color:var(--ink);font-weight:600;flex:none}
 .pop-item .grow{flex:1}
@@ -752,6 +752,9 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .primary{border:0;background:var(--accent);color:var(--accent-ink);border-radius:6px;padding:0 14px;height:32px;font-weight:500;cursor:pointer}
 .primary:disabled{opacity:.6;cursor:progress}
 #pages{display:grid;justify-items:center;gap:22px;padding-top:6px}
+#pages.zoom{justify-items:start;overflow-x:auto;-webkit-overflow-scrolling:touch}
+#pages.zoom .pdfpage,.pdfpage[title]{cursor:zoom-in}
+#pages.zoom .pdfpage{cursor:zoom-out}
 #pages.updating .pdfpage{opacity:.75;transition:opacity .2s}
 /* afleveringen opdateres: siderne nedtonet og en status over dem, til alt er klar */
 #pages.busy .page-wrap{opacity:.45;transition:opacity .25s}
@@ -913,12 +916,17 @@ math-field::part(virtual-keyboard-toggle){display:none}
 }
 .ex-banner{position:relative;box-sizing:border-box;max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:10px 16px 10px 20px;background:var(--accent-soft);color:var(--ink);font-size:13px;border-bottom:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
 .ex-banner[hidden]{display:none}
+.ex-banner.kept{background:var(--cas-soft)}
+.ex-banner.closing{height:0!important;padding-top:0;padding-bottom:0;opacity:0;overflow:hidden;border-width:0;transition:height .3s ease,padding .3s ease,opacity .2s ease}
 .ex-banner .exb-t{flex:1;min-width:220px;line-height:1.4}
 .ex-banner b{font-weight:600}
 .ex-banner.dirty{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 25%,transparent)}
 .ex-banner .primary{height:30px;font-size:13px;white-space:nowrap}
 .dm-tag{display:inline-block;margin-left:6px;padding:0 6px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font:600 11px/18px var(--ui);vertical-align:1px}
 #docMenuBtn .dm-tag{margin-left:2px}
+.help-more{margin:6px 8px 4px;font-size:12.5px;color:var(--ink-2)}
+.help-more summary{cursor:pointer;color:var(--ink-3);font-weight:500}
+.help-more ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px}
 /* Startside */
 .start{position:fixed;inset:0;z-index:50;background:var(--desk);overflow:auto;-webkit-overflow-scrolling:touch}
 .start[hidden]{display:none}
@@ -1021,14 +1029,16 @@ body.on-start{overflow:hidden}
     <input type="file" id="fileIn" accept=".json,.vismat.json,application/json" hidden>
     <button type="button" class="rail-btn help-btn" id="helpBtn"><span aria-hidden="true">?</span> Sådan skriver du</button>
     <template id="helpTpl"><div class="help-pop"><div class="pop-title">Sådan skriver du</div><ol>
-        <li>Skriv tekst som i Word. <b>Formel</b> giver en linje med matematik, <b>Formel i tekst</b> matematik midt i en sætning.</li>
-        <li>En formel er bare en formel, indtil du vælger, hvad CAS skal gøre: klik til venstre for den, eller skriv <code>\</code> og fx <code>løs</code>. Vælg <b>Definér</b> på <code>f(x)=…</code> for at bruge <code>f</code> længere nede.</li>
-        <li>Skriv <code>/</code> eller <code>\</code> i teksten, eller klik på <b>+</b> på en tom linje eller på håndtaget <b>▕</b>&nbsp; i margenen, for at indsætte formel, opgave, plot (grafer, punkter, vektorer), tabel … Genveje: <code>$</code>, <code>$$</code>, <code>#</code> og <code>a)</code>.</li>
-        <li>I en formel: <b>Enter</b> skriver videre med tekst, <b>Shift+Enter</b> giver en ny formel. En formel i teksten slutter med <code>$</code> eller <b>Esc</b>.</li>
-        <li>Betingelser: <code>x^2=4; x&gt;0</code>. Ligningssystemer: <code>x+y=5; x-y=1</code>. Definitionsmængde: <code>C(t):=…; 0≤t≤36</code> (grafen og Løs bruger den).</li>
-        <li>Binomialfordeling: <code>binompdf(n; p; k)</code> og <code>binomcdf(n; p; k)</code>, binomialkoefficient <code>K(n; k)</code>. Funktioner af flere variable: <code>w(t; v):=…</code>.</li>
-        <li>Et punkt skrives <code>A := (4, 3)</code>, og i et Plot er <code>(4, 3)</code> et punkt. Har koordinaterne decimaler, skilles de med semikolon: <code>(1,5; 2)</code>. Midt i en udregning læses (4,3) som decimaltallet 4,3.</li>
-      </ol></div></template>
+        <li><b>Tekst</b> skrives som i Word. <b>Formel</b>, <b>Plot</b>, <b>Tabel</b> … indsættes med knapperne foroven – eller skriv <code>\</code> i teksten.</li>
+        <li>En formel regnes ud, når du vælger, hvad CAS skal gøre: klik på <b>CAS ▾</b> til venstre for den (eller <kbd>Alt</kbd>+<kbd>Enter</kbd>). Slutter formlen med <code>=</code>, regnes den ud af sig selv.</li>
+        <li><b>Enter</b> i en formel skriver videre med tekst; <b>Shift+Enter</b> giver en ny formel. Træk i CAS-mærket for at flytte en linje.</li>
+      </ol>
+      <details class="help-more"><summary>Mere</summary><ul>
+        <li>Genveje i teksten: <code>$$</code> formel, <code>$</code> formel i tekst, <code>a)</code> delopgave.</li>
+        <li>Betingelser: <code>x^2=4; x&gt;0</code>. Ligningssystemer: <code>x+y=5; x-y=1</code>. Definitionsmængde: <code>C(t):=…; 0≤t≤36</code>.</li>
+        <li>Binomialfordeling: <code>binompdf(n; p; k)</code>, <code>binomcdf(n; p; k)</code>, <code>K(n; k)</code>. Funktioner af flere variable: <code>w(t; v):=…</code>.</li>
+        <li>Et punkt: <code>A := (4, 3)</code>; med decimaler skilles koordinaterne med semikolon: <code>(1,5; 2)</code>.</li>
+      </ul></details></div></template>
   </nav>
 
   <main class="desk" id="desk">
@@ -5388,12 +5398,12 @@ print(1 + 1)`, out: null } : {};
     }, seg = (k, choices, def, label) => h("span", { class: "seg sm", role: "radiogroup", "aria-label": label }, choices.map(([v, t]) => {
       let b = h("button", { type: "button", role: "radio", "aria-checked": String((opts[k] || def) === v), dataset: { k: k + "-" + v }, title: COMMAND_HINT[v] ? "Eller skriv " + COMMAND_HINT[v] + " i formlen" : null }, t);
       return b.addEventListener("click", () => setOpt(k, v)), b;
-    })), row2 = (label, ...kids) => h("div", { class: "opt-row" }, h("span", { class: "opt-l" }, label), ...kids);
+    })), row2 = (label, ...kids) => h("div", { class: "opt-row" }, label ? h("span", { class: "opt-l" }, label) : null, ...kids);
     function options() {
       let rows = [], vPh = info.vDisp || "x";
-      if (cur2 === "solve" && !info.system && rows.push(row2("variabel", input("v", vPh, "narrow", "L\xF8s for (variabel)"), seg("dom", [["R", "\u211D"], ["C", "\u2102"]], "R", "Talm\xE6ngde"))), cur2 === "solve" && !info.system && !info.conditions && !/;/.test(a.latex || "") && rows.push(h("div", { class: "opt-row" }, h("span", { class: "opt-hint" }, "Kun positive l\xF8sninger? Skriv fx ", h("code", { style: "white-space:nowrap" }, "; " + vPh + " > 0"), " efter ligningen"))), cur2 === "diff" && rows.push(row2("mht.", input("v", vPh, "narrow", "Differenti\xE9r med hensyn til"))), cur2 === "integrate" && (rows.push(row2("mht.", input("v", vPh, "narrow", "Integr\xE9r med hensyn til"))), rows.push(row2("fra", input("a", "", "narrow", "Nedre gr\xE6nse"), h("span", { class: "opt-l" }, "til"), input("b", "", "narrow", "\xD8vre gr\xE6nse")))), (cur2 !== "define" || info.defKind === "var") && rows.push(row2("svar", seg("mode", [["exact", "Pr\xE6cist"], ["decimal", "Decimal"]], info.floaty ? "decimal" : "exact", "Svarform"))), rows.push(h("div", { class: "opt-row" }, precisionControl(opts.digits, (v) => setOpt("digits", v), host.id))), /\\(?:arc)?(?:sin|cos|tan)|\\degree|°|\\circ/.test(a.latex || "")) {
+      if (cur2 === "solve" && !info.system && rows.push(row2("Variabel", input("v", vPh, "narrow", "L\xF8s for (variabel)"), seg("dom", [["R", "\u211D"], ["C", "\u2102"]], "R", "Talm\xE6ngde"))), cur2 === "solve" && !info.system && !info.conditions && !/;/.test(a.latex || "") && rows.push(h("div", { class: "opt-row" }, h("span", { class: "opt-hint" }, "Kun positive l\xF8sninger? Skriv fx ", h("code", { style: "white-space:nowrap" }, "; " + vPh + " > 0"), " efter ligningen"))), cur2 === "diff" && rows.push(row2("Mht.", input("v", vPh, "narrow", "Differenti\xE9r med hensyn til"))), cur2 === "integrate" && (rows.push(row2("Mht.", input("v", vPh, "narrow", "Integr\xE9r med hensyn til"))), rows.push(row2("Fra", input("a", "", "narrow", "Nedre gr\xE6nse"), h("span", { class: "opt-l" }, "til"), input("b", "", "narrow", "\xD8vre gr\xE6nse")))), (cur2 !== "define" || info.defKind === "var") && rows.push(row2(null, seg("mode", [["exact", "Pr\xE6cist"], ["decimal", "Decimal"]], info.floaty ? "decimal" : "exact", "Svarform"))), rows.push(h("div", { class: "opt-row" }, precisionControl(opts.digits, (v) => setOpt("digits", v), host.id))), /\\(?:arc)?(?:sin|cos|tan)|\\degree|°|\\circ/.test(a.latex || "")) {
         let angle = app.meta.angle === "rad" || app.meta.angle === "deg" ? app.meta.angle : "auto";
-        rows.push(row2("vinkler", h(
+        rows.push(row2("Vinkler", h(
           "span",
           { class: "seg sm", role: "radiogroup", "aria-label": "Vinkelenhed (hele dokumentet)" },
           [["auto", "Auto", "Grader i trekantsberegninger, radianer i funktioner, integraler og n\xE5r der st\xE5r \u03C0"], ["deg", "Grader"], ["rad", "Radianer"]].map(([v, t, tip]) => {
@@ -5412,7 +5422,7 @@ print(1 + 1)`, out: null } : {};
           let inp = input("save", ph, "narrow save", "Gem resultatet som");
           inp.addEventListener("keydown", (e) => {
             e.key === "Enter" && (e.preventDefault(), e.stopPropagation(), inp.value.trim() || setOpt("save", ph), closePop());
-          }), rows.push(row2("gem som", inp, cur2 === "solve" ? h("span", { class: "opt-hint" }, "flere l\xF8sninger: " + sub(opts.save || ph) + ", " + sub((opts.save || ph).replace(/_\{?\d+\}?$/, "") + "_2") + " \u2026") : null));
+          }), rows.push(row2("Gem som", inp, cur2 === "solve" ? h("span", { class: "opt-hint" }, "flere l\xF8sninger: " + sub(opts.save || ph) + ", " + sub((opts.save || ph).replace(/_\{?\d+\}?$/, "") + "_2") + " \u2026") : null));
         } else {
           let more = h("button", { type: "button", class: "opt-save", dataset: { k: "save-open" } }, h("span", { class: "chk", "aria-hidden": "true" }, "+"), " Gem resultatet \u2026");
           more.addEventListener("click", () => {
@@ -5424,7 +5434,7 @@ print(1 + 1)`, out: null } : {};
       }
       return rows.length ? h("div", { class: "cas-opts" }, rows) : null;
     }
-    let deflt = cur2 ? ACTION_BTNS.find((x) => x[0] === cur2)[1] + ": " + ACTION_DESC[cur2] : "V\xE6lg, hvad CAS skal g\xF8re med formlen", desc = h("div", { class: "cas-desc", "aria-live": "polite" }, deflt);
+    let deflt = cur2 ? ACTION_BTNS.find((x) => x[0] === cur2)[1] + ": " + ACTION_DESC[cur2] : "V\xE6lg, hvad CAS skal g\xF8re med formlen (genvej: Alt+Enter)", desc = h("div", { class: "cas-desc", "aria-live": "polite" }, deflt);
     ACTION_GROUPS.forEach((g, gi) => {
       let grp = h("div", { class: "cas-grp" + (gi ? " gap" : "") });
       for (let [k, t] of g) {
@@ -7350,7 +7360,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       pdfjsP = null;
     })), pdfjsP;
   }
-  var seq = 0, shownKey = null, last = { key: null, blob: null }, timer = null, pdfInput = (model, marks = !0) => ({ model: Object.assign(
+  var zoom = !1, seq = 0, shownKey = null, last = { key: null, blob: null }, timer = null, pdfInput = (model, marks = !0) => ({ model: Object.assign(
     { meta: model.meta, blocks: model.blocks.map((b) => {
       let c = Object.assign({}, b);
       return delete c.svg, c;
@@ -7366,7 +7376,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     return last;
   }
   async function drawPdf(blob, my) {
-    let doc = await (await loadPdfjs()).getDocument({ data: new Uint8Array(await blob.arrayBuffer()), isEvalSupported: !1 }).promise, host = $("pages"), w = Math.max(280, Math.min(PW, host.clientWidth - 8)), dpr = window.devicePixelRatio || 1, wraps = [];
+    let doc = await (await loadPdfjs()).getDocument({ data: new Uint8Array(await blob.arrayBuffer()), isEvalSupported: !1 }).promise, host = $("pages"), w = zoom ? PW : Math.max(280, Math.min(PW, host.clientWidth - 8)), dpr = window.devicePixelRatio || 1, wraps = [];
     for (let i = 1; i <= doc.numPages; i++) {
       let page = await doc.getPage(i), scale = w / page.getViewport({ scale: 1 }).width, vp = page.getViewport({ scale: scale * dpr }), canvas = h("canvas", { width: Math.round(vp.width), height: Math.round(vp.height), "aria-label": "Side " + i + " af " + doc.numPages });
       if (await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise, my !== seq) return !1;
@@ -7375,7 +7385,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         opgs = "," + [...(await page.getTextContent()).items.map((q2) => q2.str).join(" ").matchAll(/Opgave\s+(\d+)/g)].map((m) => m[1]).join(",") + ",";
       } catch {
       }
-      wraps.push(h("div", { class: "page-wrap pdfpage", style: "width:" + w + "px", dataset: { opgs } }, canvas));
+      wraps.push(h("div", { class: "page-wrap pdfpage", style: "width:" + w + "px", dataset: { opgs }, title: w < PW || zoom ? zoom ? "Tryk for at se hele siden" : "Tryk for at zoome ind" : null }, canvas));
     }
     let keep = host.querySelector(".pdfpage") ? null : handTarget;
     if (host.replaceChildren(...wraps), keep || handTarget) {
@@ -7457,6 +7467,11 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     openPop(btn, list, { role: "menu" });
   }
   function initChecks() {
+    let host = $("pages");
+    host.addEventListener("click", (e) => {
+      !e.target.closest(".pdfpage") || !zoom && host.clientWidth - 8 >= PW || (zoom = !zoom, host.classList.toggle("zoom", zoom), last.blob && drawPdf(last.blob, ++seq).catch(() => {
+      }));
+    });
     let btn = $("handCheck");
     btn && btn.addEventListener("click", () => {
       if (currentPop() && currentPop()._anchor === btn) {
@@ -7952,7 +7967,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let snap = JSON.parse(JSON.stringify(this.snapshot()));
       snap.meta.title = (snap.meta.title || "Eksempel") + " (min kopi)", this.onRename && this.onRename(snap.meta.title);
       let id2 = uid("doc");
-      this.docs.unshift({ id: id2, title: snap.meta.title, updated: Date.now(), n: opgCount(snap) }), this.write(id2, snap), this.cur = id2, this.exDirty = !1, this.writeIndex(), this.render(), this.onExample && this.onExample(), this.onSaved && this.onSaved("ok"), toast('"' + snap.meta.title + '" er gemt i dine dokumenter');
+      this.docs.unshift({ id: id2, title: snap.meta.title, updated: Date.now(), n: opgCount(snap) }), this.write(id2, snap), this.cur = id2, this.exDirty = !1, this.justKept = snap.meta.title, this.writeIndex(), this.render(), this.onExample && this.onExample(), this.onSaved && this.onSaved("ok");
     }
     // Man forlader et eksempel, man har ændret: ændringerne kan stadig gemmes (fra beskeden)
     leaveExample() {
@@ -8967,7 +8982,16 @@ def punkt(fn, t):
   }
   function renderExample() {
     let b = $3("exBanner"), ex = docs2.isExample(), dirty2 = !!(ex && docs2.exDirty);
-    b.hidden = !ex, b.classList.toggle("dirty", dirty2), ex && b.replaceChildren(
+    if (!ex && docs2.justKept && !b.hidden) {
+      let t = docs2.justKept;
+      docs2.justKept = null, b.classList.remove("dirty"), b.classList.add("kept"), b.replaceChildren(h("span", { class: "exb-t" }, h("b", null, "\u2713 Gemt i dine dokumenter "), 'som "' + t + '". \xC6ndringer gemmes nu automatisk.')), clearTimeout(b._t), b._t = setTimeout(() => {
+        b.style.height = b.offsetHeight + "px", b.offsetHeight, b.classList.add("closing"), setTimeout(() => {
+          b.hidden = !0, b.classList.remove("closing", "kept"), b.style.height = "";
+        }, 320);
+      }, 2600);
+      return;
+    }
+    docs2.justKept = null, clearTimeout(b._t), b.classList.remove("closing", "kept"), b.style.height = "", b.hidden = !ex, b.classList.toggle("dirty", dirty2), ex && b.replaceChildren(
       h("span", { class: "exb-t" }, dirty2 ? [h("b", null, "Du har \xE6ndret eksemplet. "), "\xC6ndringerne gemmes ikke, f\xF8r du gemmer det som dit eget dokument."] : [h("b", null, "Eksempel \u2013 du ser originalen. "), "Pr\xF8v dig bare frem: \xE6ndringer gemmes ikke, og eksemplet er som nyt, n\xE6ste gang du \xE5bner det."]),
       h("button", { type: "button", class: "primary", onclick: () => docs2.keepExample() }, dirty2 ? "Gem som mit dokument" : "Lav min egen kopi")
     );

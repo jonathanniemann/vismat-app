@@ -281,8 +281,8 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;user-select:none}
 .app[data-mode=write] .desk{background:var(--paper)}
 .app[data-mode=hand] .desk{background:var(--desk)}
 .app[data-mode=write] .hand,.app[data-mode=hand] .write{display:none}
-.ftools{mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
-@media (min-width:1000px){.ftools{mask-image:none}}
+.ftools,.itools{mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+@media (min-width:1000px){.ftools,.itools{mask-image:none}}
 /* Formelbjælken svæver ved den formel, man skriver i (placeres af mathfield.js) */
 .toolbar{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
 /* plads til formelbjælken under den formel, man skriver i */
@@ -300,6 +300,8 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;user-select:none}
 .doc-head{margin-bottom:52px}
 .doc-title{font:600 34px/1.2 var(--serif);letter-spacing:-.015em;margin:0 0 8px;text-wrap:balance;border-radius:4px;outline:none}
 .doc-meta{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--ink-2);font-size:13.5px;margin-left:-4px}
+/* (prikken står sammen med det, den står foran – så den aldrig hænger alene sidst på en linje) */
+.doc-meta .dm-i{display:inline-flex;align-items:baseline;gap:10px;white-space:nowrap}
 .doc-meta span[data-meta]{display:inline-block;border-radius:4px;padding:2px 4px;margin:-2px 0;cursor:text}
 /* kun et tomt felt har en mindstebredde (så "Test · 3.b" ikke får store huller) */
 .doc-meta span[data-meta]:empty{min-width:48px}
@@ -863,10 +865,6 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .cas-chip{position:static;transform:none;grid-column:1/-1;justify-self:start;height:24px;padding:0 6px;margin:4px 0 -4px -6px;font-size:12px}
   .cas-chip.none{display:none}
   .blk-math_line.active .cas-chip.none{display:inline-flex}
-  .itools .tool{flex-direction:column;gap:1px;min-width:44px;padding:3px 2px;justify-content:center}
-  .itools .tool .lbl{font-size:0;line-height:1}
-  .itools .tool .lbl::after{content:attr(data-short);font-size:10px;font-weight:500;color:var(--ink-2)}
-  .itools .tsep{display:none}
   #btnRedo{display:none}
   .m-main{gap:0 8px}
   .m-out{gap:8px}
@@ -901,6 +899,8 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .x,.iconbtn{min-width:40px;min-height:40px}
   .ghost,.act,.py-btn,.run{min-height:36px}
   .tool,.ftool{min-width:44px;height:44px}
+  .tbtn,.docname,.cas-pill,.foot-btn{min-height:40px}
+  .pop-item{min-height:44px}
   .t-edit input{height:40px}
   .mini{height:36px}
 }
@@ -1033,9 +1033,9 @@ body.on-start{overflow:hidden}
         <header class="doc-head">
           <h1 class="doc-title" contenteditable="plaintext-only" spellcheck="false" data-meta="title" data-ph="Titel"></h1>
           <div class="doc-meta">
-            <span contenteditable="plaintext-only" data-meta="name" data-ph="Dit navn"></span><span aria-hidden="true">·</span>
-            <span contenteditable="plaintext-only" data-meta="cls" data-ph="Klasse og fag"></span><span aria-hidden="true">·</span>
-            <span contenteditable="plaintext-only" data-meta="date" data-ph="Dato"></span>
+            <span contenteditable="plaintext-only" data-meta="name" data-ph="Dit navn"></span>
+            <span class="dm-i"><span class="dm-s" aria-hidden="true">·</span><span contenteditable="plaintext-only" data-meta="cls" data-ph="Klasse og fag"></span></span>
+            <span class="dm-i"><span class="dm-s" aria-hidden="true">·</span><span contenteditable="plaintext-only" data-meta="date" data-ph="Dato"></span></span>
           </div>
         </header>
         <div id="editor"></div>
@@ -1080,42 +1080,19 @@ R2_N = 1 - sum((yi - N(xi))**2 for xi, yi in zip(xs, ys)) / sum((yi - mean(ys))*
 # Gem koefficienterne med fuld pr\xE6cision til resten af opgaven
 a, b = a_N, b_N`, sig: "3740895252", r: { params: [1.2010059769810106, 12.11461035440456], R2: 0.9999025454689777, py: "Lambda(t, 12.1146103544046*1.20100597698101**t)", latex: "12{,}11 \\cdot {1{,}201}^{t}", savedVals: { a: "1{,}201", b: "12{,}11" } } }, i6: { code: `# simplify udregner og forkorter udtrykket
 resultat = simplify(a)`, sig: "3566097940", r: { latex: "1{,}201", py: "1.20100597698101", approx: !0 } }, i7: { code: `# simplify udregner og forkorter udtrykket
-resultat = simplify(b)`, sig: "2265482547", r: { latex: "12{,}11", py: "12.1146103544046", approx: !0 } }, m9: { code: `# solve finder de v\xE6rdier af t, der g\xF8r ligningen sand
-if (Eq(N(t), 100)).has(sin, cos, tan, cot):
-    # funktionen indeholder sin, cos eller tan: solveset giver alle l\xF8sninger, ogs\xE5 de periodiske
-    l\xF8sninger = solveset(nsimplify(Eq(N(t), 100), rational=True), t, domain=S.Reals)
-    if isinstance(l\xF8sninger, FiniteSet):
-        l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]
-else:
-    try:
-        l\xF8sninger = solve(Eq(N(t), 100), t, check=False, rational=False)  # decimaltal: regn med decimaltallene, og spring den eksakte kontrol over
-    except (NotImplementedError, TypeError, ValueError):
-        l\xF8sninger = nl\xF8s(Eq(N(t), 100), t)  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk
-    l\xF8sninger = reelle(l\xF8sninger, Eq(N(t), 100), t)  # kun reelle l\xF8sninger, der passer i ligningen
-    l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]
-if (Eq(N(t), 100)) == True:
-    l\xF8sninger = S.Reals  # sand for alle t`, sig: "3440928338", r: { solutions: ["11{,}52"], approx: !0, py: "[11.5241511732309]" } }, m12: { code: `x = symbols('x', real=True)  # x er en ukendt
+resultat = simplify(b)`, sig: "2265482547", r: { latex: "12{,}11", py: "12.1146103544046", approx: !0 } }, m9: { code: `# l\xF8s finder de v\xE6rdier af t, der g\xF8r ligningen sand
+l\xF8sninger = l\xF8s(Eq(N(t), 100), t, decimal=True, decimaltal=True)`, sig: "718725211", r: { solutions: ["11{,}52"], approx: !0, py: "[11.5241511732309]" } }, m12: { code: `x = symbols('x', real=True)  # x er en ukendt
 # Lambda laver en funktion af x
 f = Lambda(x, x**3 - 6*x**2 + 9*x + 1)`, sig: "4070049899", r: { latex: "x^{3} - 6 x^{2} + 9 x + 1", py: "f(x) = x**3 - 6*x**2 + 9*x + 1" } }, m14: { code: `# diff differentierer med hensyn til x
-afledt = diff(f(x), x)`, sig: "804382810", r: { latex: "3 x^{2} - 12 x + 9", py: "3*x**2 - 12*x + 9" } }, m15: { code: `# solve finder de v\xE6rdier af x, der g\xF8r ligningen sand
-if (Eq(diff(f(x), x), 0)).has(sin, cos, tan, cot):
-    # funktionen indeholder sin, cos eller tan: solveset giver alle l\xF8sninger, ogs\xE5 de periodiske
-    l\xF8sninger = solveset(nsimplify(Eq(diff(f(x), x), 0), rational=True), x, domain=S.Reals)
-else:
-    try:
-        l\xF8sninger = solve(Eq(diff(f(x), x), 0), x)
-    except (NotImplementedError, TypeError, ValueError):
-        l\xF8sninger = nl\xF8s(Eq(diff(f(x), x), 0), x)  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk
-    l\xF8sninger = reelle(l\xF8sninger, Eq(diff(f(x), x), 0), x)  # kun reelle l\xF8sninger, der passer i ligningen
-if (Eq(diff(f(x), x), 0)) == True:
-    l\xF8sninger = S.Reals  # sand for alle x`, sig: "2924196538", r: { solutions: ["1", "3"], approx: !1, py: "[1, 3]" } }, g20: { code: `udtryk = [f(x)]
+afledt = diff(f(x), x)`, sig: "804382810", r: { latex: "3 x^{2} - 12 x + 9", py: "3*x**2 - 12*x + 9" } }, m15: { code: `# l\xF8s finder de v\xE6rdier af x, der g\xF8r ligningen sand
+l\xF8sninger = l\xF8s(Eq(diff(f(x), x), 0), x)`, sig: "2886150577", r: { solutions: ["1", "3"], approx: !1, py: "[1, 3]" } }, g20: { code: `udtryk = [f(x)]
 # lambdify g\xF8r udtrykkene til funktioner, der kan regne med tal
 fns = [lambdify(x, u, "math") for u in udtryk]
 ts = [-0.5 + 5*i/300 for i in range(301)]
-kurver = [[punkt(fn, t) for t in ts] for fn in fns]  # punkt() giver None hvor fn ikke er defineret`, sig: "2404919884", r: { ts: [-0.5, -0.483333, -0.466667, -0.45, -0.433333, -0.416667, -0.4, -0.383333, -0.366667, -0.35, -0.333333, -0.316667, -0.3, -0.283333, -0.266667, -0.25, -0.233333, -0.216667, -0.2, -0.183333, -0.166667, -0.15, -0.133333, -0.116667, -0.1, -0.0833333, -0.0666667, -0.05, -0.0333333, -0.0166667, 0, 0.0166667, 0.0333333, 0.05, 0.0666667, 0.0833333, 0.1, 0.116667, 0.133333, 0.15, 0.166667, 0.183333, 0.2, 0.216667, 0.233333, 0.25, 0.266667, 0.283333, 0.3, 0.316667, 0.333333, 0.35, 0.366667, 0.383333, 0.4, 0.416667, 0.433333, 0.45, 0.466667, 0.483333, 0.5, 0.516667, 0.533333, 0.55, 0.566667, 0.583333, 0.6, 0.616667, 0.633333, 0.65, 0.666667, 0.683333, 0.7, 0.716667, 0.733333, 0.75, 0.766667, 0.783333, 0.8, 0.816667, 0.833333, 0.85, 0.866667, 0.883333, 0.9, 0.916667, 0.933333, 0.95, 0.966667, 0.983333, 1, 1.01667, 1.03333, 1.05, 1.06667, 1.08333, 1.1, 1.11667, 1.13333, 1.15, 1.16667, 1.18333, 1.2, 1.21667, 1.23333, 1.25, 1.26667, 1.28333, 1.3, 1.31667, 1.33333, 1.35, 1.36667, 1.38333, 1.4, 1.41667, 1.43333, 1.45, 1.46667, 1.48333, 1.5, 1.51667, 1.53333, 1.55, 1.56667, 1.58333, 1.6, 1.61667, 1.63333, 1.65, 1.66667, 1.68333, 1.7, 1.71667, 1.73333, 1.75, 1.76667, 1.78333, 1.8, 1.81667, 1.83333, 1.85, 1.86667, 1.88333, 1.9, 1.91667, 1.93333, 1.95, 1.96667, 1.98333, 2, 2.01667, 2.03333, 2.05, 2.06667, 2.08333, 2.1, 2.11667, 2.13333, 2.15, 2.16667, 2.18333, 2.2, 2.21667, 2.23333, 2.25, 2.26667, 2.28333, 2.3, 2.31667, 2.33333, 2.35, 2.36667, 2.38333, 2.4, 2.41667, 2.43333, 2.45, 2.46667, 2.48333, 2.5, 2.51667, 2.53333, 2.55, 2.56667, 2.58333, 2.6, 2.61667, 2.63333, 2.65, 2.66667, 2.68333, 2.7, 2.71667, 2.73333, 2.75, 2.76667, 2.78333, 2.8, 2.81667, 2.83333, 2.85, 2.86667, 2.88333, 2.9, 2.91667, 2.93333, 2.95, 2.96667, 2.98333, 3, 3.01667, 3.03333, 3.05, 3.06667, 3.08333, 3.1, 3.11667, 3.13333, 3.15, 3.16667, 3.18333, 3.2, 3.21667, 3.23333, 3.25, 3.26667, 3.28333, 3.3, 3.31667, 3.33333, 3.35, 3.36667, 3.38333, 3.4, 3.41667, 3.43333, 3.45, 3.46667, 3.48333, 3.5, 3.51667, 3.53333, 3.55, 3.56667, 3.58333, 3.6, 3.61667, 3.63333, 3.65, 3.66667, 3.68333, 3.7, 3.71667, 3.73333, 3.75, 3.76667, 3.78333, 3.8, 3.81667, 3.83333, 3.85, 3.86667, 3.88333, 3.9, 3.91667, 3.93333, 3.95, 3.96667, 3.98333, 4, 4.01667, 4.03333, 4.05, 4.06667, 4.08333, 4.1, 4.11667, 4.13333, 4.15, 4.16667, 4.18333, 4.2, 4.21667, 4.23333, 4.25, 4.26667, 4.28333, 4.3, 4.31667, 4.33333, 4.35, 4.36667, 4.38333, 4.4, 4.41667, 4.43333, 4.45, 4.46667, 4.48333, 4.5], curves: [[-5.125, -4.86458, -4.6083, -4.35613, -4.10804, -3.864, -3.624, -3.388, -3.15596, -2.92787, -2.7037, -2.48342, -2.267, -2.05441, -1.84563, -1.64063, -1.43937, -1.24184, -1.048, -0.857829, -0.671296, -0.488375, -0.309037, -0.133255, 0.039, 0.207755, 0.373037, 0.534875, 0.693296, 0.848329, 1, 1.14834, 1.29337, 1.43513, 1.57363, 1.70891, 1.841, 1.96992, 2.0957, 2.21837, 2.33796, 2.4545, 2.568, 2.6785, 2.78604, 2.89063, 2.9923, 3.09108, 3.187, 3.28009, 3.37037, 3.45788, 3.54263, 3.62466, 3.704, 3.78067, 3.8547, 3.92612, 3.99496, 4.06125, 4.125, 4.18625, 4.24504, 4.30138, 4.3553, 4.40683, 4.456, 4.50284, 4.54737, 4.58962, 4.62963, 4.66741, 4.703, 4.73642, 4.7677, 4.79688, 4.82396, 4.849, 4.872, 4.893, 4.91204, 4.92912, 4.9443, 4.95758, 4.969, 4.97859, 4.98637, 4.99237, 4.99663, 4.99916, 5, 4.99917, 4.9967, 4.99263, 4.98696, 4.97975, 4.971, 4.96075, 4.94904, 4.93588, 4.9213, 4.90533, 4.888, 4.86934, 4.84937, 4.82813, 4.80563, 4.78191, 4.757, 4.73092, 4.7037, 4.67537, 4.64596, 4.6155, 4.584, 4.5515, 4.51804, 4.48362, 4.4483, 4.41208, 4.375, 4.33709, 4.29837, 4.25888, 4.21863, 4.17766, 4.136, 4.09367, 4.0507, 4.00713, 3.96296, 3.91825, 3.873, 3.82725, 3.78104, 3.73438, 3.6873, 3.63983, 3.592, 3.54384, 3.49537, 3.44662, 3.39763, 3.34841, 3.299, 3.24942, 3.1997, 3.14987, 3.09996, 3.05, 3, 2.95, 2.90004, 2.85013, 2.8003, 2.75058, 2.701, 2.65159, 2.60237, 2.55337, 2.50463, 2.45616, 2.408, 2.36017, 2.3127, 2.26563, 2.21896, 2.17275, 2.127, 2.08175, 2.03704, 1.99287, 1.9493, 1.90633, 1.864, 1.82234, 1.78137, 1.74112, 1.70163, 1.66291, 1.625, 1.58792, 1.5517, 1.51637, 1.48196, 1.4485, 1.416, 1.3845, 1.35404, 1.32462, 1.2963, 1.26908, 1.243, 1.21809, 1.19437, 1.17188, 1.15063, 1.13066, 1.112, 1.09467, 1.0787, 1.06413, 1.05096, 1.03925, 1.029, 1.02025, 1.01304, 1.00738, 1.0033, 1.00083, 1, 1.00084, 1.00337, 1.00763, 1.01363, 1.02141, 1.031, 1.04242, 1.0557, 1.07087, 1.08796, 1.107, 1.128, 1.151, 1.17604, 1.20313, 1.2323, 1.26358, 1.297, 1.33259, 1.37037, 1.41037, 1.45263, 1.49716, 1.544, 1.59317, 1.6447, 1.69863, 1.75496, 1.81375, 1.875, 1.93875, 2.00504, 2.07387, 2.1453, 2.21933, 2.296, 2.37534, 2.45737, 2.54212, 2.62963, 2.71991, 2.813, 2.90892, 3.0077, 3.10938, 3.21396, 3.3215, 3.432, 3.5455, 3.66204, 3.78162, 3.9043, 4.03008, 4.159, 4.29109, 4.42637, 4.56488, 4.70663, 4.85166, 5, 5.15167, 5.3067, 5.46512, 5.62696, 5.79225, 5.961, 6.13325, 6.30904, 6.48837, 6.6713, 6.85783, 7.048, 7.24184, 7.43937, 7.64063, 7.84563, 8.05441, 8.267, 8.48342, 8.7037, 8.92788, 9.15596, 9.388, 9.624, 9.864, 10.108, 10.3561, 10.6083, 10.8646, 11.125]], labels: ["x^{3} - 6 x^{2} + 9 x + 1"], warn: [] } }, i22: { code: `# simplify udregner og forkorter udtrykket
-resultat = simplify(f(1))`, sig: "1640284237", r: { latex: "5", py: "5" } }, i24: { code: `# simplify udregner og forkorter udtrykket
-resultat = simplify(f(3))`, sig: "2429549290", r: { latex: "1", py: "1" } }, m26: { code: "A = bestemt_integral(f(x), (x, 0, 3))", sig: "1597578990", r: { latex: "\\frac{39}{4}", py: "39/4", approx: !1 } }, i27: { code: `# evalf giver et decimaltal
-resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: "9.75000000000000" } } };
+kurver = [[punkt(fn, t) for t in ts] for fn in fns]  # punkt() giver None hvor fn ikke er defineret`, sig: "3327459701", r: { ts: [-0.5, -0.483333, -0.466667, -0.45, -0.433333, -0.416667, -0.4, -0.383333, -0.366667, -0.35, -0.333333, -0.316667, -0.3, -0.283333, -0.266667, -0.25, -0.233333, -0.216667, -0.2, -0.183333, -0.166667, -0.15, -0.133333, -0.116667, -0.1, -0.0833333, -0.0666667, -0.05, -0.0333333, -0.0166667, 0, 0.0166667, 0.0333333, 0.05, 0.0666667, 0.0833333, 0.1, 0.116667, 0.133333, 0.15, 0.166667, 0.183333, 0.2, 0.216667, 0.233333, 0.25, 0.266667, 0.283333, 0.3, 0.316667, 0.333333, 0.35, 0.366667, 0.383333, 0.4, 0.416667, 0.433333, 0.45, 0.466667, 0.483333, 0.5, 0.516667, 0.533333, 0.55, 0.566667, 0.583333, 0.6, 0.616667, 0.633333, 0.65, 0.666667, 0.683333, 0.7, 0.716667, 0.733333, 0.75, 0.766667, 0.783333, 0.8, 0.816667, 0.833333, 0.85, 0.866667, 0.883333, 0.9, 0.916667, 0.933333, 0.95, 0.966667, 0.983333, 1, 1.01667, 1.03333, 1.05, 1.06667, 1.08333, 1.1, 1.11667, 1.13333, 1.15, 1.16667, 1.18333, 1.2, 1.21667, 1.23333, 1.25, 1.26667, 1.28333, 1.3, 1.31667, 1.33333, 1.35, 1.36667, 1.38333, 1.4, 1.41667, 1.43333, 1.45, 1.46667, 1.48333, 1.5, 1.51667, 1.53333, 1.55, 1.56667, 1.58333, 1.6, 1.61667, 1.63333, 1.65, 1.66667, 1.68333, 1.7, 1.71667, 1.73333, 1.75, 1.76667, 1.78333, 1.8, 1.81667, 1.83333, 1.85, 1.86667, 1.88333, 1.9, 1.91667, 1.93333, 1.95, 1.96667, 1.98333, 2, 2.01667, 2.03333, 2.05, 2.06667, 2.08333, 2.1, 2.11667, 2.13333, 2.15, 2.16667, 2.18333, 2.2, 2.21667, 2.23333, 2.25, 2.26667, 2.28333, 2.3, 2.31667, 2.33333, 2.35, 2.36667, 2.38333, 2.4, 2.41667, 2.43333, 2.45, 2.46667, 2.48333, 2.5, 2.51667, 2.53333, 2.55, 2.56667, 2.58333, 2.6, 2.61667, 2.63333, 2.65, 2.66667, 2.68333, 2.7, 2.71667, 2.73333, 2.75, 2.76667, 2.78333, 2.8, 2.81667, 2.83333, 2.85, 2.86667, 2.88333, 2.9, 2.91667, 2.93333, 2.95, 2.96667, 2.98333, 3, 3.01667, 3.03333, 3.05, 3.06667, 3.08333, 3.1, 3.11667, 3.13333, 3.15, 3.16667, 3.18333, 3.2, 3.21667, 3.23333, 3.25, 3.26667, 3.28333, 3.3, 3.31667, 3.33333, 3.35, 3.36667, 3.38333, 3.4, 3.41667, 3.43333, 3.45, 3.46667, 3.48333, 3.5, 3.51667, 3.53333, 3.55, 3.56667, 3.58333, 3.6, 3.61667, 3.63333, 3.65, 3.66667, 3.68333, 3.7, 3.71667, 3.73333, 3.75, 3.76667, 3.78333, 3.8, 3.81667, 3.83333, 3.85, 3.86667, 3.88333, 3.9, 3.91667, 3.93333, 3.95, 3.96667, 3.98333, 4, 4.01667, 4.03333, 4.05, 4.06667, 4.08333, 4.1, 4.11667, 4.13333, 4.15, 4.16667, 4.18333, 4.2, 4.21667, 4.23333, 4.25, 4.26667, 4.28333, 4.3, 4.31667, 4.33333, 4.35, 4.36667, 4.38333, 4.4, 4.41667, 4.43333, 4.45, 4.46667, 4.48333, 4.5], curves: [[-5.125, -4.86458, -4.6083, -4.35613, -4.10804, -3.864, -3.624, -3.388, -3.15596, -2.92787, -2.7037, -2.48342, -2.267, -2.05441, -1.84563, -1.64063, -1.43937, -1.24184, -1.048, -0.857829, -0.671296, -0.488375, -0.309037, -0.133255, 0.039, 0.207755, 0.373037, 0.534875, 0.693296, 0.848329, 1, 1.14834, 1.29337, 1.43513, 1.57363, 1.70891, 1.841, 1.96992, 2.0957, 2.21837, 2.33796, 2.4545, 2.568, 2.6785, 2.78604, 2.89063, 2.9923, 3.09108, 3.187, 3.28009, 3.37037, 3.45788, 3.54263, 3.62466, 3.704, 3.78067, 3.8547, 3.92612, 3.99496, 4.06125, 4.125, 4.18625, 4.24504, 4.30138, 4.3553, 4.40683, 4.456, 4.50284, 4.54737, 4.58962, 4.62963, 4.66741, 4.703, 4.73642, 4.7677, 4.79688, 4.82396, 4.849, 4.872, 4.893, 4.91204, 4.92912, 4.9443, 4.95758, 4.969, 4.97859, 4.98637, 4.99237, 4.99663, 4.99916, 5, 4.99917, 4.9967, 4.99263, 4.98696, 4.97975, 4.971, 4.96075, 4.94904, 4.93588, 4.9213, 4.90533, 4.888, 4.86934, 4.84937, 4.82813, 4.80563, 4.78191, 4.757, 4.73092, 4.7037, 4.67537, 4.64596, 4.6155, 4.584, 4.5515, 4.51804, 4.48362, 4.4483, 4.41208, 4.375, 4.33709, 4.29837, 4.25888, 4.21863, 4.17766, 4.136, 4.09367, 4.0507, 4.00713, 3.96296, 3.91825, 3.873, 3.82725, 3.78104, 3.73438, 3.6873, 3.63983, 3.592, 3.54384, 3.49537, 3.44662, 3.39763, 3.34841, 3.299, 3.24942, 3.1997, 3.14987, 3.09996, 3.05, 3, 2.95, 2.90004, 2.85013, 2.8003, 2.75058, 2.701, 2.65159, 2.60237, 2.55337, 2.50463, 2.45616, 2.408, 2.36017, 2.3127, 2.26563, 2.21896, 2.17275, 2.127, 2.08175, 2.03704, 1.99287, 1.9493, 1.90633, 1.864, 1.82234, 1.78137, 1.74112, 1.70163, 1.66291, 1.625, 1.58792, 1.5517, 1.51637, 1.48196, 1.4485, 1.416, 1.3845, 1.35404, 1.32462, 1.2963, 1.26908, 1.243, 1.21809, 1.19437, 1.17188, 1.15063, 1.13066, 1.112, 1.09467, 1.0787, 1.06413, 1.05096, 1.03925, 1.029, 1.02025, 1.01304, 1.00738, 1.0033, 1.00083, 1, 1.00084, 1.00337, 1.00763, 1.01363, 1.02141, 1.031, 1.04242, 1.0557, 1.07087, 1.08796, 1.107, 1.128, 1.151, 1.17604, 1.20313, 1.2323, 1.26358, 1.297, 1.33259, 1.37037, 1.41037, 1.45263, 1.49716, 1.544, 1.59317, 1.6447, 1.69863, 1.75496, 1.81375, 1.875, 1.93875, 2.00504, 2.07387, 2.1453, 2.21933, 2.296, 2.37534, 2.45737, 2.54212, 2.62963, 2.71991, 2.813, 2.90892, 3.0077, 3.10938, 3.21396, 3.3215, 3.432, 3.5455, 3.66204, 3.78162, 3.9043, 4.03008, 4.159, 4.29109, 4.42637, 4.56488, 4.70663, 4.85166, 5, 5.15167, 5.3067, 5.46512, 5.62696, 5.79225, 5.961, 6.13325, 6.30904, 6.48837, 6.6713, 6.85783, 7.048, 7.24184, 7.43937, 7.64063, 7.84563, 8.05441, 8.267, 8.48342, 8.7037, 8.92788, 9.15596, 9.388, 9.624, 9.864, 10.108, 10.3561, 10.6083, 10.8646, 11.125]], labels: ["x^{3} - 6 x^{2} + 9 x + 1"], warn: [] } }, i22: { code: `# simplify udregner og forkorter udtrykket
+resultat = simplify(f(1))`, sig: "3827117316", r: { latex: "5", py: "5" } }, i24: { code: `# simplify udregner og forkorter udtrykket
+resultat = simplify(f(3))`, sig: "362655315", r: { latex: "1", py: "1" } }, m26: { code: "A = bestemt_integral(f(x), (x, 0, 3))", sig: "4219290327", r: { latex: "\\frac{39}{4}", py: "39/4", approx: !1 } }, i27: { code: `# evalf giver et decimaltal
+resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: "9.75000000000000" } } };
 
   // src/state.js
   var app = {
@@ -2657,7 +2634,11 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
           break;
         }
         let trig = /\b(sin|cos|tan|cot)\(/.test(target) && sv !== "z" && !isRel, viaFn = !trig && sv === v && !isRel && sv !== "z" && [...target.matchAll(/\b([A-Za-z]\w*)\(/g)].some((m) => ctx.fns.has(m[1])), branchStart = lines.length, hard = !isRel && sv === v && (dec || em.floaty) && hardness(target, em, ctx, [v]) >= 2;
-        if (numLine = sv === v && !isRel ? "l\xF8sninger = nl\xF8s(" + target + ", " + sv + ")" : null, hard ? (lines.push("# ligningen har flere eksponentialled med decimaltal, s\xE5 den l\xF8ses numerisk (fortegnsskift og halvering)"), lines.push(numLine), info.numeric = !0) : trig ? (lines.push("# solveset giver alle l\xF8sninger, ogs\xE5 de periodiske" + (em.floaty ? " (nsimplify g\xF8r decimaltal eksakte)" : "")), lines.push("l\xF8sninger = solveset(" + (em.floaty ? "nsimplify(" + target + ", rational=True)" : target) + ", " + sv + ", domain=S.Reals)"), dec && lines.push("if isinstance(l\xF8sninger, FiniteSet):", "    l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]  # endeligt mange l\xF8sninger: som decimaltal")) : em.floaty && !isRel ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ", check=False, rational=False)  # decimaltal: regn med decimaltallene, og spring den eksakte kontrol over"), numLine ? lines.push("except (NotImplementedError, TypeError, ValueError):", "    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk") : lines.push("except NotImplementedError:", "    l\xF8sninger = []")) : !isRel && numLine ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ")"), lines.push("except (NotImplementedError, TypeError, ValueError):"), lines.push("    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk")) : lines.push("l\xF8sninger = solve(" + target + ", " + sv + ")"), numLine && target.includes("bestemt_integral(") && lines.push("if not l\xF8sninger and (" + target + ").has(Integral):", "    " + numLine + "  # integralet kan ikke udregnes eksakt, s\xE5 ligningen l\xF8ses numerisk"), sv === v && !isRel && !trig && lines.push("l\xF8sninger = reelle(l\xF8sninger, " + target + ", " + sv + ")  # kun reelle l\xF8sninger, der passer i ligningen"), dec && !isRel && !trig && lines.push("l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]"), viaFn && !hard) {
+        if (numLine = sv === v && !isRel ? "l\xF8sninger = nl\xF8s(" + target + ", " + sv + ")" : null, !hard && !trig && !isRel && numLine && !target.includes("bestemt_integral(")) {
+          lines[lines.length - 1] = "# l\xF8s finder de v\xE6rdier af " + (ctx.dispName.get(v) || v) + ", der g\xF8r ligningen sand", lines.push("l\xF8sninger = l\xF8s(" + target + ", " + sv + (dec ? ", decimal=True" : "") + (em.floaty ? ", decimaltal=True" : "") + ")"), solveEnd = lines.length;
+          break;
+        }
+        if (hard ? (lines.push("# ligningen har flere eksponentialled med decimaltal, s\xE5 den l\xF8ses numerisk (fortegnsskift og halvering)"), lines.push(numLine), info.numeric = !0) : trig ? (lines.push("# solveset giver alle l\xF8sninger, ogs\xE5 de periodiske" + (em.floaty ? " (nsimplify g\xF8r decimaltal eksakte)" : "")), lines.push("l\xF8sninger = solveset(" + (em.floaty ? "nsimplify(" + target + ", rational=True)" : target) + ", " + sv + ", domain=S.Reals)"), dec && lines.push("if isinstance(l\xF8sninger, FiniteSet):", "    l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]  # endeligt mange l\xF8sninger: som decimaltal")) : em.floaty && !isRel ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ", check=False, rational=False)  # decimaltal: regn med decimaltallene, og spring den eksakte kontrol over"), numLine ? lines.push("except (NotImplementedError, TypeError, ValueError):", "    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk") : lines.push("except NotImplementedError:", "    l\xF8sninger = []")) : !isRel && numLine ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ")"), lines.push("except (NotImplementedError, TypeError, ValueError):"), lines.push("    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk")) : lines.push("l\xF8sninger = solve(" + target + ", " + sv + ")"), numLine && target.includes("bestemt_integral(") && lines.push("if not l\xF8sninger and (" + target + ").has(Integral):", "    " + numLine + "  # integralet kan ikke udregnes eksakt, s\xE5 ligningen l\xF8ses numerisk"), sv === v && !isRel && !trig && lines.push("l\xF8sninger = reelle(l\xF8sninger, " + target + ", " + sv + ")  # kun reelle l\xF8sninger, der passer i ligningen"), dec && !isRel && !trig && lines.push("l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]"), viaFn && !hard) {
           let body = lines.splice(branchStart).map((l) => "    " + l);
           lines.push(
             "if (" + target + ").has(sin, cos, tan, cot):",
@@ -7604,7 +7585,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     return box;
   }
-  var KIND_TXT = { inline: "i teksten", math: "matematiklinje", graph: "plot", table: "tabel og regression", python: "Python-blok" }, ACT_TXT = { calc: "Beregn", simplify: "Reduc\xE9r", factor: "Faktoris\xE9r", expand: "Udvid", solve: "L\xF8s", diff: "Differenti\xE9r", integrate: "Integr\xE9r", define: "Defin\xE9r" };
+  var KIND_TXT = { inline: "Formel i tekst", math: "Formel", graph: "Plot", table: "Tabel", python: "Python-blok" }, tidyNum = (t) => String(t).replace(/-?\d+\.\d{7,}(?:e[-+]?\d+)?/g, (m) => String(Number(Number(m).toPrecision(7))));
+  function tidyOut(out, b) {
+    let m = /^Lambda\(\(?([A-Za-z_]\w*)\)?, (.*)\)$/s.exec(String(out).trim());
+    return m ? (b && b.name || "f") + "(" + m[1] + ") = " + tidyNum(m[2]) : tidyNum(out);
+  }
+  var ACT_TXT = { calc: "Beregn", simplify: "Reduc\xE9r", factor: "Faktoris\xE9r", expand: "Udvid", solve: "L\xF8s", diff: "Differenti\xE9r", integrate: "Integr\xE9r", define: "Defin\xE9r" };
   function renderPyPanel() {
     let box = $2("pyProg");
     if (!box) return;
@@ -7642,9 +7628,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
             (e.key === "Enter" || e.key === " ") && e.target === e.currentTarget && (e.preventDefault(), go());
           }
         },
-        h("span", { class: "pp-k" }, b.type === "math" && plan.infos[b.id] && ACT_TXT[plan.infos[b.id].action] ? ACT_TXT[plan.infos[b.id].action] : KIND_TXT[b.type] || b.type),
+        h("span", { class: "pp-k" }, b.type === "math" && plan.infos[b.id] && ACT_TXT[plan.infos[b.id].action] ? ACT_TXT[plan.infos[b.id].action] : b.type === "table" && b.model && b.model !== "none" ? "Regression" : b.type === "table" && ["stat", "sum", "qq", "hist"].includes(b.plot) ? "Statistik" : KIND_TXT[b.type] || b.type),
         h("pre", { class: "py-code", html: highlight((st ? st.code : b.code) || "") }),
-        r && r.py != null && !r.error ? h("div", { class: "py-out" }, h("span", { class: "py-out-l" }, "Output"), h("code", null, r.py)) : null,
+        r && r.py != null && !r.error ? h("div", { class: "py-out" }, h("span", { class: "py-out-l" }, "Output"), h("code", null, tidyOut(r.py, b))) : null,
         r && r.error ? h("div", { class: "py-out err" }, h("span", { class: "py-out-l" }, "Fejl"), h("code", null, r.error)) : null,
         // (den markerede celle: kopiér beregningen ind i dokumentet som en Python-blok, man selv kan rette i)
         st && b.type !== "python" ? h("div", { class: "pp-more" }, h("button", { type: "button", class: "ghost sm", title: "Inds\xE6t en kopi af koden som en Python-blok under beregningen", onclick: (e) => {
@@ -8569,6 +8555,28 @@ def reelle(l\xF8sninger, ligning=None, x=None):
                 pass
         ud.append(Float(v.real, 15) if s.has(I) else s)
     return ud
+
+
+def l\xF8s(ligning, x, decimal=False, decimaltal=False):
+    # l\xF8ser ligningen for x: eksakt med solve, ellers numerisk \u2013 og beholder kun de reelle l\xF8sninger, der passer.
+    # Indeholder ligningen sin, cos eller tan, gives alle l\xF8sninger (ogs\xE5 de periodiske) med solveset.
+    # decimal=True: svaret som decimaltal \xB7 decimaltal=True: ligningen har decimaltal, s\xE5 der regnes med dem
+    # (ellers bliver e^(0,1518x) til e^(759x/5000), og solve leder efter r\xF8dder i et polynomium af grad 759)
+    if ligning == True:
+        return S.Reals  # sand for alle x
+    if ligning.has(sin, cos, tan, cot):
+        l\xF8sninger = solveset(nsimplify(ligning, rational=True), x, domain=S.Reals)
+        if decimal and isinstance(l\xF8sninger, FiniteSet):
+            l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]
+        return l\xF8sninger
+    try:
+        l\xF8sninger = solve(ligning, x, check=False, rational=False) if decimaltal else solve(ligning, x)
+    except (NotImplementedError, TypeError, ValueError):
+        l\xF8sninger = nl\xF8s(ligning, x)  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk
+    l\xF8sninger = reelle(l\xF8sninger, ligning, x)
+    if decimal:
+        l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]
+    return l\xF8sninger
 
 
 class Punkt(Vektor):

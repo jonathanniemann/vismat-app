@@ -9273,7 +9273,18 @@ def punkt(fn, t):
 <script>
 // offline-cache og installation som app (kun på en rigtig webadresse – ikke i en ramme som Claude-artefaktet)
 if ('serviceWorker' in navigator && window.top === window && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch((e) => console.warn('Service worker:', e && e.message)));
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then((reg) => {
+    // se efter en ny udgave, hver gang appen kommer frem igen (og hver time, mens den er åben)
+    const check = () => reg.update().catch(() => {});
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+    setInterval(check, 3600000);
+  }).catch((e) => console.warn('Service worker:', e && e.message)));
+  // en ny udgave er hentet, mens appen var åben: tilbyd at genindlæse (det, man har skrevet, er gemt)
+  let had = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (had && window.__toast) window.__toast('Der er en ny udgave af VisMat', 'Genindlæs', () => location.reload(), 60000);
+    had = true;
+  });
 }
 </script>
 </body>

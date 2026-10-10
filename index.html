@@ -156,8 +156,10 @@ kbd{font:500 11px var(--mono);border:1px solid var(--rule);border-bottom-width:2
 code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2);padding:1px 5px;border-radius:4px}
 .spacer{flex:1}
 
-.app{height:100%;display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"nav bar" "nav desk"}
-.app.with-py{grid-template-columns:240px minmax(0,1fr) 400px;grid-template-areas:"nav bar py" "nav desk py"}
+.app{height:100%;display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"nav bar" "nav rib" "nav desk"}
+.app.with-py{grid-template-columns:240px minmax(0,1fr) 400px;grid-template-areas:"nav bar py" "nav rib py" "nav desk py"}
+.ribbon{grid-area:rib;background:var(--paper);border-bottom:1px solid var(--rule-2);padding:3px 12px;min-width:0;display:flex;justify-content:center}
+.app[data-mode=hand] .ribbon{display:none}
 .bar{grid-area:bar}.rail.left{grid-area:nav}.desk{grid-area:desk}.rail.py-rail{grid-area:py}
 .ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .ic-txt{font:600 13px var(--serif);min-width:16px;text-align:center}
@@ -203,14 +205,14 @@ code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2
 .tbtn[aria-pressed=true]{background:var(--hover);color:var(--ink)}
 .br{font-family:var(--mono);font-size:11.5px;letter-spacing:-.04em;font-variant-ligatures:none}
 .py-top .br{font-weight:600}
-/* PDF-visningen: en knap ind (Gem som PDF) og en tilbage; Python-knappen hører til skrivevisningen */
+/* PDF-visningen: en knap ind (Generer PDF) og en tilbage; Python-knappen hører til skrivevisningen */
 .app[data-mode=write] #btnBack,.app[data-mode=hand] #btnToPdf,.app[data-mode=hand] #pyAll,.app[data-mode=write] .bar-hand,.app[data-mode=hand] #saved{display:none}
 .bar-hand{display:flex;align-items:center;gap:6px 12px;min-width:0}
 .bar-hand label{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
 .bar-hand label[hidden]{display:none}
 .bar-hand input[type=checkbox]{accent-color:var(--accent)}
 .bar-hand .primary{height:30px;font-size:13px}
-/* Gem som PDF er appens mål: den ene udfyldte knap i topbjælken */
+/* Generer PDF er appens mål: den ene udfyldte knap i topbjælken */
 .pdf-top{background:var(--accent);color:var(--accent-ink)}
 .pdf-top:hover{background:color-mix(in srgb,var(--accent) 88%,#000);color:var(--accent-ink)}
 .back-btn{color:var(--ink);background:var(--hover)}
@@ -282,11 +284,8 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;user-select:none}
 .ftools{mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
 @media (min-width:1000px){.ftools{mask-image:none}}
 /* Formelbjælken svæver ved den formel, man skriver i (placeres af mathfield.js) */
-.toolbar{position:fixed;z-index:30;left:0;top:0;display:none;align-items:flex-start}
-.toolbar.formula{display:flex}
+.toolbar{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
 /* plads til formelbjælken under den formel, man skriver i */
-.bar-room{margin-bottom:calc(var(--bar-h,40px) + 10px)!important}
-p.bar-room,li.bar-room{padding-bottom:calc(var(--bar-h,40px) + 10px);margin-bottom:0!important}
 .paper{position:relative}
 .tools{display:flex;align-items:center;gap:1px;min-height:40px;box-sizing:border-box;background:var(--pop,var(--paper));border:0;border-radius:8px;padding:4px;box-shadow:var(--pop-shadow);max-width:100%;overflow-x:auto;scrollbar-width:none}
 .tool{flex:none;border:0;background:none;border-radius:4px;padding:6px 8px;min-height:32px;cursor:pointer;color:var(--ink-2);font-weight:500;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
@@ -435,13 +434,15 @@ math-field.mf-inline{display:inline-block;font-size:17px;min-width:40px;border:0
 .pop-row > span:first-child{min-width:64px;color:var(--ink-2)}
 /* Formelbjælke: erstatter indsæt-værktøjerne i samme række, mens man skriver en formel */
 .ftools{display:none}
-.toolbar{flex-direction:column;gap:4px}
 .toolbar.formula .itools{display:none}
 .toolbar.formula .ftools{display:flex}
 .ftool{padding:0 4px;min-width:32px;height:32px;justify-content:center;color:var(--ink);overflow:hidden}
 .ftool .ML__latex{font-size:14.5px}
 .ftools > .tool:first-child{color:var(--ink-2)}
-.toolbar .tools{max-width:calc(100vw - 24px)}
+.toolbar .tools{max-width:100%;background:none;box-shadow:none;border-radius:0;padding:0;min-height:36px}
+.itools .tool{font-size:13px}
+.it-l{font-size:12px;color:var(--ink-3);padding:0 6px 0 2px;white-space:nowrap}
+.itools .tsep{width:1px;align-self:stretch;margin:8px 6px;background:var(--rule)}
 .lbl-s{font:500 12.5px var(--ui);color:var(--ink-2)}
 .dd-c{font-size:8px;color:var(--ink-3);margin-left:3px}
 .lbl-s.mono{font:500 11.5px var(--mono);letter-spacing:-.02em}
@@ -841,7 +842,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .page{transform:scale(1.0003)!important;width:210mm!important;height:297mm!important}
 }
 @media (max-width:1180px){
-  .app,.app.with-py{grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "desk"}
+  .app,.app.with-py{grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "rib" "desk"}
   .rail{position:fixed;top:0;bottom:0;width:min(340px,90vw);z-index:40;background:var(--desk);box-shadow:var(--pop-shadow);transition:transform .2s ease;padding-top:calc(18px + env(safe-area-inset-top,0px))}
   .rail.left{left:0;transform:translateX(-105%)}
   .rail.py-rail{display:block!important;right:0;transform:translateX(105%);background:var(--paper);padding-top:env(safe-area-inset-top,0px)}
@@ -897,13 +898,13 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .mini{height:36px}
 }
 @media (max-width:1500px) and (min-width:1181px){
-  .app.with-py{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"bar py" "desk py"}
+  .app.with-py{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"bar py" "rib py" "desk py"}
   .app.with-py .rail.left{position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw);z-index:40;background:var(--desk);box-shadow:var(--pop-shadow);transition:transform .2s ease;transform:translateX(-105%)}
   .app.with-py .rail.left.open{transform:none}
   .app.with-py .rail.left .rail-close{display:block}
   .app.with-py .only-narrow{display:inline-flex}
 }
-.ex-banner{position:sticky;top:0;z-index:6;box-sizing:border-box;max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:10px 16px 10px 20px;background:var(--accent-soft);color:var(--ink);font-size:13px;border-bottom:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
+.ex-banner{position:relative;box-sizing:border-box;max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;padding:10px 16px 10px 20px;background:var(--accent-soft);color:var(--ink);font-size:13px;border-bottom:1px solid color-mix(in srgb,var(--accent) 20%,transparent)}
 .ex-banner[hidden]{display:none}
 .ex-banner .exb-t{flex:1;min-width:220px;line-height:1.4}
 .ex-banner b{font-weight:600}
@@ -922,11 +923,6 @@ body.on-start{overflow:hidden}
 .st-brand .mark{width:28px;height:28px;font-size:19px!important;border-radius:7px}
 .st-open{height:32px;padding:0 12px;font-size:13px;color:var(--ink-2);border:1px solid var(--rule)}
 .st-intro{margin:-6px 0 22px;color:var(--ink-2);font-size:15px;max-width:52ch}
-.st-continue{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;width:100%;box-sizing:border-box;text-align:left;border:0;background:var(--paper);box-shadow:var(--shadow);border-radius:10px;padding:16px 18px;margin:0 0 26px;cursor:pointer}
-.st-continue:hover{box-shadow:var(--shadow),0 0 0 2px var(--accent-soft)}
-.st-cl{font-size:12px;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;flex-basis:100%}
-.st-ctitle{font:600 19px var(--serif);color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
-.st-cw{font-size:12.5px;color:var(--ink-3)}
 .st-h{font-size:13px;font-weight:600;color:var(--ink-2);margin:0 0 10px}
 .st-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:30px}
 .st-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;border:0;background:var(--paper);box-shadow:var(--shadow);border-radius:10px;padding:14px 14px 14px;cursor:pointer;min-height:118px;box-sizing:border-box;transition:box-shadow .12s,transform .12s}
@@ -947,6 +943,10 @@ body.on-start{overflow:hidden}
 .st-doc-ic{flex:none;width:20px;height:24px;border:1.5px solid var(--rule);border-radius:3px;box-sizing:border-box;background:linear-gradient(var(--rule),var(--rule)) 4px 7px/9px 1.5px no-repeat,linear-gradient(var(--rule),var(--rule)) 4px 12px/9px 1.5px no-repeat,linear-gradient(var(--rule),var(--rule)) 4px 17px/6px 1.5px no-repeat}
 .st-t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:500}
 .st-w{flex:none;font-size:12.5px;color:var(--ink-3);white-space:nowrap}
+.st-tag{flex:none;font:600 11px/18px var(--ui);padding:0 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.st-tag.warn{background:var(--warn-soft);color:var(--warn)}
+.st-ren{cursor:default}
+.st-ren .st-rename{height:24px}
 .st-more{flex:none;width:32px;height:32px;margin-right:4px;border:0;background:none;border-radius:6px;cursor:pointer;color:var(--ink-3);font-size:16px;opacity:.6}
 .st-row:hover .st-more,.st-more:focus-visible,.st-more[aria-expanded=true]{opacity:1}
 .st-more:hover{background:var(--rule-2);color:var(--ink)}
@@ -958,8 +958,7 @@ body.on-start{overflow:hidden}
 .start.drop::after{content:"Slip filen for at åbne den";position:fixed;inset:12px;border:2px dashed var(--accent);border-radius:14px;background:color-mix(in srgb,var(--accent-soft) 80%,transparent);display:grid;place-items:center;font:600 16px var(--ui);color:var(--accent);pointer-events:none}
 .nav-home{cursor:pointer;border:0;background:none;border-radius:4px;text-align:left;font:inherit;font-weight:600;color:inherit;align-self:stretch;box-sizing:border-box;width:100%;padding:5px 8px;margin:0 0 10px}
 .nav-home:hover{background:var(--hover)}
-/* (en menu, der er åbnet fra dokumentet, står aldrig oven på formelbjælken: bjælken er væk, så længe menuen er åben) */
-body.pop-cover #toolbar{visibility:hidden}
+
 @media (max-width:760px){
   .st-wrap{padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}
   .st-cards{grid-template-columns:1fr;gap:8px}
@@ -989,10 +988,18 @@ body.pop-cover #toolbar{visibility:hidden}
     </div>
     <span id="saved" data-state="ok">Gemt i browseren</span>
     <button type="button" class="cas-pill" id="casPill" data-state="loading" title="Om CAS-motoren"><span class="lamp"></span><span class="cas-txt">Starter CAS …</span></button>
-    <button type="button" class="tbtn pdf-top" id="btnToPdf" title="Se siderne, tjek afleveringen og gem den som PDF"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.8h5.2L12.5 5v9.2H4z"/><path d="M9 1.8V5h3.5"/><path d="M6 8.5h4.5M6 11h4.5"/></svg><span class="lbl">Gem som PDF</span></button>
+    <button type="button" class="tbtn pdf-top" id="btnToPdf" title="Lav PDF’en: se siderne, tjek afleveringen – og gem den"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.8h5.2L12.5 5v9.2H4z"/><path d="M9 1.8V5h3.5"/><path d="M6 8.5h4.5M6 11h4.5"/></svg><span class="lbl">Generer PDF</span></button>
     <button type="button" class="tbtn py-top" id="pyAll" aria-pressed="false" title="Vis hele opgaven som et Python-program i et panel til højre"><span class="br" aria-hidden="true">{ }</span><span class="lbl">Vis Python-kode</span></button>
   </header>
 
+  <!-- Værktøjslinjen står fast under topbjælken (som i Word og Google Docs): i teksten indsæt-knapperne,
+       i en formel matematikknapperne. Den skubber aldrig dokumentet og dækker intet -->
+  <div class="ribbon" id="ribbon">
+    <div class="toolbar" id="toolbar">
+      <div class="tools itools" role="toolbar" aria-label="Indsæt" id="itools"></div>
+      <div class="tools ftools" role="toolbar" aria-label="Formelbjælke" id="ftools"></div>
+    </div>
+  </div>
   <nav class="rail left" id="nav" aria-label="Disposition">
     <button type="button" class="iconbtn rail-close" id="navClose" aria-label="Luk panelet">×</button>
     <button type="button" class="brand nav-home" id="navHome" title="Til startsiden"><span class="mark" aria-hidden="true">√</span><span>VisMat</span></button>
@@ -1014,9 +1021,6 @@ body.pop-cover #toolbar{visibility:hidden}
 
   <main class="desk" id="desk">
     <div class="write">
-      <div class="toolbar" id="toolbar">
-        <div class="tools ftools" role="toolbar" aria-label="Formelbjælke" id="ftools"></div>
-      </div>
       <div class="ex-banner" id="exBanner" role="status" hidden></div>
       <article class="paper" aria-label="Dokument">
         <header class="doc-head">
@@ -1172,7 +1176,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
   function closePop() {
     if (document.removeEventListener("pointerdown", onAway, !0), !pop) return;
     let p = pop;
-    pop = null, p.remove(), document.body.classList.remove("pop-cover"), p._onclose && p._onclose();
+    pop = null, p.remove(), p._onclose && p._onclose();
   }
   function makeRoom(scroller) {
     if (!pop || !scroller) return;
@@ -1185,11 +1189,11 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
     if (!pop) return !1;
     let a = pop._anchor, r = a.getBoundingClientRect ? a.getBoundingClientRect() : a;
     if (a.getBoundingClientRect && (r.bottom < 0 || r.top > window.innerHeight)) return !1;
-    let w = pop.offsetWidth, ph = pop.offsetHeight, x = Math.min(r.left, window.innerWidth - w - 12), tb = a.closest && a.closest("#desk") && !document.body.classList.contains("pop-cover") && document.getElementById("toolbar"), minTop = tb ? Math.max(8, tb.getBoundingClientRect().bottom + 4) : 8, y = r.bottom + 6;
+    let w = pop.offsetWidth, ph = pop.offsetHeight, x = Math.min(r.left, window.innerWidth - w - 12), tb = a.closest && a.closest("#desk") && document.getElementById("ribbon"), minTop = tb ? Math.max(8, tb.getBoundingClientRect().bottom + 4) : 8, y = r.bottom + 6;
     return y + ph > window.innerHeight - 8 && (y = r.top - ph - 6 >= minTop ? r.top - ph - 6 : Math.max(minTop, window.innerHeight - 8 - ph)), pop.style.left = Math.max(12, x) + "px", pop.style.top = y + "px", !0;
   }
   function openPop(anchor, content, opts = {}) {
-    closePop(), pop = h("div", { class: "pop", role: opts.role || "dialog" }, content), pop._anchor = anchor, pop._onclose = opts.onclose, pop._owner = opts.owner || null, pop._prev = document.activeElement && document.activeElement.tagName === "MATH-FIELD" ? document.activeElement : null, document.body.append(pop), anchor && anchor.closest && anchor.closest("#toolbar") || document.body.classList.add("pop-cover"), placePop();
+    closePop(), pop = h("div", { class: "pop", role: opts.role || "dialog" }, content), pop._anchor = anchor, pop._onclose = opts.onclose, pop._owner = opts.owner || null, pop._prev = document.activeElement && document.activeElement.tagName === "MATH-FIELD" ? document.activeElement : null, document.body.append(pop), placePop();
     let mine = pop;
     setTimeout(() => {
       pop === mine && document.addEventListener("pointerdown", onAway, !0);
@@ -1271,7 +1275,12 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
       RAD_HERE--;
     }
   }
-  var LEGACY = !1, MULTI = /* @__PURE__ */ new Set(), inert = (b) => !b.action && !LEGACY && !normalize(b.latex || "").includes(":="), TRIG = /* @__PURE__ */ new Set(["sin", "cos", "tan", "cot"]), INV_TRIG = /* @__PURE__ */ new Set(["asin", "acos", "atan"]);
+  var LEGACY = !1, MULTI = /* @__PURE__ */ new Set(), inert = (b) => !b.action && !LEGACY && !normalize(b.latex || "").includes(":=");
+  function trailEqBase(latex) {
+    let te = /^(.+?)(?:=|\\approx)\s*$/.exec(normalize(latex || ""));
+    return !te || te[1].includes("=") || /[<>≤≥]|\\[lg]eq?\b/.test(te[1]) ? null : String(latex).replace(/(?:=|\\approx)\s*$/, "");
+  }
+  var TRIG = /* @__PURE__ */ new Set(["sin", "cos", "tan", "cot"]), INV_TRIG = /* @__PURE__ */ new Set(["asin", "acos", "atan"]);
   function softError(msg) {
     let e = new CasError(msg);
     return e.soft = !0, e;
@@ -3238,6 +3247,10 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
         let bd = (b.type === "math" || b.type === "inline") && (!b.action || b.action === "define") ? binomLatex(b.latex) || normLatex(b.latex) : null;
         if (!bd && b.type === "inline" && inert(b)) continue;
         if (!bd && b.type === "math" && inert(b)) {
+          let base = trailEqBase(b.latex);
+          base != null && (b = Object.assign({}, b, { latex: base, action: "calc", trailEq: !0, opts: Object.assign({}, b.opts, /\\approx\s*$/.test(b.latex) ? { mode: "decimal" } : {}) }));
+        }
+        if (!bd && b.type === "math" && inert(b)) {
           infos[b.id] = mathStep(b, ctx).info;
           try {
             let d = eqDefinition(normalize(b.latex), ctx);
@@ -3249,7 +3262,7 @@ resultat = simplify(A).evalf(15)`, sig: "1050379930", r: { latex: "9{,}75", py: 
         if (!bd && (b.type === "math" || b.type === "inline") && hasPlaceholder(b)) throw softError("Udfyld de tomme felter i formlen");
         if (!bd && b.type === "math" && looksLikeText(b.latex)) throw new CasError(TEXTY);
         if (bd ? r = binomStep(b, bd, ctx) : b.type === "math" ? r = mathStep(b, ctx) : b.type === "inline" ? r = inlineStep(b, ctx) : b.type === "graph" ? r = graphStep(b, ctx) : b.type === "table" ? r = tableStep(b, ctx) : b.type === "python" && (r = { info: { kind: "python", uses: [...ctx.vals.keys(), ...ctx.fns.keys()] }, step: runPython === b.id ? { id: b.id, kind: "python", code: b.code || "", meta: {} } : null }), !r) continue;
-        if (b.point && r.info) {
+        if (b.trailEq && r.info && (r.info.trailEq = !0), b.point && r.info) {
           r.info.point = b.point;
           let pv = b.pointPy && ctx.vals.get(b.pointPy);
           pv && (pv.isPoint = !0);
@@ -4616,7 +4629,7 @@ print(1 + 1)`, out: null } : {};
         (e.key === "Enter" || e.key === "Escape") && (e.preventDefault(), this.field && this.field.focus());
       }), toolbar.append(h("label", { class: "latex-row", title: "Skriv eller ret formlen som LaTeX" }, h("span", { class: "latex-tag" }, "LaTeX"), box)), setLx(lxPref === "1"), document.addEventListener("focusout", () => setTimeout(() => {
         let a = document.activeElement;
-        a && (a.tagName === "MATH-FIELD" || toolbar.contains(a)) || this.field && hasFocus(this.field) || (toolbar.classList.remove("formula"), this.field = null, this.room(null), currentPop() && currentPop().querySelector(".fmore") && closePop(), window.mathVirtualKeyboard && window.mathVirtualKeyboard.visible && window.mathVirtualKeyboard.hide());
+        a && (a.tagName === "MATH-FIELD" || toolbar.contains(a)) || this.field && hasFocus(this.field) || (toolbar.classList.remove("formula"), this.field = null, currentPop() && currentPop().querySelector(".fmore") && closePop(), window.mathVirtualKeyboard && window.mathVirtualKeyboard.visible && window.mathVirtualKeyboard.hide());
       }, 0));
     },
     insert(tpl) {
@@ -4640,31 +4653,10 @@ print(1 + 1)`, out: null } : {};
       }
     },
     target(mf) {
-      this.toolbar && !this.toolbar.classList.contains("formula") && (this.swapAt = Date.now()), this.field = mf, this.toolbar && this.toolbar.classList.add("formula"), this.sync(mf, !0), this.room(mf.closest(".blk-math_line") || mf.closest(".blk-head") || mf.closest(".im") && mf.closest("p, li")), this.place();
+      this.toolbar && !this.toolbar.classList.contains("formula") && (this.swapAt = Date.now()), this.field = mf, this.toolbar && this.toolbar.classList.add("formula"), this.sync(mf, !0), this.place();
     },
-    room(el2) {
-      if (this.roomEl === el2) return;
-      let desk = document.getElementById("desk"), anchor = el2;
-      if (!anchor) {
-        let sel = window.getSelection && window.getSelection(), n2 = sel && sel.anchorNode;
-        anchor = n2 && (n2.nodeType === 1 ? n2 : n2.parentElement), anchor = anchor && anchor.closest && anchor.closest("#editor .opgave > *");
-      }
-      let y0 = anchor && desk && desk.contains(anchor) ? anchor.getBoundingClientRect().top : null;
-      if (this.roomEl && this.roomEl.classList.remove("bar-room"), this.roomEl = el2 || null, el2 && el2.classList.add("bar-room"), y0 != null) {
-        let d = anchor.getBoundingClientRect().top - y0;
-        Math.abs(d) > 1 && (desk.scrollTop += d);
-      }
-    },
-    // Bjælken står lige under formlen (eller over den, hvis der ikke er plads under)
+    // (bjælken står fast under topbjælken – den flyttes ikke med formlen)
     place() {
-      let tb = this.toolbar, mf = this.field;
-      if (!tb || !mf || !tb.classList.contains("formula")) return;
-      let r0 = (mf.closest(".m-row, .im") || mf.closest(".blk-head") || mf).getBoundingClientRect(), tip = mf.closest(".im-editor") && mf.closest(".im-editor").querySelector(".im-tip"), tr = tip && tip.getBoundingClientRect(), r = tr && tr.height ? { left: r0.left, top: r0.top, bottom: Math.max(r0.bottom, tr.bottom) } : r0, desk = document.getElementById("desk"), top0 = desk ? desk.getBoundingClientRect().top : 0, w = tb.offsetWidth, hgt = tb.offsetHeight;
-      document.documentElement.style.setProperty("--bar-h", hgt + "px");
-      let y = r.bottom + 6;
-      y + hgt > window.innerHeight - 8 && (y = Math.max(top0 + 6, r.top - hgt - 6));
-      let x = Math.max(8, Math.min(r.left - 6, window.innerWidth - w - 12));
-      tb.style.left = x + "px", tb.style.top = y + "px";
     },
     sync(mf, force) {
       this.latexBox && this.field === mf && (force || document.activeElement !== this.latexBox) && (this.latexBox.value = mf.value);
@@ -4719,11 +4711,7 @@ print(1 + 1)`, out: null } : {};
     let v = view(), tr = v.state.tr;
     cut && tr.delete(cut[0], cut[1]);
     let doc = tr.doc, sel = cut ? TextSelection.create(doc, cut[0]) : v.state.selection, untouched = !cut && app.lastPos == null && !v.hasFocus(), base = cut ? cut[0] : untouched ? doc.content.size - 1 : app.lastPos != null && app.lastPos <= doc.content.size ? app.lastPos : sel.from, at = sel instanceof NodeSelection && sel.node.isBlock && !untouched ? sel.to : topBlockPos(doc, Math.min(base, doc.content.size)), node = newNode(type, attrs, extra), $f = doc.resolve(sel.from), $at = doc.resolve(Math.min(at, doc.content.size)), before = untouched ? $at.nodeBefore : null;
-    if (!untouched && sel.empty && $f.parent.type === S.paragraph && $f.parent.content.size === 0 && node.isAtom ? (at = $f.before(), tr.replaceWith(at, $f.after(), node)) : before && before.type === S.paragraph && before.content.size === 0 && node.isAtom ? (at -= before.nodeSize, tr.replaceWith(at, at + before.nodeSize, node)) : tr.insert(at, node), node.isAtom) {
-      let after = at + node.nodeSize, next = tr.doc.resolve(after).nodeAfter;
-      (!next || next.type !== S.paragraph) && tr.insert(after, S.paragraph.create()), tr.setSelection(NodeSelection.create(tr.doc, at));
-    } else tr.setSelection(TextSelection.create(tr.doc, at + 1));
-    v.dispatch(tr.scrollIntoView()), node.isAtom ? focusNodeAt(at) : v.focus();
+    !untouched && sel.empty && $f.parent.type === S.paragraph && $f.parent.content.size === 0 && node.isAtom ? (at = $f.before(), tr.replaceWith(at, $f.after(), node)) : before && before.type === S.paragraph && before.content.size === 0 && node.isAtom ? (at -= before.nodeSize, tr.replaceWith(at, at + before.nodeSize, node)) : tr.insert(at, node), node.isAtom ? tr.setSelection(NodeSelection.create(tr.doc, at)) : tr.setSelection(TextSelection.create(tr.doc, at + 1)), v.dispatch(tr.scrollIntoView()), node.isAtom ? focusNodeAt(at) : v.focus();
   }
   function insertAtPos(pos, type) {
     let v = view(), tr = v.state.tr.insert(pos, newNode(type));
@@ -5207,7 +5195,7 @@ print(1 + 1)`, out: null } : {};
           }), at == null) return !1;
           e.preventDefault();
           let tr = view2.state.tr, cur2;
-          return prevNode.type === S.paragraph && prevNode.content.size === 0 ? cur2 = at - 1 : (tr = tr.insert(at, S.paragraph.create()), cur2 = at + 1), view2.dispatch(tr.setSelection(TextSelection2.create(tr.doc, cur2))), view2.focus(), !0;
+          return prevNode.isTextblock && prevNode.type !== S.delopgave ? cur2 = at - 1 : (tr = tr.insert(at, S.paragraph.create()), cur2 = at + 1), view2.dispatch(tr.setSelection(TextSelection2.create(tr.doc, cur2))), view2.focus(), !0;
         }
       }
     }
@@ -5278,7 +5266,7 @@ print(1 + 1)`, out: null } : {};
     return !1;
   }
   function statement(attrs, info, r) {
-    let L = attrs.latex, dec = (attrs.opts || {}).mode === "decimal", eq = dec || r && r.approx ? "\\approx " : "=";
+    let L = info && info.trailEq ? String(attrs.latex).replace(/(?:=|\\approx)\s*$/, "") : attrs.latex, dec = (attrs.opts || {}).mode === "decimal", eq = dec || r && r.approx ? "\\approx " : "=";
     if (!info || info.error || info.empty || info.none) return { full: L };
     let a = info.action;
     if (a === "define" && info.point) return { full: info.point, tail: "", sym: "" };
@@ -5325,7 +5313,7 @@ print(1 + 1)`, out: null } : {};
     return !info.approx && !same && (r.exact || !r.approx) ? { latex: base + "=" + r.latex } : same && r.integer ? { latex: base } : { latex: base + "\\approx " + r.approx };
   }
   function chipText(a, info) {
-    return a.action ? a.action === "define" ? "Defin\xE9r" : ACTIONS[a.action] || "" : a.latex && info && !info.error && info.action === "define" ? "Defin\xE9r" : "";
+    return a.action ? a.action === "define" ? "Defin\xE9r" : ACTIONS[a.action] || "" : a.latex && info && !info.error && info.action === "define" ? "Defin\xE9r" : a.latex && info && !info.error && info.trailEq ? "Beregn" : "";
   }
   function qqTex(a, r) {
     return "\\bar{" + nameTex(a.v || "x") + "}\\approx " + numDa(r.mean, a.digits) + ",\\ " + (r.n != null ? "s" : "\\sigma") + "\\approx " + numDa(r.s, a.digits) + (r.n != null ? ",\\ n=" + r.n : "") + "\\quad R^2=" + r2Da(r.R2, a.digits) + "\\text{ for punkterne i plottet}";
@@ -5910,7 +5898,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let a = this.node.attrs, { info, r, stale, fresh } = lookup(this.id), hardErr = info && info.error ? info.error : fresh && fresh.error ? fresh.error : "";
       this.showErr(hardErr || info && info.note || "", hardErr ? info && info.soft : !0);
       let shown = fresh || (r && !r.error ? r : null), stm = statement(a, info, shown), resT2 = stm.tail || "";
-      this.sym.innerHTML = resT2 && stm.sym ? tex(SYMTEX[stm.sym] || stm.sym) : "";
+      this.sym.innerHTML = resT2 && stm.sym && !(info && info.trailEq && stm.sym === "=") ? tex(SYMTEX[stm.sym] || stm.sym) : "";
       let degTxt = info && info.deg && !info.degOut && resT2 ? '<span class="m-same">vinkler i grader</span>' : "", savedNames = shown && shown.savedVals ? Object.keys(shown.savedVals) : null, savedTxt = info && info.saved ? '<span class="m-same">' + (savedNames && !savedNames.length ? "intet at gemme" : "gemt som " + (savedNames || info.saved.slice(0, 1)).map((n2) => n2.replace(/_(\d+)$/, (m, d) => [...d].map((c) => "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"[c]).join(""))).join(", ")) + "</span>" : "";
       this.lastRes = resT2 || "", this.res.innerHTML = resT2 ? tex(resT2) + (stm.same ? '<span class="m-same">kan ikke reduceres yderligere</span>' : "") + savedTxt + degTxt : "", resT2 ? this.res.setAttribute("aria-label", speak(resT2)) : this.res.removeAttribute("aria-label"), this.out.hidden = !resT2, this.out.classList.toggle("stale", !!stale), this.out.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026", this.out.classList.toggle("op", !!stm.op), requestAnimationFrame(() => {
         let o = this.out;
@@ -7009,9 +6997,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         }
         onAny && onAny(tr);
       },
-      // plads til den faste værktøjslinje foroven og luft forneden, når markøren rulles frem
-      scrollMargin: { top: 130, bottom: 140, left: 0, right: 0 },
-      scrollThreshold: { top: 130, bottom: 140, left: 0, right: 0 },
+      // lidt luft over og under markøren, når den rulles frem (værktøjslinjen står uden for dokumentet)
+      scrollMargin: { top: 40, bottom: 80, left: 0, right: 0 },
+      scrollThreshold: { top: 40, bottom: 80, left: 0, right: 0 },
       attributes: { spellcheck: "true", "aria-label": "Dokument" }
     });
     return view2;
@@ -8021,19 +8009,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     h("span", { class: "st-cd" }, desc)
   );
   function render() {
-    let all = docs.list().filter((d) => !d.fresh), cur2 = docs.entry(docs.cur), cont = cur2 && !cur2.fresh ? h(
-      "button",
-      { type: "button", class: "st-continue", onclick: () => docs.open(cur2.id) },
-      h("span", { class: "st-cl" }, "Forts\xE6t"),
-      h("span", { class: "st-ctitle" }, cur2.title || "Uden titel"),
-      h("span", { class: "st-cw" }, "\xE6ndret " + fmtWhen(cur2.updated))
-    ) : docs.isExample() && docs.exDirty ? h(
-      "button",
-      { type: "button", class: "st-continue", onclick: () => docs.openExample(docs.cur.slice(3)) },
-      h("span", { class: "st-cl" }, "Forts\xE6t"),
-      h("span", { class: "st-ctitle" }, hooks.title ? hooks.title() : "Eksempel"),
-      h("span", { class: "st-cw" }, "eksempel \xB7 dine \xE6ndringer er ikke gemt")
-    ) : null;
+    let all = docs.list().filter((d) => !d.fresh);
     listEl = h("div", { class: "st-list", role: "list" });
     let search = all.length > 5 ? h("input", { type: "search", class: "st-search", placeholder: "S\xF8g i dine dokumenter", "aria-label": "S\xF8g i dine dokumenter", value: q }) : null;
     search && search.addEventListener("input", () => {
@@ -8048,8 +8024,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         h("span", { class: "spacer" }),
         h("button", { type: "button", class: "ghost st-open", onclick: () => document.getElementById("fileIn").click(), title: "\xC5bn en VisMat-fil (.vismat.json) \u2013 eller tr\xE6k den ind her" }, "\xC5bn fil \u2026")
       ),
-      all.length ? null : h("p", { class: "st-intro" }, "CAS, grafer, tabeller og statistik i \xE9t dokument \u2013 og en f\xE6rdig PDF til aflevering."),
-      cont,
+      // (altid samme opbygning, så kortene står samme sted hver gang)
+      h("p", { class: "st-intro" }, "CAS, grafer, tabeller og statistik i \xE9t dokument \u2013 og en f\xE6rdig PDF til aflevering."),
       h("h2", { class: "st-h" }, "Kom i gang"),
       h(
         "div",
@@ -8066,15 +8042,26 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     )), fillList(all);
   }
   function fillList(all) {
-    let words = q.trim().toLowerCase().split(/\s+/).filter(Boolean), rows = all.filter((d) => words.every((w) => (d.title || "uden titel").toLowerCase().includes(w)));
-    listEl.replaceChildren(...rows.length ? rows.map(row) : [h("p", { class: "st-empty" }, all.length ? "Ingen dokumenter passer til s\xF8gningen." : "Ingen dokumenter endnu. Opret et ovenfor \u2013 eller \xE5bn en fil.")]);
+    let words = q.trim().toLowerCase().split(/\s+/).filter(Boolean), rows = all.filter((d) => words.every((w) => (d.title || "uden titel").toLowerCase().includes(w))), ex = docs.isExample() && docs.exDirty && !words.length ? h(
+      "div",
+      { class: "st-row", role: "listitem" },
+      h(
+        "button",
+        { type: "button", class: "st-row-open", onclick: () => docs.openExample(docs.cur.slice(3)) },
+        h("span", { class: "st-doc-ic", "aria-hidden": "true" }),
+        h("span", { class: "st-t" }, hooks.title ? hooks.title() : "Eksempel"),
+        h("span", { class: "st-tag warn" }, "Eksempel \xB7 ikke gemt")
+      )
+    ) : null;
+    listEl.replaceChildren(...[ex].filter(Boolean), ...rows.length ? rows.map(row) : ex ? [] : [h("p", { class: "st-empty" }, all.length ? "Ingen dokumenter passer til s\xF8gningen." : "Ingen dokumenter endnu. Opret et ovenfor \u2013 eller \xE5bn en fil.")]);
   }
   function row(d) {
-    let more = h("button", { type: "button", class: "st-more iconbtn", "aria-haspopup": "menu", "aria-label": "Mere for " + (d.title || "Uden titel"), title: "Omd\xF8b, kopi\xE9r, gem som fil, slet" }, "\u22EF"), title = h("span", { class: "st-t" }, d.title || "Uden titel"), open = h(
+    let more = h("button", { type: "button", class: "st-more iconbtn", "aria-haspopup": "menu", "aria-label": "Mere for " + (d.title || "Uden titel"), title: "Omd\xF8b, lav en kopi, gem som fil, slet" }, "\u22EF"), title = h("span", { class: "st-t" }, d.title || "Uden titel"), open = h(
       "button",
       { type: "button", class: "st-row-open", onclick: () => docs.open(d.id) },
       h("span", { class: "st-doc-ic", "aria-hidden": "true" }),
       title,
+      d.id === docs.cur ? h("span", { class: "st-tag" }, "Senest \xE5bnet") : null,
       h("span", { class: "st-w" }, (d.n ? d.n + (d.n === 1 ? " opgave" : " opgaver") + " \xB7 " : "") + fmtWhen(d.updated))
     ), r = h("div", { class: "st-row", role: "listitem" }, open, more);
     return more.addEventListener("click", () => {
@@ -8105,7 +8092,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
   function renameInline(r, d) {
     let inp = h("input", { class: "st-rename", value: d.title === "Uden titel" ? "" : d.title || "", placeholder: "Titel", "aria-label": "Ny titel" }), open = r.querySelector(".st-row-open");
-    open.hidden = !0, open.after(inp), r.classList.add("renaming"), inp.focus(), inp.select();
+    open.hidden = !0, open.after(h("div", { class: "st-row-open st-ren" }, h("span", { class: "st-doc-ic", "aria-hidden": "true" }), inp)), r.classList.add("renaming"), inp.focus(), inp.select();
     let done = !1, finish = (ok) => {
       if (done) return;
       done = !0;
@@ -9027,8 +9014,34 @@ def punkt(fn, t):
       id2 && id2 !== app.activeOpg && (app.activeOpg = id2, renderSide());
     }));
   }
+  function buildInsertTools(host) {
+    let pick2 = (id2) => ITEMS.find((x) => x.id === id2), go = (id2) => {
+      let v = app.view, it = pick2(id2), sel = v.state.selection;
+      if (!v.hasFocus() && app.lastPos != null && app.lastPos <= v.state.doc.content.size)
+        try {
+          v.state.doc.resolve(app.lastPos).parent.isTextblock && (v.dispatch(v.state.tr.setSelection(PM.state.TextSelection.create(v.state.doc, app.lastPos))), sel = v.state.selection);
+        } catch {
+        }
+      let inText = sel.empty && sel.$from.parent.type.name === "paragraph";
+      runTextItem(!inText && id2 === "inline" ? pick2("math_line") : it, [sel.from, sel.from]);
+    }, b = (id2, label, title) => {
+      let el2 = h("button", { type: "button", class: "tool", title }, h("span", { class: "lbl" }, label));
+      return el2.addEventListener("mousedown", (e) => e.preventDefault()), el2.addEventListener("click", () => go(id2)), el2;
+    };
+    host.append(
+      h("span", { class: "it-l" }, "Inds\xE6t"),
+      b("math_line", "Formel", "Formel p\xE5 egen linje ($$ eller \\formel)"),
+      b("inline", "Formel i tekst", "Formel midt i en s\xE6tning ($)"),
+      b("graph", "Plot", "Grafer, punkter, vektorer (\\plot)"),
+      b("table", "Tabel", "Data, regression og statistik (\\tabel)"),
+      b("python", "Python", "Egen Python-kode (\\python)"),
+      h("span", { class: "tsep", "aria-hidden": "true" }),
+      b("delopgave", "Delopgave", "a), b), c) \u2026 (\\delopgave)"),
+      b("opgave", "Opgave", "Ny opgave (\\opgave)")
+    );
+  }
   async function init() {
-    await initStore(), makeDocs(), document.documentElement.lang = "da", document.documentElement.setAttribute("translate", "no"), document.documentElement.classList.add("notranslate"), document.querySelector("meta[name=google]") || document.head.append(Object.assign(document.createElement("meta"), { name: "google", content: "notranslate" })), app.session = new Session(CACHE), app.cas = new CasClient({ onState: onCasState, onResult, onIdle, onTimeout }), bar.build($3("toolbar"), $3("ftools")), /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) && (document.querySelectorAll("kbd").forEach((k) => {
+    await initStore(), makeDocs(), document.documentElement.lang = "da", document.documentElement.setAttribute("translate", "no"), document.documentElement.classList.add("notranslate"), document.querySelector("meta[name=google]") || document.head.append(Object.assign(document.createElement("meta"), { name: "google", content: "notranslate" })), app.session = new Session(CACHE), app.cas = new CasClient({ onState: onCasState, onResult, onIdle, onTimeout }), bar.build($3("toolbar"), $3("ftools")), buildInsertTools($3("itools")), /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent) && (document.querySelectorAll("kbd").forEach((k) => {
       k.textContent === "Ctrl" && (k.textContent = "\u2318");
     }), document.querySelectorAll('[title*="Ctrl"]').forEach((el2) => {
       el2.title = el2.title.replace(/Ctrl/g, "\u2318");
@@ -9070,7 +9083,7 @@ def punkt(fn, t):
           act("Startside", () => showStart(), "", "alle dokumenter"),
           h("div", { class: "pop-sep" }),
           act(docs2.exDirty ? "Gem som mit dokument" : "Lav min egen kopi", () => docs2.keepExample()),
-          act("Gem som PDF", () => setMode("hand")),
+          act("Generer PDF", () => setMode("hand")),
           act("Gem som fil \u2026", () => docs2.saveFile(), "", ".vismat.json")
         ), { role: "menu", noFocus: !0, onclose: () => dmb.setAttribute("aria-expanded", "false") }), dmb.setAttribute("aria-expanded", "true");
         return;
@@ -9095,7 +9108,7 @@ def punkt(fn, t):
           let id2 = docs2.duplicate(docs2.cur);
           id2 && docs2.open(id2);
         }),
-        act("Gem som PDF", () => setMode("hand")),
+        act("Generer PDF", () => setMode("hand")),
         act("Gem som fil \u2026", () => docs2.saveFile(), "", ".vismat.json"),
         h("div", { class: "pop-sep" }),
         act("Slet dokumentet", () => {

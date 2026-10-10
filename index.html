@@ -717,6 +717,11 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .pp-top{position:sticky;top:0;background:var(--paper);display:flex;align-items:center;gap:8px;padding:14px 14px 10px;border-bottom:1px solid var(--rule);z-index:2}
 .pp-top h3{margin:0;font-size:13.5px}
 .pp-top .opgtag{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:1px 8px;font-size:11.5px;font-weight:500}
+.pp-nav{display:inline-flex;align-items:center;gap:2px}
+.pp-step{border:0;background:none;border-radius:6px;width:24px;height:24px;cursor:pointer;color:var(--ink-2);font:400 18px/1 var(--ui);display:grid;place-items:center;padding:0 0 2px}
+.pp-step:hover:not(:disabled){background:var(--hover);color:var(--ink)}
+.pp-step:disabled{opacity:.3;cursor:default}
+.pp-next{display:flex;justify-content:flex-end;padding:6px 0 18px}
 .pp-body{padding:10px 12px 60px;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
 .pp-body > *{min-width:0}
 .pp-helpers summary{cursor:pointer;font-size:12px;color:var(--ink-2);padding:4px 2px}
@@ -1063,7 +1068,7 @@ body.on-start{overflow:hidden}
   </main>
 
   <aside class="rail py-rail" id="pyRail" aria-label="Python-program">
-    <div class="pp-top"><h3>Python-program</h3><span class="opgtag" id="pyOpg"></span><span class="spacer"></span><button type="button" class="iconbtn" id="pyClose" aria-label="Luk Python-panelet">×</button></div>
+    <div class="pp-top"><h3>Python-program</h3><span class="pp-nav"><button type="button" class="pp-step" id="pyPrev" aria-label="Forrige opgave" title="Forrige opgave">‹</button><span class="opgtag" id="pyOpg"></span><button type="button" class="pp-step" id="pyNext" aria-label="Næste opgave" title="Næste opgave">›</button></span><span class="spacer"></span><button type="button" class="iconbtn" id="pyClose" aria-label="Luk Python-panelet">×</button></div>
     <div class="pp-body" id="pyProg"></div>
   </aside>
   <div class="scrim" id="scrim" hidden></div>
@@ -7632,7 +7637,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     let box = $2("pyProg");
     if (!box) return;
     let s = app.session, o = s.opgaver.find((x) => x.id === app.activeOpg) || s.opgaver[0], plan = o && s.planOf(o.id);
-    if ($2("pyOpg").textContent = o ? "Opgave " + o.number : "", box.innerHTML = "", !plan) return;
+    $2("pyOpg").textContent = o ? "Opgave " + o.number : "";
+    let oi = o ? s.opgaver.indexOf(o) : -1, prev = s.opgaver[oi - 1], next = s.opgaver[oi + 1];
+    if ($2("pyPrev").disabled = !prev, $2("pyNext").disabled = !next, $2("pyPrev").onclick = () => prev && goOpg(prev.id), $2("pyNext").onclick = () => next && goOpg(next.id), box.innerHTML = "", !plan) return;
     let program = programText(o, plan, app.meta.title, app.prelude), copyP = h("button", { type: "button", class: "ghost sm", onclick: async (e) => {
       let b = e.currentTarget;
       try {
@@ -7676,6 +7683,14 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       );
       box.append(cell);
     }
+    next && box.append(h("div", { class: "pp-next" }, h("button", { type: "button", class: "ghost sm", onclick: () => goOpg(next.id) }, "N\xE6ste: Opgave " + next.number + " \u2192")));
+  }
+  function goOpg(id2) {
+    app.activeOpg = id2;
+    let sec = document.querySelector('[data-opg="' + id2 + '"]');
+    holdNav(), sec && sec.scrollIntoView({ behavior: "smooth", block: "start" }), renderSide();
+    let box = $2("pyProg"), sc = box && box.closest(".rail");
+    sc && (sc.scrollTop = 0);
   }
   function highlightPyCell(id2) {
     document.querySelectorAll(".pp-cell.on").forEach((c2) => c2.classList.remove("on"));

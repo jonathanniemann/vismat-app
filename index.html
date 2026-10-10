@@ -156,10 +156,9 @@ kbd{font:500 11px var(--mono);border:1px solid var(--rule);border-bottom-width:2
 code{font:12.5px var(--mono);font-variant-ligatures:none;background:var(--rule-2);padding:1px 5px;border-radius:4px}
 .spacer{flex:1}
 
-.app{height:100%;display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:auto auto minmax(0,1fr);grid-template-areas:"nav bar" "nav rib" "nav desk"}
-.app.with-py{grid-template-columns:240px minmax(0,1fr) 400px;grid-template-areas:"nav bar py" "nav rib py" "nav desk py"}
-.ribbon{grid-area:rib;background:var(--paper);border-bottom:1px solid var(--rule-2);padding:3px 12px;min-width:0;display:flex;justify-content:center}
-.app[data-mode=hand] .ribbon{display:none}
+.app{height:100%;display:grid;grid-template-columns:240px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"nav bar" "nav desk"}
+.app.with-py{grid-template-columns:240px minmax(0,1fr) 400px;grid-template-areas:"nav bar py" "nav desk py"}
+.app[data-mode=hand] #toolbar{display:none}
 .bar{grid-area:bar}.rail.left{grid-area:nav}.desk{grid-area:desk}.rail.py-rail{grid-area:py}
 .ico{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .ic-txt{font:600 13px var(--serif);min-width:16px;text-align:center}
@@ -284,7 +283,8 @@ body.is-dragging,body.is-dragging *{cursor:grabbing!important;user-select:none}
 .ftools,.itools{mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
 @media (min-width:1000px){.ftools,.itools{mask-image:none}}
 /* Formelbjælken svæver ved den formel, man skriver i (placeres af mathfield.js) */
-.toolbar{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
+.toolbar{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto;overflow:hidden}
+.bar{border-bottom:1px solid var(--rule-2)}
 /* plads til formelbjælken under den formel, man skriver i */
 .paper{position:relative}
 .tools{display:flex;align-items:center;gap:1px;min-height:40px;box-sizing:border-box;background:var(--pop,var(--paper));border:0;border-radius:8px;padding:4px;box-shadow:var(--pop-shadow);max-width:100%;overflow-x:auto;scrollbar-width:none}
@@ -350,16 +350,17 @@ body.typing .gutter{opacity:0!important;pointer-events:none!important}
 .im.live{border-radius:0;border-bottom:1px dotted color-mix(in srgb,var(--cas) 70%,transparent)}
 .im.live:hover{border-radius:5px}
 .im.bad{box-shadow:inset 0 -1.5px 0 var(--warn)}
-.im-editor{position:fixed;z-index:24;display:inline-flex;align-items:center;gap:3px;padding:0 2px;border-radius:5px;background:var(--accent-soft);font:17px/1.2 var(--serif)}
-.im.editing{display:inline-block;vertical-align:middle}
-.im.editing .im-v{visibility:hidden;display:inline-block;width:0;overflow:hidden}
+.im-editor{position:fixed;z-index:24;display:inline-flex;align-items:center;gap:3px;padding:0 1px;border-radius:5px;background:var(--accent-soft);font:17px/1.2 var(--serif)}
+/* (formlen i teksten beholder sin plads og grundlinje, mens den rettes; den bliver kun bredere, hvis feltet er bredere) */
+.im.editing .im-v{visibility:hidden}
 .im-editor math-field{max-width:calc(100vw - 100px)}
 .im.editing{cursor:text}
 .cas-chip.im-chip{position:static;transform:none;display:inline-flex;height:22px;padding:0 5px;font-size:11.5px;margin:0 0 0 2px;vertical-align:middle;background:var(--cas-soft)}
 .cas-chip.im-chip .cas-chip-c{opacity:.7;width:auto}
 .cas-chip.im-chip.none{opacity:1;pointer-events:auto;background:none;color:var(--ink-3);font-weight:500;border:1px dashed var(--field)}
 .im-empty{font:italic 13px var(--ui);color:var(--ink-3)}
-math-field.mf-inline{display:inline-block;font-size:17px;min-width:40px;border:0;background:transparent;padding:0 2px;outline:none;--caret-color:var(--accent);--selection-background-color:var(--accent-soft);--contains-highlight-background-color:transparent;vertical-align:baseline}
+math-field.mf-inline::part(content){padding:0 1px}
+math-field.mf-inline{display:inline-block;font-size:17px;min-width:24px;border:0;background:transparent;padding:0;outline:none;--caret-color:var(--accent);--selection-background-color:var(--accent-soft);--contains-highlight-background-color:transparent;vertical-align:baseline}
 
 /* Blokke */
 .blk{position:relative;margin:10px 0 18px;border-radius:10px;transition:background .3s,box-shadow .15s}
@@ -443,7 +444,10 @@ math-field.mf-inline{display:inline-block;font-size:17px;min-width:40px;border:0
 .ftools > .tool:first-child{color:var(--ink-2)}
 .toolbar .tools{max-width:100%;background:none;box-shadow:none;border-radius:0;padding:0;min-height:36px}
 .itools .tool{font-size:13px}
-.it-l{font-size:12px;color:var(--ink-3);padding:0 6px 0 2px;white-space:nowrap}
+/* formel i teksten: dens CAS-knap og en evt. fejlbesked står forrest i værktøjslinjen, mens man retter den */
+.rib-cas{display:inline-flex;align-items:center;gap:8px;flex:none}
+.rib-cas:empty,.toolbar:not(.formula) .rib-cas{display:none}
+.rib-cas .im-tip{position:static;white-space:nowrap;max-width:320px;overflow:hidden;text-overflow:ellipsis}
 .itools .tsep{width:1px;align-self:stretch;margin:8px 6px;background:var(--rule)}
 .lbl-s{font:500 12.5px var(--ui);color:var(--ink-2)}
 .dd-c{font-size:8px;color:var(--ink-3);margin-left:3px}
@@ -851,7 +855,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .page{transform:scale(1.0003)!important;width:210mm!important;height:297mm!important}
 }
 @media (max-width:1180px){
-  .app,.app.with-py{grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "rib" "desk"}
+  .app,.app.with-py{grid-template-columns:minmax(0,1fr);grid-template-areas:"bar" "desk"}
   .rail{position:fixed;top:0;bottom:0;width:min(340px,90vw);z-index:40;background:var(--desk);box-shadow:var(--pop-shadow);transition:transform .2s ease;padding-top:calc(18px + env(safe-area-inset-top,0px))}
   .rail.left{left:0;transform:translateX(-105%)}
   .rail.py-rail{display:block!important;right:0;transform:translateX(105%);background:var(--paper);padding-top:env(safe-area-inset-top,0px)}
@@ -891,7 +895,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .cas-pill .cas-txt{display:none}
   .cas-pill{padding:6px 8px}
   #pageCount{display:none}
-  .back-btn .lbl,.bar-hand label,.app[data-mode=hand] #docMenuBtn{display:none!important}
+  .back-btn .lbl,.bar-hand label{display:none!important}
 }
 @media (pointer:coarse){
   .cas-chip{height:32px;font-size:13px}
@@ -905,7 +909,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
   .mini{height:36px}
 }
 @media (max-width:1500px) and (min-width:1181px){
-  .app.with-py{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"bar py" "rib py" "desk py"}
+  .app.with-py{grid-template-columns:minmax(0,1fr) 400px;grid-template-areas:"bar py" "desk py"}
   .app.with-py .rail.left{position:fixed;top:0;bottom:0;left:0;width:min(340px,90vw);z-index:40;background:var(--desk);box-shadow:var(--pop-shadow);transition:transform .2s ease;transform:translateX(-105%)}
   .app.with-py .rail.left.open{transform:none}
   .app.with-py .rail.left .rail-close{display:block}
@@ -965,6 +969,12 @@ body.on-start{overflow:hidden}
 .start.drop::after{content:"Slip filen for at åbne den";position:fixed;inset:12px;border:2px dashed var(--accent);border-radius:14px;background:color-mix(in srgb,var(--accent-soft) 80%,transparent);display:grid;place-items:center;font:600 16px var(--ui);color:var(--accent);pointer-events:none}
 .nav-home{cursor:pointer;border:0;background:none;border-radius:4px;text-align:left;font:inherit;font-weight:600;color:inherit;align-self:stretch;box-sizing:border-box;width:100%;padding:5px 8px;margin:0 0 10px}
 .nav-home:hover{background:var(--hover)}
+.nh-back{font:400 20px/1 var(--ui);color:var(--ink-3);margin:-2px -2px 0 -2px;width:12px;text-align:center}
+.nav-home:hover .nh-back{color:var(--ink)}
+.nav-doc{width:100%;box-sizing:border-box;justify-content:space-between;padding:6px 8px;margin:-4px 0 14px;font-weight:600;font-size:14px;border-radius:4px}
+.nav-doc{flex-wrap:wrap;align-items:center;text-align:left;row-gap:2px}
+.nav-doc #docName{flex:0 1 auto;min-width:0;white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
+.nav-doc .dn-c{margin-left:auto}
 
 @media (max-width:760px){
   .st-wrap{padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}
@@ -984,7 +994,13 @@ body.on-start{overflow:hidden}
   <header class="bar">
     <button type="button" class="tbtn only-narrow" id="btnNav" aria-label="Opgaver">☰</button>
     <button type="button" class="tbtn back-btn" id="btnBack" title="Tilbage til dokumentet (Esc)"><span aria-hidden="true">←</span><span class="lbl">Tilbage til dokumentet</span></button>
-    <button type="button" class="docname" id="docMenuBtn" aria-haspopup="menu" title="Dokument: startside, omdøb, kopi, gem som fil"><span id="docName"></span><span class="dn-c" aria-hidden="true">▾</span></button>
+    <!-- Værktøjslinjen (som i Word og Google Docs): i teksten indsæt-knapperne, i en formel matematikknapperne.
+         Den står fast i topbjælken – den skubber aldrig dokumentet og dækker intet -->
+    <div class="toolbar" id="toolbar">
+      <div class="tools itools" role="toolbar" aria-label="Indsæt" id="itools"></div>
+      <span class="rib-cas" id="ribbonCas"></span>
+      <div class="tools ftools" role="toolbar" aria-label="Formelbjælke" id="ftools"></div>
+    </div>
     <span class="spacer"></span>
     <!-- PDF-visningen: sideantal, tjek og Gem PDF står i topbjælken (så intet dækker siderne) -->
     <div class="bar-hand" id="barHand">
@@ -999,17 +1015,10 @@ body.on-start{overflow:hidden}
     <button type="button" class="tbtn py-top" id="pyAll" aria-pressed="false" title="Vis hele opgaven som et Python-program i et panel til højre"><span class="br" aria-hidden="true">{ }</span><span class="lbl">Vis Python-kode</span></button>
   </header>
 
-  <!-- Værktøjslinjen står fast under topbjælken (som i Word og Google Docs): i teksten indsæt-knapperne,
-       i en formel matematikknapperne. Den skubber aldrig dokumentet og dækker intet -->
-  <div class="ribbon" id="ribbon">
-    <div class="toolbar" id="toolbar">
-      <div class="tools itools" role="toolbar" aria-label="Indsæt" id="itools"></div>
-      <div class="tools ftools" role="toolbar" aria-label="Formelbjælke" id="ftools"></div>
-    </div>
-  </div>
   <nav class="rail left" id="nav" aria-label="Disposition">
     <button type="button" class="iconbtn rail-close" id="navClose" aria-label="Luk panelet">×</button>
-    <button type="button" class="brand nav-home" id="navHome" title="Til startsiden"><span class="mark" aria-hidden="true">√</span><span>VisMat</span></button>
+    <button type="button" class="brand nav-home" id="navHome" title="Tilbage til startsiden (alle dokumenter)"><span class="nh-back" aria-hidden="true">‹</span><span class="mark" aria-hidden="true">√</span><span>VisMat</span></button>
+    <button type="button" class="docname nav-doc" id="docMenuBtn" aria-haspopup="menu" title="Dokument: omdøb, kopi, gem som fil, slet"><span id="docName"></span><span class="dn-c" aria-hidden="true">▾</span></button>
     <p class="rail-h">Opgaver</p>
     <ol id="navList"></ol>
     <button type="button" class="rail-btn" id="newOpg">+ Ny opgave</button>
@@ -1173,7 +1182,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     if (!pop) return !1;
     let a = pop._anchor, r = a.getBoundingClientRect ? a.getBoundingClientRect() : a;
     if (a.getBoundingClientRect && (r.bottom < 0 || r.top > window.innerHeight)) return !1;
-    let w = pop.offsetWidth, ph = pop.offsetHeight, x = Math.min(r.left, window.innerWidth - w - 12), tb = a.closest && a.closest("#desk") && document.getElementById("ribbon"), minTop = tb ? Math.max(8, tb.getBoundingClientRect().bottom + 4) : 8, y = r.bottom + 6;
+    let w = pop.offsetWidth, ph = pop.offsetHeight, x = Math.min(r.left, window.innerWidth - w - 12), desk = a.closest && a.closest("#desk"), minTop = desk ? Math.max(8, desk.getBoundingClientRect().top + 4) : 8, y = r.bottom + 6;
     return y + ph > window.innerHeight - 8 && (y = r.top - ph - 6 >= minTop ? r.top - ph - 6 : Math.max(minTop, window.innerHeight - 8 - ph)), pop.style.left = Math.max(12, x) + "px", pop.style.top = y + "px", !0;
   }
   function openPop(anchor, content, opts = {}) {
@@ -5974,27 +5983,31 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       mf.classList.add("mf-inline");
       let chip = this.chip = h("button", { type: "button", class: "cas-chip im-chip" + (this.node.attrs.action ? "" : " none"), "aria-haspopup": "menu", "aria-expanded": "false", title: "V\xE6lg hvad CAS skal g\xF8re (Alt+Enter)" }, h("span", { class: "cas-chip-t" }, this.node.attrs.action ? ACTIONS[this.node.attrs.action] : "CAS"), h("span", { class: "cas-chip-c", "aria-hidden": "true" }, "\u25BE"));
       chip.addEventListener("mousedown", (e) => e.preventDefault()), chip.addEventListener("click", (e) => this.openMenu(e.detail === 0));
-      let editor = this.editor = h("span", { class: "im-editor", role: "group", "aria-label": "Redig\xE9r matematik i teksten" }, mf, chip);
+      let editor = this.editor = h("span", { class: "im-editor", role: "group", "aria-label": "Redig\xE9r matematik i teksten" }, mf);
       document.body.append(editor);
-      let cleanup = this.cleanup = [], place = () => {
+      let slot = document.getElementById("ribbonCas");
+      slot && slot.replaceChildren(chip);
+      let cleanup = this.cleanup = [() => {
+        chip.remove(), this.tip && (this.tip.remove(), this.tip = null);
+      }], place = () => {
         if (!this.editing || !this.dom.isConnected || !editor.isConnected) return;
-        let er = editor.getBoundingClientRect();
-        this.dom.style.width = Math.ceil(er.width) + "px", this.dom.style.height = Math.ceil(er.height) + "px";
+        let er = editor.getBoundingClientRect(), w0 = this.view.getBoundingClientRect().width;
+        this.dom.style.paddingRight = Math.max(0, Math.ceil(er.width - w0 - 2)) + "px";
         let r = this.dom.getBoundingClientRect();
-        editor.style.left = r.left + "px", editor.style.top = r.top + "px";
+        editor.style.left = r.left + "px", editor.style.top = r.top + r.height / 2 - er.height / 2 + "px";
       }, ro = new ResizeObserver(place);
       ro.observe(editor), window.addEventListener("resize", place), document.addEventListener("scroll", place, !0), cleanup.push(() => {
-        ro.disconnect(), window.removeEventListener("resize", place), document.removeEventListener("scroll", place, !0), this.dom.style.width = "", this.dom.style.height = "";
+        ro.disconnect(), window.removeEventListener("resize", place), document.removeEventListener("scroll", place, !0), this.dom.style.paddingRight = "";
       });
       let commit = (dir) => {
         if (!this.editing) return;
         this.editing = !1, cleanup.forEach((f) => f());
         let val = mf.value;
-        this.dom.classList.remove("editing"), currentPop() && currentPop()._owner === this && closePop(), editor.remove(), this.editor = null, this.tip && (this.tip.remove(), this.tip = null);
+        this.dom.classList.remove("editing"), currentPop() && currentPop()._owner === this && closePop(), editor.remove(), this.editor = null, chip.remove(), this.tip && (this.tip.remove(), this.tip = null);
         let pos = findPos(this.id);
         if (pos == null) return;
         let v = app.view, tr = v.state.tr;
-        val.trim() ? (tr = tr.setNodeMarkup(pos, null, Object.assign({}, this.node.attrs, { latex: val })), tr.setSelection(TextSelection4.create(tr.doc, dir < 0 ? pos : pos + 1))) : tr = tr.delete(pos, pos + 1).setSelection(TextSelection4.create(tr.doc, pos)), v.dispatch(tr), v.focus(), this.refresh();
+        val.trim() ? (val !== this.node.attrs.latex && (tr = tr.setNodeMarkup(pos, null, Object.assign({}, this.node.attrs, { latex: val }))), tr.setSelection(TextSelection4.create(tr.doc, dir < 0 ? pos : pos + 1))) : tr = tr.delete(pos, pos + 1).setSelection(TextSelection4.create(tr.doc, pos)), v.dispatch(tr), v.focus(), this.refresh();
       };
       this.commit = commit, mf.addEventListener("keydown", (e) => {
         if (mf.mode === "latex") {
@@ -6034,7 +6047,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         window.removeEventListener("pagehide", keep, !0), document.removeEventListener("visibilitychange", vis, !0);
       });
       let { info, fresh } = lookup(this.id), err = info && info.error || fresh && fresh.error;
-      err && (this.tip = h("span", { class: "im-tip", role: "status" }, err), editor.append(this.tip)), startKeyBuffer();
+      err && (this.tip = h("span", { class: "im-tip", role: "status" }, err), slot && slot.append(this.tip)), startKeyBuffer();
       let tries = 0, ready = () => {
         if (!this.editing) {
           takeKeyBuffer();
@@ -9084,7 +9097,6 @@ def punkt(fn, t):
       return el2.addEventListener("mousedown", (e) => e.preventDefault()), el2.addEventListener("click", () => go(id2)), el2;
     };
     host.append(
-      h("span", { class: "it-l" }, "Inds\xE6t"),
       b("math_line", "Formel", "Formel p\xE5 egen linje ($$ eller \\formel)"),
       b("inline", "Formel i tekst", "Formel midt i en s\xE6tning ($)"),
       b("graph", "Plot", "Grafer, punkter, vektorer (\\plot)"),
@@ -9133,7 +9145,7 @@ def punkt(fn, t):
         openPop(dmb, h(
           "div",
           { class: "doc-menu" },
-          h("div", { class: "dm-head" }, h("div", { class: "dm-t" }, app.meta.title || "Eksempel"), h("div", { class: "dm-w" }, docs2.exDirty ? "Eksempel \xB7 dine \xE6ndringer er ikke gemt" : "Eksempel \xB7 \xE5bnes altid som original")),
+          h("div", { class: "dm-head" }, h("div", { class: "dm-w" }, docs2.exDirty ? "Eksempel \xB7 dine \xE6ndringer er ikke gemt" : "Eksempel \xB7 \xE5bnes altid som original")),
           h("div", { class: "pop-sep" }),
           act("Startside", () => showStart(), "", "alle dokumenter"),
           h("div", { class: "pop-sep" }),
@@ -9146,7 +9158,7 @@ def punkt(fn, t):
       openPop(dmb, h(
         "div",
         { class: "doc-menu" },
-        h("div", { class: "dm-head" }, h("div", { class: "dm-t" }, app.meta.title || "Uden titel"), h("div", { class: "dm-w" }, "Gemt" + (e ? " \xB7 \xE6ndret " + fmtWhen(e.updated) : " p\xE5 denne enhed"))),
+        h("div", { class: "dm-head" }, h("div", { class: "dm-w" }, "Gemt" + (e ? " \xB7 \xE6ndret " + fmtWhen(e.updated) : " p\xE5 denne enhed"))),
         h("div", { class: "pop-sep" }),
         act("Startside", () => showStart(), "", "alle dokumenter"),
         h("div", { class: "pop-sep" }),

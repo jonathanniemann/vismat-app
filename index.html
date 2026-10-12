@@ -933,6 +933,7 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .help-more{margin:6px 8px 4px;font-size:12.5px;color:var(--ink-2)}
 .help-more summary{cursor:pointer;color:var(--ink-3);font-weight:500}
 .help-more ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px}
+.t-pick{font-size:13px;color:var(--accent);font-weight:500}
 /* Startside */
 .start{position:fixed;inset:0;z-index:50;background:var(--desk);overflow:auto;-webkit-overflow-scrolling:touch}
 .start[hidden]{display:none}
@@ -4311,7 +4312,7 @@ print(1 + 1)`, out: null } : {};
     let br = atom.parentBranch, t = parent.type === "surd" && br === "body" ? "sqrt" : BRANCH[br] || "grp", real = ((typeof parent.branch == "function" ? parent.branch(br) : []) || []).filter((k) => k.type !== "first"), par = 0;
     for (let k of real)
       if (k.value === "(" && par++, k.value === ")" && par--, k === atom) break;
-    return { t, len: real.length, par, text: real.map((k) => k.value || "").join("") };
+    return { t, len: real.length, par, text: real.map((k) => k.value || "").join(""), explicit: !!parent._vmExplicit };
   }
   function cursorFrame(mf) {
     try {
@@ -4329,7 +4330,7 @@ print(1 + 1)`, out: null } : {};
     let f = cursorFrame(mf);
     if (!f || f.len === 0) return !1;
     if (f.t === "sqrt") return key === ")" && f.par === 1 && /^\s*(\\left)?\(/.test(f.text);
-    if (!["sup", "den", "sub"].includes(f.t) || f.par > 0 || (key === "*" || key === "/") && f.t === "sub" || key === "/" && f.t === "den") return !1;
+    if (!["sup", "den", "sub"].includes(f.t) || f.par > 0 || f.explicit || (key === "*" || key === "/") && f.t === "sub" || key === "/" && f.t === "den") return !1;
     if (mf.executeCommand("moveAfterParent"), key === ")") {
       let g = cursorFrame(mf);
       if (g && g.t === "sqrt") return g.par === 1 && /^\s*(\\left)?\(/.test(g.text);
@@ -4658,6 +4659,11 @@ print(1 + 1)`, out: null } : {};
             mf.executeCommand("moveToNextPlaceholder"), mf._limitTab = !0;
           } catch {
           }
+        try {
+          let m = mf._mathfield.model, a = m.at(m.position);
+          a && a.parent && a.parent.type !== "root" && (a.parent._vmExplicit = !0);
+        } catch {
+        }
         mf.dispatchEvent(new Event("input"));
       }
     },
@@ -6804,17 +6810,25 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let R = tableRoles(this.node.attrs);
       return R.mode === "obs" ? R.w === "frek" ? "frekvens" : R.w === "none" ? "(ikke brugt)" : "hyppighed" : this.node.attrs.name || "f";
     }
+    // (pickReg: "Regression" er valgt, men eleven har endnu ikke valgt modeltype – intet vælges for eleven)
     mode() {
       let a = this.node.attrs;
-      return a.model !== "none" ? "reg" : ["stat", "sum", "qq", "hist"].includes(a.plot) ? "stat" : "tabel";
+      return a.model !== "none" || this.pickReg ? "reg" : ["stat", "sum", "qq", "hist"].includes(a.plot) ? "stat" : "tabel";
     }
     // Hvad CAS kan gøre med tabellen (det, der ikke passer til data, er gråt med en forklaring)
     modes() {
       let a = this.node.attrs, cur2 = this.mode(), firsts = a.rows.map((r) => String(r[0] || "").trim()).filter(Boolean), intervals = firsts.length > 0 && firsts.every((x) => !isFinite(Number(x.replace(",", "."))) && /\d/.test(x));
       return [
-        { label: "Tabel", desc: "Kun data \u2013 evt. med punkterne plottet", on: cur2 === "tabel", act: () => this.set({ model: "none", plot: ["points", "line"].includes(a.plot) ? "points" : "none", resid: !1 }) },
-        { label: "Regression", desc: "Line\xE6r, eksponentiel, potens eller andengrad. Modellen gemmes som en funktion", on: cur2 === "reg", disabled: intervals, note: "F\xF8rste kolonne indeholder intervaller \u2013 brug Statistik \u2192 Sumkurve", act: () => this.set({ model: this.lastModel || "lin", plot: "none" }) },
-        { label: "Statistik", desc: "Middelv\xE6rdi, spredning, kvartils\xE6t og boksplot \xB7 sumkurve for grupperede data \xB7 normalfordelingsplot", on: cur2 === "stat", act: () => this.set(Object.assign({ model: "none", plot: intervals ? "sum" : "stat", resid: !1 }, cur2 === "reg" && !intervals ? { w: "none" } : {})) }
+        { label: "Tabel", desc: "Kun data \u2013 evt. med punkterne plottet", on: cur2 === "tabel", act: () => {
+          this.pickReg = !1, this.set({ model: "none", plot: ["points", "line"].includes(a.plot) ? "points" : "none", resid: !1 }), this.refresh();
+        } },
+        // Regression: modeltypen vælger eleven selv (lineær, eksponentiel …) – der er ikke en, der er valgt på forhånd
+        { label: "Regression", desc: "Line\xE6r, eksponentiel, potens eller andengrad. Modellen gemmes som en funktion", on: cur2 === "reg", disabled: intervals, note: "F\xF8rste kolonne indeholder intervaller \u2013 brug Statistik \u2192 Sumkurve", act: () => {
+          this.pickReg = !0, this.set({ plot: "none" }), this.refresh();
+        } },
+        { label: "Statistik", desc: "Middelv\xE6rdi, spredning, kvartils\xE6t og boksplot \xB7 sumkurve for grupperede data \xB7 normalfordelingsplot", on: cur2 === "stat", act: () => {
+          this.pickReg = !1, this.set(Object.assign({ model: "none", plot: intervals ? "sum" : "stat", resid: !1 }, cur2 === "reg" && !intervals ? { w: "none" } : {})), this.refresh();
+        } }
       ];
     }
     drawRows() {
@@ -6946,11 +6960,11 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     refresh() {
       if (this.draggingLabel) return;
       let a = this.node.attrs, { info, r, stale, fresh } = lookup(this.id);
-      this.models.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(a.model === b.dataset.m)));
-      let plain = a.model === "none", mode2 = this.mode();
+      this.models.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(a.model === b.dataset.m))), (a.model !== "none" || ["stat", "sum", "qq", "hist"].includes(a.plot)) && (this.pickReg = !1);
+      let plain = a.model === "none", mode2 = this.mode(), choosing = mode2 === "reg" && plain;
       plain || (this.lastModel = a.model);
       let sum = mode2 === "stat" && tableRoles(a).grouped;
-      this.models.hidden = mode2 !== "reg", this.residRow.hidden = mode2 !== "reg", this.drawSave(mode2 === "reg" ? a.model : sum ? "sum" : mode2 === "stat" ? tableRoles(a).view === "qq" ? "stat" : "statq" : null);
+      this.models.hidden = mode2 !== "reg", this.residRow.hidden = mode2 !== "reg" || choosing, this.drawSave(choosing ? null : mode2 === "reg" ? a.model : sum ? "sum" : mode2 === "stat" ? tableRoles(a).view === "qq" ? "stat" : "statq" : null);
       let sn = statNames(a);
       for (let k of ["m", "s", "q1", "q2", "q3"]) {
         let inp = this.statIn[k];
@@ -6975,7 +6989,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let hard = info && info.error && !info.soft ? info.error : fresh && fresh.error ? fresh.error : "";
       this.showErr(hard || info && (info.error || info.msg || info.note) || "", !hard);
       let shown = hard ? null : fresh && fresh.params ? fresh : r && r.params ? r : null, pick2 = (k) => fresh && fresh[k] ? fresh : r && r[k] ? r : null, shownSum = hard ? null : grouped ? pick2("ivs") : view2 === "qq" ? pick2("qq") : null, shownStat = view2 === "stat" && !hard && (pick2("stat") || {}).stat || null;
-      this.stmt.innerHTML = shown ? tableStmtHTML(a, shown) : shownSum ? tableStmtHTML(a, shownSum) : shownStat ? '<span class="t-model">' + tex(statTex(a, shownStat), !0) + "</span>" : "";
+      this.stmt.innerHTML = choosing ? '<span class="t-pick">V\xE6lg modeltype ovenfor: line\xE6r, eksponentiel, potens eller andengrad</span>' : shown ? tableStmtHTML(a, shown) : shownSum ? tableStmtHTML(a, shownSum) : shownStat ? '<span class="t-model">' + tex(statTex(a, shownStat), !0) + "</span>" : "";
       let rr = a.resid && !plain && fresh && fresh.resid ? fresh : null, rw = Math.min(640, Math.max(300, (this.dom.clientWidth || 640) - 40)), kvG = grouped && shownSum && shownSum.kv ? shownSum.kv : null;
       this.rplot.contains(document.activeElement) && document.activeElement.dataset.rn || (this.rplot.innerHTML = rr ? residHTML(a, rr, rw) : shownStat ? fiveHTML(shownStat.kv, a.digits) : kvG ? boxSVG(kvG, LIVE, screenSize(rw), "Boksplot ud fra sumkurven") + fiveHTML(kvG, a.digits, !0) : ""), this.rplot.hidden = !rr && !shownStat && !kvG, this.stmt.classList.toggle("stale", !!stale && !!this.stmt.innerHTML), this.stmt.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026", this.plot.innerHTML = hard ? "" : tablePlot(a, fresh && !fresh.error ? fresh : null, LIVE, screenSize(this.plot.clientWidth || 400));
     }
@@ -9246,7 +9260,8 @@ def punkt(fn, t):
         closePop();
         return;
       }
-      openPop(hb, $3("helpTpl").content.cloneNode(!0).firstElementChild, { noFocus: !0 });
+      let box = $3("helpTpl").content.cloneNode(!0).firstElementChild;
+      openPop(hb, box, { noFocus: !0 }), box.querySelectorAll("details").forEach((d) => d.addEventListener("toggle", () => placePop()));
     }), $3("navClose").addEventListener("click", closeRails), $3("handPy").addEventListener("change", (e) => {
       app.handOpts.python = e.target.checked, renderHand();
     }), initChecks(), $3("btnPdf").addEventListener("click", (e) => exportPDF(e.currentTarget)), window.addEventListener("resize", () => {

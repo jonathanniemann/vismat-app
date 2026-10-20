@@ -934,6 +934,8 @@ math-field::part(virtual-keyboard-toggle){display:none}
 .help-more summary{cursor:pointer;color:var(--ink-3);font-weight:500}
 .help-more ul{margin:6px 0 0;padding-left:18px;display:grid;gap:5px}
 .t-pick{font-size:13px;color:var(--accent);font-weight:500}
+.beta-tag{font:600 10.5px/16px var(--ui);padding:0 6px;border-radius:999px;background:var(--warn-soft);color:var(--warn);letter-spacing:.02em}
+.st-ver{margin:4px 2px 0;font-size:11.5px;color:var(--ink-3)}
 /* Startside */
 .start{position:fixed;inset:0;z-index:50;background:var(--desk);overflow:auto;-webkit-overflow-scrolling:touch}
 .start[hidden]{display:none}
@@ -1088,6 +1090,9 @@ body.on-start{overflow:hidden}
 `).scrollIntoView()),!0)};function wr(r){for(let e=0;e<r.edgeCount;e++){let{type:t}=r.edge(e);if(t.isTextblock&&!t.hasRequiredAttrs())return t}return null}var to=(r,e)=>{let{$head:t,$anchor:n}=r.selection;if(!t.parent.type.spec.code||!t.sameParent(n))return!1;let i=t.node(-1),s=t.indexAfter(-1),o=wr(i.contentMatchAt(s));if(!o||!i.canReplaceWith(s,s,o))return!1;if(e){let l=t.after(),a=r.tr.replaceWith(l,l,o.createAndFill());a.setSelection(C.near(a.doc.resolve(l),1)),e(a.scrollIntoView())}return!0},no=(r,e)=>{let t=r.selection,{$from:n,$to:i}=t;if(t instanceof U||n.parent.inlineContent||i.parent.inlineContent)return!1;let s=wr(i.parent.contentMatchAt(i.indexAfter()));if(!s||!s.isTextblock)return!1;if(e){let o=(!n.parentOffset&&i.index()<i.parent.childCount?n:i).pos,l=r.tr.insert(o,s.createAndFill());l.setSelection(M.create(l.doc,o+1)),e(l.scrollIntoView())}return!0},ro=(r,e)=>{let{$cursor:t}=r.selection;if(!t||t.parent.content.size)return!1;if(t.depth>1&&t.after()!=t.end(-1)){let s=t.before();if(pt(r.doc,s))return e&&e(r.tr.split(s).scrollIntoView()),!0}let n=t.blockRange(),i=n&&dt(n);return i==null?!1:(e&&e(r.tr.lift(n,i).scrollIntoView()),!0)};function io(r){return(e,t)=>{if(e.selection instanceof k&&e.selection.node.isBlock){let{$from:d}=e.selection;return!d.parentOffset||!pt(e.doc,d.pos)?!1:(t&&t(e.tr.split(d.pos).scrollIntoView()),!0)}if(!e.selection.$from.depth)return!1;let n=e.tr;!e.selection.empty&&(e.selection instanceof M||e.selection instanceof U)&&n.deleteSelection();let{$from:i}=n.selection,s=n.steps.length,o=[],l,a,f=!1,c=!1;for(let d=i.depth;;d--)if(i.node(d).isBlock){f=i.end(d)==i.pos+(i.depth-d),c=i.start(d)==i.pos-(i.depth-d),a=wr(i.node(d-1).contentMatchAt(i.indexAfter(d-1)));let m=r&&r(i.parent,f,i);o.unshift(m||(f&&a?{type:a}:null)),l=d;break}else{if(d==1)return!1;o.unshift(null)}let h=i.pos,u=pt(n.doc,h,o.length,o);if(u||(o[0]=a?{type:a}:null,u=pt(n.doc,h,o.length,o)),!u)return!1;if(n.split(h,o.length,o),!f&&c&&i.node(l).type!=a){let d=n.mapping.slice(s),p=d.map(i.before(l)),m=n.doc.resolve(p);a&&i.node(l-1).canReplaceWith(m.index(),m.index()+1,a)&&n.setNodeMarkup(d.map(i.before(l)),a)}return t&&t(n.scrollIntoView()),!0}}var Nr=io(),gf=(r,e)=>Nr(r,e&&(t=>{let n=r.storedMarks||r.selection.$to.parentOffset&&r.selection.$from.marks();n&&t.ensureMarks(n),e(t)})),yf=(r,e)=>{let{$from:t,to:n}=r.selection,i,s=t.sharedDepth(n);return s==0?!1:(i=t.before(s),e&&e(r.tr.setSelection(k.create(r.doc,i))),!0)},so=(r,e)=>(e&&e(r.tr.setSelection(new U(r.doc))),!0);function xf(r,e,t){let n=e.nodeBefore,i=e.nodeAfter,s=e.index();return!n||!i||!n.type.compatibleContent(i.type)?!1:!n.content.size&&e.parent.canReplace(s-1,s)?(t&&t(r.tr.delete(e.pos-n.nodeSize,e.pos).scrollIntoView()),!0):!e.parent.canReplace(s,s+1)||!(i.isTextblock||Se(r.doc,e.pos))?!1:(t&&t(r.tr.join(e.pos).scrollIntoView()),!0)}function oo(r,e,t,n){let i=e.nodeBefore,s=e.nodeAfter,o,l,a=i.type.spec.isolating||s.type.spec.isolating;if(!a&&xf(r,e,t))return!0;let f=!a&&e.parent.canReplace(e.index(),e.index()+1);if(f&&(o=(l=i.contentMatchAt(i.childCount)).findWrapping(s.type))&&l.matchType(o[0]||s.type).validEnd){if(t){let d=e.pos+s.nodeSize,p=y.empty;for(let b=o.length-1;b>=0;b--)p=y.from(o[b].create(null,p));p=y.from(i.copy(p));let m=r.tr.step(new G(e.pos-1,d,e.pos,d,new x(p,1,0),o.length,!0)),g=m.doc.resolve(d+2*o.length);g.nodeAfter&&g.nodeAfter.type==i.type&&Se(m.doc,g.pos)&&m.join(g.pos),t(m.scrollIntoView())}return!0}let c=s.type.spec.isolating||n>0&&a?null:C.findFrom(e,1),h=c&&c.$from.blockRange(c.$to),u=h&&dt(h);if(u!=null&&u>=e.depth)return t&&t(r.tr.lift(h,u).scrollIntoView()),!0;if(f&&tt(s,"start",!0)&&tt(i,"end")){let d=i,p=[];for(;p.push(d),!d.isTextblock;)d=d.lastChild;let m=s,g=1;for(;!m.isTextblock;m=m.firstChild)g++;if(d.canReplace(d.childCount,d.childCount,m.content)){if(t){let b=y.empty;for(let N=p.length-1;N>=0;N--)b=y.from(p[N].copy(b));let D=r.tr.step(new G(e.pos-p.length,e.pos+s.nodeSize,e.pos+g,e.pos+s.nodeSize-g,new x(b,p.length,0),0,!0));t(D.scrollIntoView())}return!0}}return!1}function lo(r){return function(e,t){let n=e.selection,i=r<0?n.$from:n.$to,s=i.depth;for(;i.node(s).isInline;){if(!s)return!1;s--}return i.node(s).isTextblock?(t&&t(e.tr.setSelection(M.create(e.doc,r<0?i.start(s):i.end(s)))),!0):!1}}var ao=lo(-1),fo=lo(1);function bf(r,e=null){return function(t,n){let{$from:i,$to:s}=t.selection,o=i.blockRange(s),l=o&&Wt(o,r,e);return l?(n&&n(t.tr.wrap(o,l).scrollIntoView()),!0):!1}}function Sf(r,e=null){return function(t,n){let i=!1;for(let s=0;s<t.selection.ranges.length&&!i;s++){let{$from:{pos:o},$to:{pos:l}}=t.selection.ranges[s];t.doc.nodesBetween(o,l,(a,f)=>{if(i)return!1;if(!(!a.isTextblock||a.hasMarkup(r,e)))if(a.type==r)i=!0;else{let c=t.doc.resolve(f),h=c.index();i=c.parent.canReplaceWith(h,h+1,r)}})}if(!i)return!1;if(n){let s=t.tr;for(let o=0;o<t.selection.ranges.length;o++){let{$from:{pos:l},$to:{pos:a}}=t.selection.ranges[o];s.setBlockType(l,a,r,e)}n(s.scrollIntoView())}return!0}}function kf(r,e,t,n){for(let i=0;i<e.length;i++){let{$from:s,$to:o}=e[i],l=s.depth==0?r.inlineContent&&r.type.allowsMarkType(t):!1;if(r.nodesBetween(s.pos,o.pos,(a,f)=>{if(l||!n&&a.isAtom&&a.isInline&&f>=s.pos&&f+a.nodeSize<=o.pos)return!1;l=a.inlineContent&&a.type.allowsMarkType(t)}),l)return!0}return!1}function Cf(r){let e=[];for(let t=0;t<r.length;t++){let{$from:n,$to:i}=r[t];n.doc.nodesBetween(n.pos,i.pos,(s,o)=>{if(s.isAtom&&s.content.size&&s.isInline&&o>=n.pos&&o+s.nodeSize<=i.pos)return o+1>n.pos&&e.push(new Ie(n,n.doc.resolve(o+1))),n=n.doc.resolve(o+1+s.content.size),!1}),n.pos<i.pos&&e.push(new Ie(n,i))}return e}function Mf(r,e=null,t){let n=(t&&t.removeWhenPresent)!==!1,i=(t&&t.enterInlineAtoms)!==!1,s=!(t&&t.includeWhitespace);return function(o,l){let{empty:a,$cursor:f,ranges:c}=o.selection;if(a&&!f||!kf(o.doc,c,r,i))return!1;if(l)if(f)r.isInSet(o.storedMarks||f.marks())?l(o.tr.removeStoredMark(r)):l(o.tr.addStoredMark(r.create(e)));else{let h,u=o.tr;i||(c=Cf(c)),n?h=!c.some(d=>o.doc.rangeHasMark(d.$from.pos,d.$to.pos,r)):h=!c.every(d=>{let p=!1;return u.doc.nodesBetween(d.$from.pos,d.$to.pos,(m,g,b)=>{if(p)return!1;p=!r.isInSet(m.marks)&&!!b&&b.type.allowsMarkType(r)&&!(m.isText&&/^\s*$/.test(m.textBetween(Math.max(0,d.$from.pos-g),Math.min(m.nodeSize,d.$to.pos-g))))}),!p});for(let d=0;d<c.length;d++){let{$from:p,$to:m}=c[d];if(!h)u.removeMark(p.pos,m.pos,r);else{let g=p.pos,b=m.pos,D=p.nodeAfter,N=m.nodeBefore,re=s&&D&&D.isText?/^\s*/.exec(D.text)[0].length:0,Ne=s&&N&&N.isText?/\s*$/.exec(N.text)[0].length:0;g+re<b&&(g+=re,b-=Ne),u.addMark(g,b,r.create(e))}}l(u.scrollIntoView())}return!0}}function Of(r,e){return t=>{if(!t.isGeneric)return r(t);let n=[];for(let s=0;s<t.mapping.maps.length;s++){let o=t.mapping.maps[s];for(let l=0;l<n.length;l++)n[l]=o.map(n[l]);o.forEach((l,a,f,c)=>n.push(f,c))}let i=[];for(let s=0;s<n.length;s+=2){let o=n[s],l=n[s+1],a=t.doc.resolve(o),f=a.sharedDepth(l),c=a.node(f);for(let h=a.indexAfter(f),u=a.after(f+1);u<=l;++h){let d=c.maybeChild(h);if(!d)break;if(h&&i.indexOf(u)==-1){let p=c.child(h-1);p.type==d.type&&e(p,d)&&i.push(u)}u+=d.nodeSize}}i.sort((s,o)=>s-o);for(let s=i.length-1;s>=0;s--)Se(t.doc,i[s])&&t.join(i[s]);r(t)}}function wf(r,e){let t=Array.isArray(e)?n=>e.indexOf(n.type.name)>-1:e;return(n,i,s)=>r(n,i&&Of(i,t),s)}function cn(...r){return function(e,t,n){for(let i=0;i<r.length;i++)if(r[i](e,t,n))return!0;return!1}}var kr=cn(Cr,Gs,Xs),Us=cn(Cr,_s,Zs),fe={Enter:cn(eo,no,ro,Nr),"Mod-Enter":to,Backspace:kr,"Mod-Backspace":kr,"Shift-Backspace":kr,Delete:Us,"Mod-Delete":Us,"Mod-a":so},Dr={"Ctrl-h":fe.Backspace,"Alt-Backspace":fe["Mod-Backspace"],"Ctrl-d":fe.Delete,"Ctrl-Alt-Backspace":fe["Mod-Delete"],"Alt-Delete":fe["Mod-Delete"],"Alt-d":fe["Mod-Delete"],"Ctrl-a":ao,"Ctrl-e":fo};for(let r in fe)Dr[r]=fe[r];var Nf=typeof navigator<"u"?/Mac|iP(hone|[oa]d)/.test(navigator.platform):typeof os<"u"&&os.platform?os.platform()=="darwin":!1,Df=Nf?Dr:fe;var Er={};ie(Er,{InputRule:()=>ne,closeDoubleQuote:()=>uo,closeSingleQuote:()=>mo,ellipsis:()=>Pf,emDash:()=>Rf,inputRules:()=>Af,openDoubleQuote:()=>ho,openSingleQuote:()=>po,smartQuotes:()=>Bf,textblockTypeInputRule:()=>Ff,undoInputRule:()=>If,wrappingInputRule:()=>zf});var ne=class{constructor(e,t,n={}){this.match=e,this.match=e,this.handler=typeof t=="string"?Tf(t):t,this.undoable=n.undoable!==!1,this.inCode=n.inCode||!1,this.inCodeMark=n.inCodeMark!==!1}};function Tf(r){return function(e,t,n,i){let s=r;if(t[1]){let o=t[0].lastIndexOf(t[1]);s+=t[0].slice(o+t[1].length),n+=o;let l=n-i;l>0&&(s=t[0].slice(o-l,o)+s,n=i)}return e.tr.insertText(s,n,i)}}var Ef=500;function Af({rules:r}){let e=new Y({state:{init(){return null},apply(t,n){let i=t.getMeta(this);return i||(t.selectionSet||t.docChanged?null:n)}},props:{handleTextInput(t,n,i,s){return co(t,n,i,s,r,e)},handleDOMEvents:{compositionend:t=>{setTimeout(()=>{let{$cursor:n}=t.state.selection;n&&co(t,n.pos,n.pos,"",r,e)})}}},isInputRules:!0});return e}function co(r,e,t,n,i,s){if(r.composing)return!1;let o=r.state,l=o.doc.resolve(e),a=l.parent.textBetween(Math.max(0,l.parentOffset-Ef),l.parentOffset,null,"\uFFFC")+n;for(let f=0;f<i.length;f++){let c=i[f];if(!c.inCodeMark&&l.marks().some(p=>p.type.spec.code))continue;if(l.parent.type.spec.code){if(!c.inCode)continue}else if(c.inCode==="only")continue;let h=c.match.exec(a);if(!h||h[0].length<n.length)continue;let u=e-(h[0].length-n.length);if(!c.inCodeMark){let p=!1;if(o.doc.nodesBetween(u,l.pos,m=>{m.isInline&&m.marks.some(g=>g.type.spec.code)&&(p=!0)}),p)continue}let d=c.handler(o,h,u,t);if(d)return c.undoable&&d.setMeta(s,{transform:d,from:e,to:t,text:n}),r.dispatch(d),!0}return!1}var If=(r,e)=>{let t=r.plugins;for(let n=0;n<t.length;n++){let i=t[n],s;if(i.spec.isInputRules&&(s=i.getState(r))){if(e){let o=r.tr,l=s.transform;for(let a=l.steps.length-1;a>=0;a--)o.step(l.steps[a].invert(l.docs[a]));if(s.text){let a=o.doc.resolve(s.from).marks();o.replaceWith(s.from,s.to,r.schema.text(s.text,a))}else o.delete(s.from,s.to);e(o)}return!0}}return!1},Rf=new ne(/--$/,"\u2014",{inCodeMark:!1}),Pf=new ne(/\.\.\.$/,"\u2026",{inCodeMark:!1}),ho=new ne(/(?:^|[\s\{\[\(\<'"\u2018\u201C])(")$/,"\u201C",{inCodeMark:!1}),uo=new ne(/"$/,"\u201D",{inCodeMark:!1}),po=new ne(/(?:^|[\s\{\[\(\<'"\u2018\u201C])(')$/,"\u2018",{inCodeMark:!1}),mo=new ne(/'$/,"\u2019",{inCodeMark:!1}),Bf=[ho,uo,po,mo];function zf(r,e,t=null,n){return new ne(r,(i,s,o,l)=>{let a=t instanceof Function?t(s):t,f=i.tr.delete(o,l),c=f.doc.resolve(o),h=c.blockRange(),u=h&&Wt(h,e,a);if(!u)return null;f.wrap(h,u);let d=f.doc.resolve(o-1).nodeBefore;return d&&d.type==e&&Se(f.doc,o-1)&&(!n||n(s,d))&&f.join(o-1),f})}function Ff(r,e,t=null){return new ne(r,(n,i,s,o)=>{let l=n.doc.resolve(s),a=t instanceof Function?t(i):t;return l.node(-1).canReplaceWith(l.index(-1),l.indexAfter(-1),e)?n.tr.delete(s,o).setBlockType(s,s,e,a):null})}var Ir={};ie(Ir,{dropCursor:()=>vf});function vf(r={}){return new Y({view(e){return new Ar(e,r)}})}var Ar=class{constructor(e,t){var n;this.editorView=e,this.cursorPos=null,this.element=null,this.timeout=-1,this.lastDragEvent=null,this.width=(n=t.width)!==null&&n!==void 0?n:1,this.color=t.color===!1?void 0:t.color||"black",this.class=t.class,this.handlers=["dragover","dragend","drop","dragleave"].map(i=>{let s=o=>{this[i](o)};return e.dom.addEventListener(i,s),{name:i,handler:s}})}destroy(){this.setCursor(null),this.handlers.forEach(({name:e,handler:t})=>this.editorView.dom.removeEventListener(e,t))}update(e,t){if(this.cursorPos!=null&&t.doc!=e.state.doc)if(this.lastDragEvent){let n=this.computeTarget(this.lastDragEvent);n==this.cursorPos?this.updateOverlay():this.setCursor(n)}else this.updateOverlay()}setCursor(e){e!=this.cursorPos&&(this.cursorPos=e,e==null?(this.element.parentNode.removeChild(this.element),this.element=null):this.updateOverlay())}updateOverlay(){let e=this.editorView.state.doc.resolve(this.cursorPos),t=!e.parent.inlineContent,n,i=this.editorView.dom,s=i.getBoundingClientRect(),o=s.width/i.offsetWidth,l=s.height/i.offsetHeight;if(t){let h=e.nodeBefore,u=e.nodeAfter;if(h||u){let d=this.editorView.nodeDOM(this.cursorPos-(h?h.nodeSize:0));if(d){let p=d.getBoundingClientRect(),m=h?p.bottom:p.top;h&&u&&(m=(m+this.editorView.nodeDOM(this.cursorPos).getBoundingClientRect().top)/2);let g=this.width/2*l;n={left:p.left,right:p.right,top:m-g,bottom:m+g}}}}if(!n){let h=this.editorView.coordsAtPos(this.cursorPos),u=this.width/2*o;n={left:h.left-u,right:h.left+u,top:h.top,bottom:h.bottom}}let a=this.editorView.dom.offsetParent;this.element||(this.element=a.appendChild(document.createElement("div")),this.class&&(this.element.className=this.class),this.element.style.cssText="position: absolute; z-index: 50; pointer-events: none;",this.color&&(this.element.style.backgroundColor=this.color)),this.element.classList.toggle("prosemirror-dropcursor-block",t),this.element.classList.toggle("prosemirror-dropcursor-inline",!t);let f,c;if(!a||a==document.body&&getComputedStyle(a).position=="static")f=-pageXOffset,c=-pageYOffset;else{let h=a.getBoundingClientRect(),u=h.width/a.offsetWidth,d=h.height/a.offsetHeight;f=h.left-a.scrollLeft*u,c=h.top-a.scrollTop*d}this.element.style.left=(n.left-f)/o+"px",this.element.style.top=(n.top-c)/l+"px",this.element.style.width=(n.right-n.left)/o+"px",this.element.style.height=(n.bottom-n.top)/l+"px"}scheduleRemoval(e){clearTimeout(this.timeout),this.timeout=setTimeout(()=>this.setCursor(null),e)}computeTarget(e){let t=this.editorView.posAtCoords({left:e.clientX,top:e.clientY}),n=t&&t.inside>=0&&this.editorView.state.doc.nodeAt(t.inside),i=n&&n.type.spec.disableDropCursor,s=typeof i=="function"?i(this.editorView,t,e):i;if(!t||s)return null;let o=t.pos;if(this.editorView.dragging&&this.editorView.dragging.slice){let l=Jt(this.editorView.state.doc,o,this.editorView.dragging.slice);l!=null&&(o=l)}return o}dragover(e){if(!this.editorView.editable)return;this.lastDragEvent=e;let t=this.computeTarget(e);t!=null&&(this.setCursor(t),this.scheduleRemoval(5e3))}dragend(){this.scheduleRemoval(20)}drop(){this.scheduleRemoval(20)}dragleave(e){this.editorView.dom.contains(e.relatedTarget)||this.setCursor(null)}};var Pr={};ie(Pr,{GapCursor:()=>F,gapCursor:()=>Wf});var F=class r extends C{constructor(e){super(e,e)}map(e,t){let n=e.resolve(t.map(this.head));return r.valid(n)?new r(n):C.near(n)}content(){return x.empty}eq(e){return e instanceof r&&e.head==this.head}toJSON(){return{type:"gapcursor",pos:this.head}}static fromJSON(e,t){if(typeof t.pos!="number")throw new RangeError("Invalid input for GapCursor.fromJSON");return new r(e.resolve(t.pos))}getBookmark(){return new Rr(this.anchor)}static valid(e){let t=e.parent;if(t.inlineContent||!Vf(e)||!Lf(e))return!1;let n=t.type.spec.allowGapCursor;if(n!=null)return n;let i=t.contentMatchAt(e.index()).defaultType;return i&&i.isTextblock}static findGapCursorFrom(e,t,n=!1){e:for(;;){if(!n&&r.valid(e))return e;let i=e.pos,s=null;for(let o=e.depth;;o--){let l=e.node(o);if(t>0?e.indexAfter(o)<l.childCount:e.index(o)>0){s=l.child(t>0?e.indexAfter(o):e.index(o)-1);break}else if(o==0)return null;i+=t;let a=e.doc.resolve(i);if(r.valid(a))return a}for(;;){let o=t>0?s.firstChild:s.lastChild;if(!o){if(s.isAtom&&!s.isText&&!k.isSelectable(s)){e=e.doc.resolve(i+s.nodeSize*t),n=!1;continue e}break}s=o,i+=t;let l=e.doc.resolve(i);if(r.valid(l))return l}return null}}};F.prototype.visible=!1;F.findFrom=F.findGapCursorFrom;C.jsonID("gapcursor",F);var Rr=class r{constructor(e){this.pos=e}map(e){return new r(e.map(this.pos))}resolve(e){let t=e.resolve(this.pos);return F.valid(t)?new F(t):C.near(t)}};function go(r){return r.isAtom||r.spec.isolating||r.spec.createGapCursor}function Vf(r){for(let e=r.depth;e>=0;e--){let t=r.index(e),n=r.node(e);if(t==0){if(n.type.spec.isolating)return!0;continue}for(let i=n.child(t-1);;i=i.lastChild){if(i.childCount==0&&!i.inlineContent||go(i.type))return!0;if(i.inlineContent)return!1}}return!0}function Lf(r){for(let e=r.depth;e>=0;e--){let t=r.indexAfter(e),n=r.node(e);if(t==n.childCount){if(n.type.spec.isolating)return!0;continue}for(let i=n.child(t);;i=i.firstChild){if(i.childCount==0&&!i.inlineContent||go(i.type))return!0;if(i.inlineContent)return!1}}return!0}function Wf(){return new Y({props:{decorations:$f,createSelectionBetween(r,e,t){return e.pos==t.pos&&F.valid(t)?new F(t):null},handleClick:qf,handleKeyDown:Jf,handleDOMEvents:{beforeinput:Kf}}})}var Jf=on({ArrowLeft:hn("horiz",-1),ArrowRight:hn("horiz",1),ArrowUp:hn("vert",-1),ArrowDown:hn("vert",1)});function hn(r,e){let t=r=="vert"?e>0?"down":"up":e>0?"right":"left";return function(n,i,s){let o=n.selection,l=e>0?o.$to:o.$from,a=o.empty;if(o instanceof M){if(!s.endOfTextblock(t)||l.depth==0)return!1;a=!1,l=n.doc.resolve(e>0?l.after():l.before())}let f=F.findGapCursorFrom(l,e,a);return f?(i&&i(n.tr.setSelection(new F(f))),!0):!1}}function qf(r,e,t){if(!r||!r.editable)return!1;let n=r.state.doc.resolve(e);if(!F.valid(n))return!1;let i=r.posAtCoords({left:t.clientX,top:t.clientY});return i&&i.inside>-1&&k.isSelectable(r.state.doc.nodeAt(i.inside))?!1:(r.dispatch(r.state.tr.setSelection(new F(n))),!0)}function Kf(r,e){if(e.inputType!="insertCompositionText"||!(r.state.selection instanceof F))return!1;let{$from:t}=r.state.selection,n=t.parent.contentMatchAt(t.index()).findWrapping(r.state.schema.nodes.text);if(!n)return!1;let i=y.empty;for(let o=n.length-1;o>=0;o--)i=y.from(n[o].createAndFill(null,i));let s=r.state.tr.replace(t.pos,t.pos,new x(i,0,0));return s.setSelection(M.near(s.doc.resolve(t.pos+1))),r.dispatch(s),!1}function $f(r){if(!(r.selection instanceof F))return null;let e=document.createElement("div");return e.className="ProseMirror-gapcursor",q.create(r.doc,[te.widget(r.selection.head,e,{key:"gapcursor"})])}return Co(Hf);})();
 </script>
 <script>(() => {
+  // <define:__APPINFO__>
+  var define_APPINFO_default = { version: "0.9.0", channel: "live", sha: "a8e91b1" };
+
   // <define:__CACHE__>
   var define_CACHE_default = { t5: { code: `t = symbols('t', real=True)
 # Data fra tabellen
@@ -2236,10 +2241,10 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     if (!v) throw new CasError("Ligningen har ingen ukendte at l\xF8se for");
     let lines = [], need = [...em.used, v].filter((u, i, a) => a.indexOf(u) === i && !ctx.bound.has(u) && !ctx.vals.has(u) && !ctx.fns.has(u)), sl = symbolsLine(need, ctx);
     sl && lines.push(sl), need.forEach((u) => ctx.bound.add(u)), lines.push("betingelse = " + conds.map((c) => "(" + c + ")").join(" & ")), lines.push("# en vektorligning er en ligning for hver koordinat: den f\xF8rste l\xF8ses, og de l\xF8sninger, der ogs\xE5 passer i de andre, beholdes"), lines.push("koordinater = " + eqs[0].slice(1)), lines.push("l\xF8sninger = [s for s in nl\xF8s_betinget(koordinater[0], " + v + ", betingelse) if all(abs(complex((k.lhs - k.rhs).subs(" + v + ", s).evalf())) < 1e-7 for k in koordinater[1:])]");
-    let info = { kind: "math", action: "solve", auto: "solve", v, vDisp: ctx.dispName.get(v) || v, isEq: !0, conditions: !0, numeric: !0 };
-    info.above = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u);
+    let info2 = { kind: "math", action: "solve", auto: "solve", v, vDisp: ctx.dispName.get(v) || v, isEq: !0, conditions: !0, numeric: !0 };
+    info2.above = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u);
     let meta = { res: "l\xF8sninger", action: "solve", v, vname: ctx.dispName.get(v) || v, dec: !0, deg: !1 };
-    return { info, step: { id: block.id, kind: "solve", code: lines.join(`
+    return { info: info2, step: { id: block.id, kind: "solve", code: lines.join(`
 `), meta } };
   }
   function conditionStep(block, eqs, conds, em, ctx) {
@@ -2258,15 +2263,15 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     lines.push("betingelse = " + conds.map((c) => "(" + c + ")").join(" & "));
     let solveAt = lines.length, hard = (dec || em.floaty) && hardness(eqs[0], em, ctx, [v]) >= 2, numeric = ["# l\xF8ses numerisk: fortegnsskift p\xE5 grafen, forfinet med halvering", "l\xF8sninger = nl\xF8s_betinget(" + eqs[0] + ", " + v + ", betingelse)"];
     hard ? lines.push("# ligningen har flere eksponentialled med decimaltal, s\xE5 den l\xF8ses numerisk (fortegnsskift og halvering)", numeric[1]) : (lines.push("# solveset finder alle l\xF8sninger; betingelsen sk\xE6rer dem ned til dem, der passer"), lines.push("try:"), lines.push("    l\xF8sninger = solveset(" + (em.floaty ? "nsimplify(" + eqs[0] + ", rational=True)" : eqs[0]) + ", " + v + ", domain=S.Reals).intersect(betingelse.as_set())"), lines.push("    if l\xF8sninger.has(ConditionSet) or isinstance(l\xF8sninger, (Intersection, ConditionSet)):"), lines.push("        raise NotImplementedError  # solveset kunne ikke finde l\xF8sningerne eksakt"), lines.push("except (NotImplementedError, TypeError, ValueError):"), lines.push("    l\xF8sninger = nl\xF8s_betinget(" + eqs[0] + ", " + v + ", betingelse)  # l\xF8ses numerisk i stedet"), em.floaty && !dec && lines.push("if isinstance(l\xF8sninger, FiniteSet): l\xF8sninger = [s.evalf(15) for s in som_liste(l\xF8sninger)]  # decimaltal ind, decimaltal ud")), dec && lines.push("l\xF8sninger = [s.evalf(15) for s in som_liste(l\xF8sninger)]");
-    let solveEnd = lines.length, info = { kind: "math", action: "solve", auto: "solve", v, vDisp: ctx.dispName.get(v) || v, isEq: !0, conditions: !0, deg: !!em.deg, numeric: hard };
-    info.above = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u);
+    let solveEnd = lines.length, info2 = { kind: "math", action: "solve", auto: "solve", v, vDisp: ctx.dispName.get(v) || v, isEq: !0, conditions: !0, deg: !!em.deg, numeric: hard };
+    info2.above = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u);
     let degOut = !!(em.deg && em.angleVars && em.angleVars.has(v));
-    info.degOut = degOut;
+    info2.degOut = degOut;
     let meta = { res: "l\xF8sninger", action: "solve", v, vname: ctx.dispName.get(v) || v, dec, deg: degOut }, saved = saveResult(opts.save, "solve", "l\xF8sninger", lines, ctx, block, dec || em.floaty);
-    saved && (info.saved = saved, meta.saved = saved);
+    saved && (info2.saved = saved, meta.saved = saved);
     let alt = hard ? null : [...lines.slice(0, solveAt), "# den eksakte l\xF8sning tog for lang tid, s\xE5 ligningen l\xF8ses numerisk", numeric[1], ...lines.slice(solveEnd)].join(`
 `);
-    return { info, step: { id: block.id, kind: "solve", code: lines.join(`
+    return { info: info2, step: { id: block.id, kind: "solve", code: lines.join(`
 `), meta, alt } };
   }
   function hardness(code, em, ctx, vars) {
@@ -2298,7 +2303,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     }
   }
   function systemStep(block, parts, ctx) {
-    let info = { kind: "math", system: !0, isEq: !0 }, em = new Emitter(ctx);
+    let info2 = { kind: "math", system: !0, isEq: !0 }, em = new Emitter(ctx);
     em.exact = (block.opts || {}).mode === "exact";
     let eqs = [], conds = [];
     for (let src of parts) {
@@ -2329,10 +2334,10 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     let lines = [], need = [...em.used, ...vars].filter((u, i, a) => a.indexOf(u) === i && !ctx.bound.has(u) && !ctx.vals.has(u) && !ctx.fns.has(u)), sl = symbolsLine(need, ctx);
     sl && lines.push(sl), need.forEach((u) => ctx.bound.add(u));
     let dec = opts.mode === "decimal";
-    lines.push("# solve l\xF8ser ligningerne samtidigt og giver en liste af l\xF8sninger"), lines.push("l\xF8sninger = solve([" + eqs.join(", ") + "], [" + vars.join(", ") + "], dict=True)"), dec && lines.push("l\xF8sninger = [{k: v.evalf(15) for k, v in s.items()} for s in l\xF8sninger]"), info.action = "solve", info.auto = "solve", info.vDisp = vars.map((v) => ctx.dispName.get(v) || v).join(", "), info.vars = vars.map((v) => ctx.dispName.get(v) || v), info.above = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u);
+    lines.push("# solve l\xF8ser ligningerne samtidigt og giver en liste af l\xF8sninger"), lines.push("l\xF8sninger = solve([" + eqs.join(", ") + "], [" + vars.join(", ") + "], dict=True)"), dec && lines.push("l\xF8sninger = [{k: v.evalf(15) for k, v in s.items()} for s in l\xF8sninger]"), info2.action = "solve", info2.auto = "solve", info2.vDisp = vars.map((v) => ctx.dispName.get(v) || v).join(", "), info2.vars = vars.map((v) => ctx.dispName.get(v) || v), info2.above = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u);
     let meta = { res: "l\xF8sninger", action: "solve", v: vars[0], vname: vars[0], system: !0, dec };
     if (opts.save) {
-      lines.push("# l\xF8sningen gemmes, s\xE5 " + info.vars.join(" og ") + " kan bruges l\xE6ngere nede i opgaven"), lines.push("if len(l\xF8sninger) == 1:"), lines.push("    " + vars.join(", ") + (vars.length === 1 ? "," : "") + " = " + vars.map((v) => "l\xF8sninger[0][" + v + "]").join(", "));
+      lines.push("# l\xF8sningen gemmes, s\xE5 " + info2.vars.join(" og ") + " kan bruges l\xE6ngere nede i opgaven"), lines.push("if len(l\xF8sninger) == 1:"), lines.push("    " + vars.join(", ") + (vars.length === 1 ? "," : "") + " = " + vars.map((v) => "l\xF8sninger[0][" + v + "]").join(", "));
       let many = [];
       for (let k = 0; k < 2; k++) {
         let names = vars.map((v) => v.replace(/_$/, "") + "_" + (k + 1));
@@ -2341,9 +2346,9 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
       let reg = (py) => {
         ctx.bound.add(py), ctx.vals.set(py, { disp: ctx.dispName.get(py) || py, label: ctx.label, block: block.id, floaty: dec || em.floaty, saved: !0 }), ctx.dispName.has(py) || ctx.dispName.set(py, py), ctx.fns.delete(py);
       };
-      [...vars, ...many].forEach(reg), info.saved = [...vars, ...many].map((py) => ctx.dispName.get(py) || py), meta.saved = [...vars, ...many];
+      [...vars, ...many].forEach(reg), info2.saved = [...vars, ...many].map((py) => ctx.dispName.get(py) || py), meta.saved = [...vars, ...many];
     }
-    return { info, step: { id: block.id, kind: "solve", code: lines.join(`
+    return { info: info2, step: { id: block.id, kind: "solve", code: lines.join(`
 `), meta } };
   }
   function expCount(code, vars) {
@@ -2484,16 +2489,16 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     sl && lines.push(sl), need.forEach((u) => ctx.bound.add(u));
     let fn = alias || ode.name;
     lines.push(fn + " = Function('" + ode.disp + "')  # " + ode.disp + " er den ukendte funktion af " + ode.vDisp), lines.push("ligning = " + eqCode), lines.push("# dsolve l\xF8ser differentialligningen" + (conds.length ? "; betingelserne bestemmer konstanterne" : " (C\u2081 er en vilk\xE5rlig konstant)")), lines.push("l\xF8sning = l\xF8s_dgl(ligning, " + fn + "(" + ode.v + "), [" + conds.join(", ") + "])");
-    let info = { kind: "math", action: "solve", auto: "solve", isEq: !0, system: !0, ode: !0, v: ode.name, vDisp: ode.disp, vars: [ode.disp] };
-    info.above = [...em.used].filter((u) => u !== ode.name && (ctx.vals.has(u) || ctx.fns.has(u))).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u), opts.save && (lines.push("# l\xF8sningen gemmes som funktionen " + ode.disp + "(" + ode.vDisp + ")"), lines.push("if len(l\xF8sning) == 1:"), lines.push("    " + ode.name + " = Lambda(" + ode.v + ", l\xF8sning[0].rhs)"), ctx.bound.add(ode.name), ctx.fns.set(ode.name, { var: ode.v, disp: ode.vDisp, name: ode.disp, label: ctx.label, block: block.id, floaty: em.floaty, syms: null, nexp: 0 }), info.saved = [ode.disp]);
+    let info2 = { kind: "math", action: "solve", auto: "solve", isEq: !0, system: !0, ode: !0, v: ode.name, vDisp: ode.disp, vars: [ode.disp] };
+    info2.above = [...em.used].filter((u) => u !== ode.name && (ctx.vals.has(u) || ctx.fns.has(u))).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u), opts.save && (lines.push("# l\xF8sningen gemmes som funktionen " + ode.disp + "(" + ode.vDisp + ")"), lines.push("if len(l\xF8sning) == 1:"), lines.push("    " + ode.name + " = Lambda(" + ode.v + ", l\xF8sning[0].rhs)"), ctx.bound.add(ode.name), ctx.fns.set(ode.name, { var: ode.v, disp: ode.vDisp, name: ode.disp, label: ctx.label, block: block.id, floaty: em.floaty, syms: null, nexp: 0 }), info2.saved = [ode.disp]);
     let meta = { res: "l\xF8sning", action: "solve", v: ode.name, vname: ode.disp, system: !0 };
-    return { info, step: { id: block.id, kind: "ode", code: lines.join(`
+    return { info: info2, step: { id: block.id, kind: "ode", code: lines.join(`
 `), meta } };
   }
   function mathStep(block, ctx) {
-    let info = { kind: "math" }, opts = block.opts || {};
+    let info2 = { kind: "math" }, opts = block.opts || {};
     if (inert(block))
-      return normalize(block.latex) ? info.none = !0 : info.empty = !0, { info };
+      return normalize(block.latex) ? info2.none = !0 : info2.empty = !0, { info: info2 };
     let sys = splitSystem(normalize(block.latex));
     if (block.action === "solve") {
       let ode = odeInfo(sys, ctx);
@@ -2520,14 +2525,14 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     }
     let node = parseLatex(block.latex, ctx);
     if (!node)
-      return info.empty = !0, { info };
+      return info2.empty = !0, { info: info2 };
     if (node.type === "eq" && block.action === "solve" && (isVecNode(node.l, ctx) || isVecNode(node.r, ctx))) return systemStep(block, [normalize(block.latex)], ctx);
     if (block.action === "define" && node.type === "eq") {
       let s = normalize(block.latex), k = s.indexOf("=");
       node = defFromTokens(tokenize(s.slice(0, k)), s.slice(k + 1));
     }
     let transform = null;
-    node.type === "eqdef" && block.action && block.action !== "define" && (TRANSFORM[block.action] ? transform = block.action : node = node.eq()), (node.type === "defvar" || node.type === "deffn") && block.action && TRANSFORM[block.action] && (transform = block.action), node.type === "eqdef" && (info.viaEq = !0, node = node.def);
+    node.type === "eqdef" && block.action && block.action !== "define" && (TRANSFORM[block.action] ? transform = block.action : node = node.eq()), (node.type === "defvar" || node.type === "deffn") && block.action && TRANSFORM[block.action] && (transform = block.action), node.type === "eqdef" && (info2.viaEq = !0, node = node.def);
     let lines = [], action, resVar = null, meta = {}, before = new Set(ctx.bound);
     if (node.type === "defvar" || node.type === "deffn") {
       action = "define";
@@ -2539,7 +2544,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         let em2 = new Emitter(ctx), code2 = em2.emit(rhs), need2 = [...em2.used].filter((u) => !ctx.bound.has(u)), sl2 = symbolsLine(need2, ctx);
         sl2 && lines.push(sl2), need2.forEach((u) => ctx.bound.add(u)), transform && (lines.push(TRANSFORM_NOTE[transform]), code2 = TRANSFORM[transform] + "(" + code2 + ")"), opts.mode === "decimal" && lines.push("# v\xE6rdien vises som decimaltal"), lines.push(nm + " = " + code2);
         let syms = [...em2.used, ...em2.hidden || []].filter((u) => u !== nm && !ctx.vals.has(u) && !ctx.fns.has(u)), isVec = /^(?:transform\()?Vektor\(/.test(code2) || /^\(?[A-Za-z_]\w* - [A-Za-z_]\w*\)?$/.test(code2) && code2.split(" - ").every((q2) => ctx.vals.has(q2.replace(/[()]/g, "")) && ctx.vals.get(q2.replace(/[()]/g, "")).isPoint) || isVecNode(rhs, ctx) && !/\bPunkt\(/.test(code2) && !(code2.match(/[A-Za-z_]\w*/g) || []).some((q2) => (ctx.vals.get(q2) || {}).isPoint);
-        ctx.bound.add(nm), ctx.vals.set(nm, { disp: nmDisp, label: ctx.label, block: block.id, floaty: em2.floaty, syms: syms.length ? syms : null, isVector: isVec || null }), ctx.fns.delete(nm), meta = { def: "var", name: nm, disp: nmDisp, dec: opts.mode === "decimal" }, nm === "e" && (info.note = "Nu betyder e ikke l\xE6ngere Eulers tal (2,718\u2026) i resten af opgaven."), info.defKind = "var", info.uses = [...em2.used].filter((u) => before.has(u)), info.above = info.uses.map((u) => ctx.dispName.get(u) || u);
+        ctx.bound.add(nm), ctx.vals.set(nm, { disp: nmDisp, label: ctx.label, block: block.id, floaty: em2.floaty, syms: syms.length ? syms : null, isVector: isVec || null }), ctx.fns.delete(nm), meta = { def: "var", name: nm, disp: nmDisp, dec: opts.mode === "decimal" }, nm === "e" && (info2.note = "Nu betyder e ikke l\xE6ngere Eulers tal (2,718\u2026) i resten af opgaven."), info2.defKind = "var", info2.uses = [...em2.used].filter((u) => before.has(u)), info2.above = info2.uses.map((u) => ctx.dispName.get(u) || u);
       } else {
         let argToks = node.args || [node.arg], vs = argToks.map((t) => pyName(t.v, t.sub)), vDisps = argToks.map((t) => display(t.v, t.sub));
         if (new Set(vs).size !== vs.length) throw new CasError("Variablene i " + nmDisp + "(\u2026) skal have forskellige navne");
@@ -2559,9 +2564,9 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
           let d = domainIn(rhs, v2, ctx);
           d && (entry.dom = d, entry.domInherited = !0);
         }
-        ctx.bound.add(nm), ctx.fns.set(nm, entry), ctx.vals.delete(nm), meta = { def: "fn", name: nm, disp: nmDisp, v: vs.length > 1 ? vDisp : v2, vDisp }, info.defKind = "fn", block.dom && (info.dom = block.dom), info.uses = [...em2.used].filter((u) => before.has(u) && !vs.includes(u)), info.above = info.uses.map((u) => ctx.dispName.get(u) || u);
+        ctx.bound.add(nm), ctx.fns.set(nm, entry), ctx.vals.delete(nm), meta = { def: "fn", name: nm, disp: nmDisp, v: vs.length > 1 ? vDisp : v2, vDisp }, info2.defKind = "fn", block.dom && (info2.dom = block.dom), info2.uses = [...em2.used].filter((u) => before.has(u) && !vs.includes(u)), info2.above = info2.uses.map((u) => ctx.dispName.get(u) || u);
       }
-      return info.action = "define", info.transform = transform, { info, step: { id: block.id, kind: "define", code: lines.join(`
+      return info2.action = "define", info2.transform = transform, { info: info2, step: { id: block.id, kind: "define", code: lines.join(`
 `), meta } };
     }
     let em = new Emitter(ctx);
@@ -2569,7 +2574,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     let code;
     node.type === "eq" && (code = null), code = em.emit(node);
     let free = freeSymbols(em.user, ctx), loose = ctx.loose ? free.find((u) => ctx.loose.get(u) === "defvar") : null;
-    loose && (info.note = looseMsg(ctx.dispName.get(loose) || loose, !1));
+    loose && (info2.note = looseMsg(ctx.dispName.get(loose) || loose, !1));
     let auto, lhsName = null;
     if (node.type === "eq") {
       let l = strip(node.l);
@@ -2580,7 +2585,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         !er.used.has(l.py) && fr.length && (lhsName = { py: l.py, disp: l.disp, code: er.emit(node.r) });
       }
     }
-    if (node.type === "eq" || node.type === "rel" ? auto = lhsName ? "simplify" : "solve" : auto = free.length ? "simplify" : "calc", action = block.action && block.action !== "define" ? block.action : auto, action === "calc" && lhsName && (action = "simplify"), action === "diff" && /[A-Za-z](?:_\{?[A-Za-z0-9]+\}?)?'+\(/.test(normalize(block.latex)) && (info.note = "Formlen har allerede et m\xE6rke (\u2032), s\xE5 den differentieres \xE9n gang til. Skal du bare have den afledte udregnet, s\xE5 v\xE6lg Beregn."), action === "integrate" && /^(?:integrate|bestemt_integral)\(/.test(typeof code == "string" ? code : "") && (action = "calc"), block.action === "define") throw new CasError("Defin\xE9r kr\xE6ver formen a = \u2026 eller f(x) = \u2026");
+    if (node.type === "eq" || node.type === "rel" ? auto = lhsName ? "simplify" : "solve" : auto = free.length ? "simplify" : "calc", action = block.action && block.action !== "define" ? block.action : auto, action === "calc" && lhsName && (action = "simplify"), action === "diff" && /[A-Za-z](?:_\{?[A-Za-z0-9]+\}?)?'+\(/.test(normalize(block.latex)) && (info2.note = "Formlen har allerede et m\xE6rke (\u2032), s\xE5 den differentieres \xE9n gang til. Skal du bare have den afledte udregnet, s\xE5 v\xE6lg Beregn."), action === "integrate" && /^(?:integrate|bestemt_integral)\(/.test(typeof code == "string" ? code : "") && (action = "calc"), block.action === "define") throw new CasError("Defin\xE9r kr\xE6ver formen a = \u2026 eller f(x) = \u2026");
     if (node.type === "rel" && action !== "solve") throw new CasError("En ulighed kan kun l\xF8ses. V\xE6lg L\xF8s.");
     if (node.type === "eq" && ["calc", "diff", "integrate"].includes(action)) throw new CasError("En ligning kan ikke " + { calc: "beregnes", diff: "differentieres", integrate: "integreres" }[action] + ". V\xE6lg L\xF8s eller Reduc\xE9r.");
     let eqSides = node.type === "eq" && ["simplify", "factor", "expand"].includes(action);
@@ -2652,7 +2657,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
           lines.push(zc + " = symbols('" + zc + "')  # kompleks variabel i stedet for " + vd), target = new Emitter(ctx, { [v]: zc }).emit(node), sv = zc;
         }
         if (sv === v && new RegExp("binom(?:pdf|cdf)\\((?:[^()]|\\([^()]*\\))*\\b" + v + "\\b").test(target)) {
-          lines.push("# " + (ctx.dispName.get(v) || v) + " er et helt tal (et antal), s\xE5 CAS pr\xF8ver " + (ctx.dispName.get(v) || v) + " = 0, 1, 2, \u2026 og beholder dem, der passer"), lines.push("l\xF8sninger = heltal_l\xF8s(lambda " + v + ": " + target + ")"), info.integer = !0, solveEnd = lines.length;
+          lines.push("# " + (ctx.dispName.get(v) || v) + " er et helt tal (et antal), s\xE5 CAS pr\xF8ver " + (ctx.dispName.get(v) || v) + " = 0, 1, 2, \u2026 og beholder dem, der passer"), lines.push("l\xF8sninger = heltal_l\xF8s(lambda " + v + ": " + target + ")"), info2.integer = !0, solveEnd = lines.length;
           break;
         }
         let trig = /\b(sin|cos|tan|cot)\(/.test(target) && sv !== "z" && !isRel, viaFn = !trig && sv === v && !isRel && sv !== "z" && [...target.matchAll(/\b([A-Za-z]\w*)\(/g)].some((m) => ctx.fns.has(m[1])), branchStart = lines.length, hard = !isRel && sv === v && (dec || em.floaty) && hardness(target, em, ctx, [v]) >= 2;
@@ -2660,7 +2665,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
           lines[lines.length - 1] = "# l\xF8s finder de v\xE6rdier af " + (ctx.dispName.get(v) || v) + ", der g\xF8r ligningen sand", lines.push("l\xF8sninger = l\xF8s(" + target + ", " + sv + (dec ? ", decimal=True" : "") + (em.floaty ? ", decimaltal=True" : "") + ")"), solveEnd = lines.length;
           break;
         }
-        if (hard ? (lines.push("# ligningen har flere eksponentialled med decimaltal, s\xE5 den l\xF8ses numerisk (fortegnsskift og halvering)"), lines.push(numLine), info.numeric = !0) : trig ? (lines.push("# solveset giver alle l\xF8sninger, ogs\xE5 de periodiske" + (em.floaty ? " (nsimplify g\xF8r decimaltal eksakte)" : "")), lines.push("l\xF8sninger = solveset(" + (em.floaty ? "nsimplify(" + target + ", rational=True)" : target) + ", " + sv + ", domain=S.Reals)"), dec && lines.push("if isinstance(l\xF8sninger, FiniteSet):", "    l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]  # endeligt mange l\xF8sninger: som decimaltal")) : em.floaty && !isRel ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ", check=False, rational=False)  # decimaltal: regn med decimaltallene, og spring den eksakte kontrol over"), numLine ? lines.push("except (NotImplementedError, TypeError, ValueError):", "    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk") : lines.push("except NotImplementedError:", "    l\xF8sninger = []")) : !isRel && numLine ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ")"), lines.push("except (NotImplementedError, TypeError, ValueError):"), lines.push("    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk")) : lines.push("l\xF8sninger = solve(" + target + ", " + sv + ")"), numLine && target.includes("bestemt_integral(") && lines.push("if not l\xF8sninger and (" + target + ").has(Integral):", "    " + numLine + "  # integralet kan ikke udregnes eksakt, s\xE5 ligningen l\xF8ses numerisk"), sv === v && !isRel && !trig && lines.push("l\xF8sninger = reelle(l\xF8sninger, " + target + ", " + sv + ")  # kun reelle l\xF8sninger, der passer i ligningen"), dec && !isRel && !trig && lines.push("l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]"), viaFn && !hard) {
+        if (hard ? (lines.push("# ligningen har flere eksponentialled med decimaltal, s\xE5 den l\xF8ses numerisk (fortegnsskift og halvering)"), lines.push(numLine), info2.numeric = !0) : trig ? (lines.push("# solveset giver alle l\xF8sninger, ogs\xE5 de periodiske" + (em.floaty ? " (nsimplify g\xF8r decimaltal eksakte)" : "")), lines.push("l\xF8sninger = solveset(" + (em.floaty ? "nsimplify(" + target + ", rational=True)" : target) + ", " + sv + ", domain=S.Reals)"), dec && lines.push("if isinstance(l\xF8sninger, FiniteSet):", "    l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]  # endeligt mange l\xF8sninger: som decimaltal")) : em.floaty && !isRel ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ", check=False, rational=False)  # decimaltal: regn med decimaltallene, og spring den eksakte kontrol over"), numLine ? lines.push("except (NotImplementedError, TypeError, ValueError):", "    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk") : lines.push("except NotImplementedError:", "    l\xF8sninger = []")) : !isRel && numLine ? (lines.push("try:"), lines.push("    l\xF8sninger = solve(" + target + ", " + sv + ")"), lines.push("except (NotImplementedError, TypeError, ValueError):"), lines.push("    " + numLine + "  # kan ikke l\xF8ses eksakt, s\xE5 der l\xF8ses numerisk")) : lines.push("l\xF8sninger = solve(" + target + ", " + sv + ")"), numLine && target.includes("bestemt_integral(") && lines.push("if not l\xF8sninger and (" + target + ").has(Integral):", "    " + numLine + "  # integralet kan ikke udregnes eksakt, s\xE5 ligningen l\xF8ses numerisk"), sv === v && !isRel && !trig && lines.push("l\xF8sninger = reelle(l\xF8sninger, " + target + ", " + sv + ")  # kun reelle l\xF8sninger, der passer i ligningen"), dec && !isRel && !trig && lines.push("l\xF8sninger = [s.evalf(15) for s in l\xF8sninger]"), viaFn && !hard) {
           let body = lines.splice(branchStart).map((l) => "    " + l);
           lines.push(
             "if (" + target + ").has(sin, cos, tan, cot):",
@@ -2672,11 +2677,11 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         break;
       }
     }
-    info.floaty = em.floaty, info.action = action, info.auto = auto, info.v = v, info.vDisp = v ? ctx.dispName.get(v) || v : null, info.uses = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)), info.free = free, info.above = [...em.used].filter((u) => before.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || (ctx.vals.get(u) || {}).disp || u), info.isEq = node.type === "eq", info.isRel = node.type === "rel", info.limits = limits ? [opts.a, opts.b] : null;
+    info2.floaty = em.floaty, info2.action = action, info2.auto = auto, info2.v = v, info2.vDisp = v ? ctx.dispName.get(v) || v : null, info2.uses = [...em.used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)), info2.free = free, info2.above = [...em.used].filter((u) => before.has(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || (ctx.vals.get(u) || {}).disp || u), info2.isEq = node.type === "eq", info2.isRel = node.type === "rel", info2.limits = limits ? [opts.a, opts.b] : null;
     let saved = saveResult(opts.save, action, resVar, lines, ctx, block, dec || em.floaty);
-    saved && (info.saved = saved);
+    saved && (info2.saved = saved);
     let degOut = !!(em.deg && (action === "solve" && v && em.angleVars && em.angleVars.has(v) || ["calc", "simplify"].includes(action) && em.invTrig && !free.length));
-    em.deg && lines.splice(lines.findIndex((l) => !/ = symbols\(/.test(l)), 0, "# Vinkler regnes i grader: sin(v) skrives sin(pi*v/180), og arcsin(t) giver asin(t)*180/pi"), meta = { res: resVar, action, v, vname: v ? ctx.dispName.get(v) || v : null, rel: node.type === "rel", dec, deg: degOut }, info.degOut = degOut, info.deg = !!em.deg, em.deg && (["diff", "integrate"].includes(action) || /\\pi/.test(block.latex || "")) && (info.note = 'Vinklerne regnes i grader. Til differential- og integralregning (og n\xE5r der st\xE5r \u03C0 i vinklen) bruges normalt radianer \u2013 skift under "Vinkler" i CAS-menuen.');
+    em.deg && lines.splice(lines.findIndex((l) => !/ = symbols\(/.test(l)), 0, "# Vinkler regnes i grader: sin(v) skrives sin(pi*v/180), og arcsin(t) giver asin(t)*180/pi"), meta = { res: resVar, action, v, vname: v ? ctx.dispName.get(v) || v : null, rel: node.type === "rel", dec, deg: degOut }, info2.degOut = degOut, info2.deg = !!em.deg, em.deg && (["diff", "integrate"].includes(action) || /\\pi/.test(block.latex || "")) && (info2.note = 'Vinklerne regnes i grader. Til differential- og integralregning (og n\xE5r der st\xE5r \u03C0 i vinklen) bruges normalt radianer \u2013 skift under "Vinkler" i CAS-menuen.');
     let Lf = node.type === "eq" ? strip(node.l) : null, fv = Lf && Lf.type === "ucall" && ctx.fns.get(Lf.name) ? ctx.fns.get(Lf.name).var : null;
     fv && (() => {
       try {
@@ -2685,14 +2690,14 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
       } catch {
         return !1;
       }
-    })() && !Lf.primes && action === "solve" && !block.action && (info.note = (ctx.fns.get(Lf.name) || {}).name + ' er allerede defineret ovenfor, s\xE5 linjen l\xF8ses som en ligning. V\xE6lg "Defin\xE9r" (eller skriv \\definer), hvis funktionen skal have en ny forskrift.'), info.lhsName = lhsName && action === "simplify" ? lhsName.disp : null, info.indefinite = action === "integrate" && !limits || !!em.indefInt, info.eqSides = eqSides && !(lhsName && action === "simplify"), saved && (meta.saved = saved.map((d) => d.replace(/^(.*)$/, (x) => {
+    })() && !Lf.primes && action === "solve" && !block.action && (info2.note = (ctx.fns.get(Lf.name) || {}).name + ' er allerede defineret ovenfor, s\xE5 linjen l\xF8ses som en ligning. V\xE6lg "Defin\xE9r" (eller skriv \\definer), hvis funktionen skal have en ny forskrift.'), info2.lhsName = lhsName && action === "simplify" ? lhsName.disp : null, info2.indefinite = action === "integrate" && !limits || !!em.indefInt, info2.eqSides = eqSides && !(lhsName && action === "simplify"), saved && (meta.saved = saved.map((d) => d.replace(/^(.*)$/, (x) => {
       let t = tokenize(normalize(x));
       return t.length === 1 ? pyName(t[0].v, t[0].sub) : x;
     })));
     let alt = null;
-    return action === "solve" && numLine && solveAt >= 0 && !info.numeric && (alt = [...lines.slice(0, solveAt), "# den eksakte l\xF8sning tog for lang tid, s\xE5 ligningen l\xF8ses numerisk", numLine, ...lines.slice(solveEnd)].join(`
+    return action === "solve" && numLine && solveAt >= 0 && !info2.numeric && (alt = [...lines.slice(0, solveAt), "# den eksakte l\xF8sning tog for lang tid, s\xE5 ligningen l\xF8ses numerisk", numLine, ...lines.slice(solveEnd)].join(`
 `)), action === "calc" && typeof code == "string" && (alt = lines.map((l) => /^resultat = simplify\(/.test(l) ? "resultat = N(" + code + ", 15)  # den eksakte udregning tog for lang tid" : l).join(`
-`)), { info, step: { id: block.id, kind: action === "solve" ? "solve" : "value", code: lines.join(`
+`)), { info: info2, step: { id: block.id, kind: action === "solve" ? "solve" : "value", code: lines.join(`
 `), meta, alt } };
   }
   function saveNames(base) {
@@ -2752,7 +2757,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     };
   }
   function graphStep(block, ctx) {
-    let info = { kind: "graph" }, only = (block.fns || []).map((l) => normalize(l)).filter(Boolean);
+    let info2 = { kind: "graph" }, only = (block.fns || []).map((l) => normalize(l)).filter(Boolean);
     if (only.length === 1 && ctx.rvars) {
       let t = (() => {
         try {
@@ -2762,9 +2767,9 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         }
       })(), X0 = t.length === 1 && t[0].t === "id" ? ctx.rvars.get(pyName(t[0].v, t[0].sub)) : null, X = X0 && !X0.norm ? X0 : null;
       if (X) {
-        info.bars = !0, info.v = "k", info.ylab = "P(" + X.disp + " = k)", info.dist = { kind: "binom", disp: X.disp };
+        info2.bars = !0, info2.v = "k", info2.ylab = "P(" + X.disp + " = k)", info2.dist = { kind: "binom", disp: X.disp };
         let code = ["# S\xF8jlediagram for fordelingen af " + X.disp + ": P(" + X.disp + " = k) for k = 0, 1, \u2026, n", "s\xF8jler = [(k, binompdf(" + X.n + ", " + X.p + ", k)) for k in range(0, int(" + X.n + ") + 1)]"];
-        return { info, step: { id: block.id, kind: "graph", code: code.join(`
+        return { info: info2, step: { id: block.id, kind: "graph", code: code.join(`
 `), meta: { bars: !0 } } };
       }
     }
@@ -2903,7 +2908,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
       if (rv && rv.norm) {
         srcs.push(l), exprOf[fi] = exprs.length, kinds[fi] = "t\xE6thed";
         let numTex = (v2) => String(+v2.toPrecision(6)).replace(".", "{,}").replace("-", "-");
-        isFinite(rv.muN) && isFinite(rv.sN) && (info.dists = info.dists || []).push({ kind: "norm", disp: rv.disp, mu: rv.muN, s: rv.sN }), isFinite(rv.muN) && isFinite(rv.sN) && (normLabels[exprs.length] = nameTexJS(rv.disp) + "\\sim N(" + numTex(rv.muN) + ";\\ " + numTex(rv.sN) + ")"), exprs.push("normpdf(x, " + rv.mu + ", " + rv.s + ")"), used.add("x"), used.add(rv.mu), used.add(rv.s), calls.push(null), normals.push(rv);
+        isFinite(rv.muN) && isFinite(rv.sN) && (info2.dists = info2.dists || []).push({ kind: "norm", disp: rv.disp, mu: rv.muN, s: rv.sN }), isFinite(rv.muN) && isFinite(rv.sN) && (normLabels[exprs.length] = nameTexJS(rv.disp) + "\\sim N(" + numTex(rv.muN) + ";\\ " + numTex(rv.sN) + ")"), exprs.push("normpdf(x, " + rv.mu + ", " + rv.s + ")"), used.add("x"), used.add(rv.mu), used.add(rv.s), calls.push(null), normals.push(rv);
         return;
       }
       if (!lhs) {
@@ -2941,8 +2946,8 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         code === "0" || exprs.includes(code) || (exprs.push(code), calls.push(call), srcs.push(A.src));
       A.color = Math.max(0, exprs.indexOf(A.top));
     }
-    if (areas.length && (info.areas = areas.map((A) => A.src), info.areaColor = Object.fromEntries(areas.map((A) => [A.fi, A.color]))), !exprs.length && !figs.length)
-      return info.empty = !0, { info };
+    if (areas.length && (info2.areas = areas.map((A) => A.src), info2.areaColor = Object.fromEntries(areas.map((A) => [A.fi, A.color]))), !exprs.length && !figs.length)
+      return info2.empty = !0, { info: info2 };
     if (block.dim === "3" && (exprs.length || figs.some((f) => f.kind !== "flade"))) throw new CasError("Et 3D-plot tegner en funktion af to variable, fx f(x,y) eller x^2+y^2. Andre grafer tegnes i et almindeligt Plot");
     let free = [...used].filter((u) => !ctx.vals.has(u) && !ctx.fns.has(u) && !(figs.length && u === "y")), v, given = String(block.v || "").trim();
     if (given && given !== "x") {
@@ -2955,7 +2960,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     dom && (!isFinite(dom[0]) || !isFinite(dom[1]) || dom[0] == null || dom[1] == null) && (dom = null);
     let nw = blankX(block.xmin) && blankX(block.xmax) && !dom && normals.length && normals.length === exprs.length && !figs.length && normals.every((q2) => isFinite(q2.muN) && isFinite(q2.sN)) ? [Math.min(...normals.map((q2) => q2.muN - 4 * q2.sN)), Math.max(...normals.map((q2) => q2.muN + 4 * q2.sN))] : null, auto = blankX(block.xmin) && blankX(block.xmax) && !dom && !nw, num2 = (x) => Number(String(x).replace(",", ".").replace("\u2212", "-")), xmin = nw ? nw[0] : auto ? -10 : blankX(block.xmin) ? dom ? dom[0] : num2(block.xmax) - 10 : num2(block.xmin), xmax = nw ? nw[1] : auto ? 10 : blankX(block.xmax) ? dom ? dom[1] : xmin + 10 : num2(block.xmax);
     if (!isFinite(xmin) || !isFinite(xmax) || xmin >= xmax) throw new CasError("V\xE6lg et interval hvor fra er mindre end til");
-    DEG && exprs.some((e) => /\b(sin|cos|tan)\(pi\*/.test(e)) && (info.note = 'Grafen tegnes med x i grader. Skal x v\xE6re i radianer, s\xE5 skift under "Vinkler" i CAS-menuen p\xE5 en linje med sin/cos/tan.'), used.add(v);
+    DEG && exprs.some((e) => /\b(sin|cos|tan)\(pi\*/.test(e)) && (info2.note = 'Grafen tegnes med x i grader. Skal x v\xE6re i radianer, s\xE5 skift under "Vinkler" i CAS-menuen p\xE5 en linje med sin/cos/tan.'), used.add(v);
     let need = [...used, ...figVars].filter((u, i, a) => a.indexOf(u) === i && !ctx.bound.has(u) && !ctx.vals.has(u) && !ctx.fns.has(u)), lines = [], sl = symbolsLine(need, ctx);
     sl && lines.push(sl), need.forEach((u) => ctx.bound.add(u));
     let span = +(xmax - xmin).toPrecision(12);
@@ -2968,17 +2973,17 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     }).filter(Boolean);
     marks.length && lines.push("# afl\xE6sning (" + marks.join(", ") + ") findes numerisk p\xE5 det viste interval");
     let named = calls.filter((c) => c && c.f);
-    info.v = vDisp, info.ylab = exprs.length === 1 && named.length === 1 || exprs.length > 1 && named.length === 1 && calls.filter(Boolean).length === 1 ? named[0].f.name : "y", odeAxes && !exprs.length && (info.v = odeAxes.vDisp, info.ylab = odeAxes.disp), surfAxes && (info.v = surfAxes[0], info.ylab = surfAxes[1], info.zlab = surfAxes[2], info.surface = !0);
+    info2.v = vDisp, info2.ylab = exprs.length === 1 && named.length === 1 || exprs.length > 1 && named.length === 1 && calls.filter(Boolean).length === 1 ? named[0].f.name : "y", odeAxes && !exprs.length && (info2.v = odeAxes.vDisp, info2.ylab = odeAxes.disp), surfAxes && (info2.v = surfAxes[0], info2.ylab = surfAxes[1], info2.zlab = surfAxes[2], info2.surface = !0);
     let swap = (src, from, to) => from === to ? src : String(src).replace(new RegExp("(?<!\\\\[A-Za-z]*)(?<![A-Za-z])" + from + "(?![A-Za-z])", "g"), to);
-    if (info.labels = calls.map((c) => c && c.f && c.f.src && !c.f.vars && /^[A-Za-z]$/.test(c.f.disp) && /^[A-Za-z]$/.test(ctx.dispName.get(c.arg) || c.arg) ? nameTexJS(c.f.name) + "(" + (ctx.dispName.get(c.arg) || c.arg) + ")=" + swap(c.f.src, c.f.disp, ctx.dispName.get(c.arg) || c.arg) : null), Object.entries(normLabels).forEach(([i, t]) => {
-      info.labels[i] = t;
-    }), paramNote && !info.note && (info.note = paramNote), dom && (info.dom = dom), info.uses = [...used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)), info.above = [...used].filter((u) => ctx.bound.has(u) && !need.includes(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u), figs.length) {
+    if (info2.labels = calls.map((c) => c && c.f && c.f.src && !c.f.vars && /^[A-Za-z]$/.test(c.f.disp) && /^[A-Za-z]$/.test(ctx.dispName.get(c.arg) || c.arg) ? nameTexJS(c.f.name) + "(" + (ctx.dispName.get(c.arg) || c.arg) + ")=" + swap(c.f.src, c.f.disp, ctx.dispName.get(c.arg) || c.arg) : null), Object.entries(normLabels).forEach(([i, t]) => {
+      info2.labels[i] = t;
+    }), paramNote && !info2.note && (info2.note = paramNote), dom && (info2.dom = dom), info2.uses = [...used].filter((u) => ctx.vals.has(u) || ctx.fns.has(u)), info2.above = [...used].filter((u) => ctx.bound.has(u) && !need.includes(u)).map((u) => ctx.dispName.get(u) || (ctx.fns.get(u) || {}).name || u), figs.length) {
       let drawn = figs.filter((f) => f.kind !== "punkt");
-      info.labels = info.labels.concat(drawn.map((f) => f.kind === "polygon" ? f.names.join("") : ["pil", "bane", "felt", "flade"].includes(f.kind) ? f.label : f.src)), info.srcs = srcs.concat(drawn.map((f) => f.src)), info.figs = !0;
+      info2.labels = info2.labels.concat(drawn.map((f) => f.kind === "polygon" ? f.names.join("") : ["pil", "bane", "felt", "flade"].includes(f.kind) ? f.label : f.src)), info2.srcs = srcs.concat(drawn.map((f) => f.src)), info2.figs = !0;
     }
-    info.kinds = kinds;
+    info2.kinds = kinds;
     let ya = blankX(block.ymin) ? null : num2(block.ymin), yb = blankX(block.ymax) ? null : num2(block.ymax);
-    return { info, step: { id: block.id, kind: "graph", code: lines.join(`
+    return { info: info2, step: { id: block.id, kind: "graph", code: lines.join(`
 `), meta: { v, auto, tid: vDisp === "t", marks, xa: auto ? null : xmin, xb: auto ? null : xmax, figurer: figs.length > 0, ya, yb } } };
   }
   function nameTexJS(disp) {
@@ -3083,18 +3088,18 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     return b && b.coeffs ? b.coeffs : { a: "a", b: "b", c: "c" };
   }
   function tableStep(block, ctx) {
-    let info = { kind: "table" };
+    let info2 = { kind: "table" };
     if (block.model === "none" && ["stat", "qq", "sum", "hist"].includes(block.plot)) {
       let view2 = tableRoles(block).view;
       return view2 === "sum" || view2 === "hist" ? sumStep(block, ctx) : view2 === "qq" ? qqStep(block, ctx) : statStep(block, ctx);
     }
     if (block.model === "none")
-      return info.plain = !0, { info };
+      return info2.plain = !0, { info: info2 };
     let R = tableRoles(block);
     rolesError(R);
     let rows = R.rows, skipped = rolesNote(R), need = block.model === "quad" ? 3 : 2;
     if (rows.length < need + (block.model === "quad" ? 0 : 1))
-      return info.empty = !0, info.msg = "Tilf\xF8j mindst " + (need + (block.model === "quad" ? 0 : 1)) + " punkter for at lave regression" + (skipped ? ". " + skipped : ""), { info };
+      return info2.empty = !0, info2.msg = "Tilf\xF8j mindst " + (need + (block.model === "quad" ? 0 : 1)) + " punkter for at lave regression" + (skipped ? ". " + skipped : ""), { info: info2 };
     if ((block.model === "exp" || block.model === "pot") && rows.some((r) => Number(r[1]) <= 0)) throw new CasError("Eksponentiel og potens-regression kr\xE6ver positive y-v\xE6rdier");
     if (block.model === "pot" && rows.some((r) => Number(r[0]) <= 0)) throw new CasError("Potensregression kr\xE6ver positive x-v\xE6rdier");
     let nTok = tokenize(normalize(block.name || "f"));
@@ -3125,22 +3130,22 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         targets.add(name), aliases.push({ p, name, disp });
       }
     }
-    (ctx.fns.has(f) || ctx.vals.has(f)) && (info.note = fDisp + " er allerede defineret ovenfor. Fra tabellen og nedad betyder " + fDisp + ' regressionsmodellen. V\xE6lg et andet navn ved "Gem som", hvis det ikke var meningen.');
+    (ctx.fns.has(f) || ctx.vals.has(f)) && (info2.note = fDisp + " er allerede defineret ovenfor. Fra tabellen og nedad betyder " + fDisp + ' regressionsmodellen. V\xE6lg et andet navn ved "Gem som", hvis det ikke var meningen.');
     let replaced = aliases.filter(({ name }) => ctx.vals.has(name) || ctx.fns.has(name)).map(({ disp }) => disp);
-    replaced.length && (info.note = (info.note ? info.note + " " : "") + replaced.join(", ") + " er allerede defineret. Fra tabellen og nedad bruges regressionskoefficienterne. V\xE6lg andre koefficientnavne, hvis det ikke var meningen."), aliases.length && lines.push("# Gem koefficienterne med fuld pr\xE6cision til resten af opgaven"), aliases.length && lines.push(aliases.map(({ name }) => name).join(", ") + " = " + aliases.map(({ p }) => P2(p)).join(", "));
+    replaced.length && (info2.note = (info2.note ? info2.note + " " : "") + replaced.join(", ") + " er allerede defineret. Fra tabellen og nedad bruges regressionskoefficienterne. V\xE6lg andre koefficientnavne, hvis det ikke var meningen."), aliases.length && lines.push("# Gem koefficienterne med fuld pr\xE6cision til resten af opgaven"), aliases.length && lines.push(aliases.map(({ name }) => name).join(", ") + " = " + aliases.map(({ p }) => P2(p)).join(", "));
     for (let { name, disp } of aliases)
       saved.push(name), ctx.bound.add(name), ctx.fns.delete(name), ctx.dispName.set(name, disp), ctx.vals.set(name, { disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
     if (resid) {
       let rn = residNames(block), got = [["s", rn.s, P2("s")]].concat(resid.ki ? [["lo", rn.lo, P2("ki") + "[0]"], ["hi", rn.hi, P2("ki") + "[1]"]] : []).map(([k, raw, src]) => ({ k, src, ...saveName(raw) }));
       for (let q2 of got) {
         if (targets.has(q2.py) || got.filter((x) => x.py === q2.py).length > 1) throw new CasError(nameTexPlain(q2.disp) + ' bruges allerede af modellen. V\xE6lg et andet navn ved "Gemmes som" under Residualer');
-        (ctx.vals.has(q2.py) || ctx.fns.has(q2.py)) && (info.note = (info.note ? info.note + " " : "") + nameTexPlain(q2.disp) + " er allerede defineret ovenfor. Fra tabellen og nedad er det " + (q2.k === "s" ? "residualspredningen" : q2.k === "lo" ? "konfidensintervallets nedre gr\xE6nse" : "konfidensintervallets \xF8vre gr\xE6nse") + ".");
+        (ctx.vals.has(q2.py) || ctx.fns.has(q2.py)) && (info2.note = (info2.note ? info2.note + " " : "") + nameTexPlain(q2.disp) + " er allerede defineret ovenfor. Fra tabellen og nedad er det " + (q2.k === "s" ? "residualspredningen" : q2.k === "lo" ? "konfidensintervallets nedre gr\xE6nse" : "konfidensintervallets \xF8vre gr\xE6nse") + ".");
       }
       lines.push("# Gem residualspredningen" + (resid.ki ? " og konfidensintervallets endepunkter" : "") + " til resten af opgaven"), lines.push(got.map((q2) => q2.py).join(", ") + " = " + got.map((q2) => q2.src).join(", "));
       for (let q2 of got)
         saved.push(q2.py), ctx.bound.add(q2.py), ctx.fns.delete(q2.py), ctx.dispName.set(q2.py, q2.disp), ctx.vals.set(q2.py, { disp: q2.disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
     }
-    return ctx.bound.add(f), ctx.fns.set(f, { var: v, disp: vDisp, name: fDisp, label: ctx.label, block: block.id, regression: m, floaty: !0 }), ctx.vals.delete(f), skipped && (info.note = info.note ? skipped + " " + info.note : skipped), info.f = fDisp, info.v = vDisp, { info, step: { id: block.id, kind: "table", code: lines.join(`
+    return ctx.bound.add(f), ctx.fns.set(f, { var: v, disp: vDisp, name: fDisp, label: ctx.label, block: block.id, regression: m, floaty: !0 }), ctx.vals.delete(f), skipped && (info2.note = info2.note ? skipped + " " + info2.note : skipped), info2.f = fDisp, info2.v = vDisp, { info: info2, step: { id: block.id, kind: "table", code: lines.join(`
 `), meta: { model: m, params: params.map(P2), R2: P2("R2"), f, v, resid, saved } } };
   }
   function parseInterval(txt2) {
@@ -3159,14 +3164,14 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     return { py: pyName(tk[0].v, tk[0].sub), disp: display(tk[0].v, tk[0].sub) };
   }
   var STAT_WHAT = { m: "middelv\xE6rdi", s: "spredning", q1: "nedre kvartil", q2: "median", q3: "\xF8vre kvartil" };
-  function saveStats(block, ctx, info, lines, kv, mean = !0) {
+  function saveStats(block, ctx, info2, lines, kv, mean = !0) {
     let nm = statNames(block), got = (mean ? [["m", "middel"], ["s", "spredning"]] : []).concat(kv ? [["q1", "kv['q1']"], ["q2", "kv['med']"], ["q3", "kv['q3']"]] : []).map(([k, src]) => ({ k, src, ...saveName(nm[k]) }));
     for (let q2 of got) if (got.filter((x) => x.py === q2.py).length > 1) throw new CasError('Tallene ved "Gemmes som" skal gemmes under hver sit navn (' + nameTexPlain(q2.disp) + " bruges to gange)");
     let taken = got.filter((q2) => ctx.vals.has(q2.py) || ctx.fns.has(q2.py));
-    taken.length && (info.note = (info.note ? info.note + " " : "") + taken.map((q2) => nameTexPlain(q2.disp)).join(", ") + " er allerede defineret ovenfor. Fra tabellen og nedad er " + (taken.length > 1 ? "de" : "det") + " tabellens " + taken.map((q2) => STAT_WHAT[q2.k]).join(", ") + '. V\xE6lg et andet navn ved "Gemmes som", hvis det ikke var meningen.'), lines.push("# Gem " + (mean ? kv ? "middelv\xE6rdien, spredningen og kvartilerne" : "middelv\xE6rdien og spredningen" : "kvartilerne") + " til resten af opgaven"), lines.push(got.map((q2) => q2.py).join(", ") + " = " + got.map((q2) => q2.src).join(", "));
+    taken.length && (info2.note = (info2.note ? info2.note + " " : "") + taken.map((q2) => nameTexPlain(q2.disp)).join(", ") + " er allerede defineret ovenfor. Fra tabellen og nedad er " + (taken.length > 1 ? "de" : "det") + " tabellens " + taken.map((q2) => STAT_WHAT[q2.k]).join(", ") + '. V\xE6lg et andet navn ved "Gemmes som", hvis det ikke var meningen.'), lines.push("# Gem " + (mean ? kv ? "middelv\xE6rdien, spredningen og kvartilerne" : "middelv\xE6rdien og spredningen" : "kvartilerne") + " til resten af opgaven"), lines.push(got.map((q2) => q2.py).join(", ") + " = " + got.map((q2) => q2.src).join(", "));
     for (let q2 of got)
       ctx.bound.add(q2.py), ctx.fns.delete(q2.py), ctx.dispName.set(q2.py, q2.disp), ctx.vals.set(q2.py, { disp: q2.disp, label: ctx.label, block: block.id, floaty: !0, saved: !0 });
-    info.saved = got.map((q2) => q2.disp);
+    info2.saved = got.map((q2) => q2.disp);
   }
   function nameTexPlain(d) {
     return d.replace(/^([A-Za-z])_bar$/, "$1\u0304").replace(/^([A-Za-z])_hat$/, "$1\u0302");
@@ -3176,13 +3181,13 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     return !c(0) && c(1) ? "Observationerne skal st\xE5 i f\xF8rste kolonne. St\xE5r de i anden kolonne, s\xE5 flyt dem (fx kopi\xE9r og inds\xE6t)" : "";
   }
   function statStep(block, ctx) {
-    let info = { kind: "table", stat: !0 }, R = tableRoles(block);
+    let info2 = { kind: "table", stat: !0 }, R = tableRoles(block);
     rolesError(R);
     let rows = R.rows, skipped = rolesNote(R), n2 = R.w === "hyp" ? rows.reduce((t, r) => t + r[1], 0) : rows.length;
     if (rows.length < (R.w === "frek" ? 2 : 1) || n2 < 2)
-      return info.empty = !0, info.msg = col2Only(block) || "Skriv mindst to observationer i f\xF8rste kolonne" + (skipped ? ". " + skipped : ""), { info };
+      return info2.empty = !0, info2.msg = col2Only(block) || "Skriv mindst to observationer i f\xF8rste kolonne" + (skipped ? ". " + skipped : ""), { info: info2 };
     let lines = obsLines(R);
-    return lines.push("# Kvartils\xE6ttet til boksplottet"), lines.push(R.w === "frek" ? "kv = kvartils\xE6t_frekvenser(v\xE6rdier, andele)" : "kv = kvartils\xE6t(data)"), info.hyp = R.w === "hyp", info.w = R.w, skipped && (info.note = skipped), saveStats(block, ctx, info, lines, !0), { info, step: { id: block.id, kind: "table", code: lines.join(`
+    return lines.push("# Kvartils\xE6ttet til boksplottet"), lines.push(R.w === "frek" ? "kv = kvartils\xE6t_frekvenser(v\xE6rdier, andele)" : "kv = kvartils\xE6t(data)"), info2.hyp = R.w === "hyp", info2.w = R.w, skipped && (info2.note = skipped), saveStats(block, ctx, info2, lines, !0), { info: info2, step: { id: block.id, kind: "table", code: lines.join(`
 `), meta: { model: "stat", w: R.w } } };
   }
   function obsLines(R) {
@@ -3197,24 +3202,24 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     return lines.push("antal = len(data)"), lines.push("# Middelv\xE6rdi og spredning (stikpr\xF8vespredningen: der divideres med antal \u2212 1)"), lines.push("middel = mean(data)"), lines.push("spredning = stdev(data)"), lines;
   }
   function qqStep(block, ctx) {
-    let info = { kind: "table", qq: !0 }, R = tableRoles(block);
+    let info2 = { kind: "table", qq: !0 }, R = tableRoles(block);
     rolesError(R);
     let rows = R.rows, skipped = rolesNote(R);
     if ((R.w === "hyp" ? rows.reduce((t, r) => t + r[1], 0) : rows.length) < 3 || rows.length < 2)
-      return info.empty = !0, info.msg = col2Only(block) || "Skriv mindst tre observationer i f\xF8rste kolonne" + (skipped ? ". " + skipped : ""), { info };
+      return info2.empty = !0, info2.msg = col2Only(block) || "Skriv mindst tre observationer i f\xF8rste kolonne" + (skipped ? ". " + skipped : ""), { info: info2 };
     let lines = obsLines(R);
-    return R.w === "frek" ? (lines.push("# Normalfordelingsplot: hver observation mod fraktilen midt i dens frekvens (den kumulerede frekvens f\xF8r plus det halve)"), lines.push("par = sorted(zip(v\xE6rdier, andele))"), lines.push("data = [x for x, p in par]"), lines.push("fraktiler = [NormalDist().inv_cdf(sum(q for _, q in par[:i]) + p / 2) for i, (x, p) in enumerate(par)]")) : (lines.push("data = sorted(data)"), lines.push("# Normalfordelingsplot: den i-te mindste observation mod (i \u2212 0,5)/antal-fraktilen i standardnormalfordelingen"), lines.push("fraktiler = [NormalDist().inv_cdf((i - 0.5) / antal) for i in range(1, antal + 1)]")), lines.push("# Jo t\xE6ttere R\xB2 er p\xE5 1, jo bedre ligger punkterne p\xE5 en ret linje"), lines.push("R2 = correlation(data, fraktiler)**2"), info.v = display(...(() => {
+    return R.w === "frek" ? (lines.push("# Normalfordelingsplot: hver observation mod fraktilen midt i dens frekvens (den kumulerede frekvens f\xF8r plus det halve)"), lines.push("par = sorted(zip(v\xE6rdier, andele))"), lines.push("data = [x for x, p in par]"), lines.push("fraktiler = [NormalDist().inv_cdf(sum(q for _, q in par[:i]) + p / 2) for i, (x, p) in enumerate(par)]")) : (lines.push("data = sorted(data)"), lines.push("# Normalfordelingsplot: den i-te mindste observation mod (i \u2212 0,5)/antal-fraktilen i standardnormalfordelingen"), lines.push("fraktiler = [NormalDist().inv_cdf((i - 0.5) / antal) for i in range(1, antal + 1)]")), lines.push("# Jo t\xE6ttere R\xB2 er p\xE5 1, jo bedre ligger punkterne p\xE5 en ret linje"), lines.push("R2 = correlation(data, fraktiler)**2"), info2.v = display(...(() => {
       let t = tokenize(normalize(block.v || "x"));
       return t.length === 1 && t[0].t === "id" ? [t[0].v, t[0].sub] : ["x", null];
-    })()), info.w = R.w, skipped && (info.note = skipped), saveStats(block, ctx, info, lines), { info, step: { id: block.id, kind: "table", code: lines.join(`
+    })()), info2.w = R.w, skipped && (info2.note = skipped), saveStats(block, ctx, info2, lines), { info: info2, step: { id: block.id, kind: "table", code: lines.join(`
 `), meta: { model: "qq", w: R.w } } };
   }
   function sumStep(block, ctx) {
-    let info = { kind: "table", sum: !0 }, R = tableRoles(block);
+    let info2 = { kind: "table", sum: !0 }, R = tableRoles(block);
     rolesError(R);
     let skipped = rolesNote(R);
     if (R.rows.length < 2)
-      return info.empty = !0, info.msg = "Skriv mindst to intervaller (fx ]0;20]) med deres frekvens" + (skipped ? ". " + skipped : ""), { info };
+      return info2.empty = !0, info2.msg = "Skriv mindst to intervaller (fx ]0;20]) med deres frekvens" + (skipped ? ". " + skipped : ""), { info: info2 };
     let ivs = R.rows.map((r) => r[0]), fr = R.rows.map((r) => r[1]);
     for (let i = 1; i < ivs.length; i++) if (Math.abs(ivs[i][0] - ivs[i - 1][1]) > 1e-9) throw new CasError("Intervallerne skal slutte, hvor det n\xE6ste begynder (" + ivs[i - 1][1] + " og " + ivs[i][0] + ")");
     let nTok = tokenize(normalize(sumName(block)));
@@ -3227,7 +3232,7 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
     let total = fr.reduce((a, b) => a + b, 0), pct = R.w === "frek" && Math.abs(total - 100) < 0.5, lines = [];
     (!ctx.bound.has(v) || ctx.vals.has(v)) && (lines.push(v + " = symbols('" + vDisp + "', real=True)"), ctx.bound.add(v), ctx.vals.delete(v));
     let frek = R.w === "frek", unit = frek && Math.abs(total - 1) < 5e-3;
-    return lines.push("# Grupperede data: intervallerne og " + (pct ? "frekvenserne (i %)" : frek ? "frekvenserne" : "hyppighederne")), lines.push("intervaller = [" + ivs.map(([a, b]) => "(" + fmtNum(a) + ", " + fmtNum(b) + ")").join(", ") + "]"), lines.push((pct ? "frekvenser" : frek ? "tabel_frekvenser" : "hyppigheder") + " = [" + fr.map(fmtNum).join(", ") + "]"), frek && !pct ? lines.push("frekvenser = [100 * f / sum(tabel_frekvenser) for f in tabel_frekvenser]  # " + (unit ? "som procent" : "omregnet, s\xE5 de giver 100 % i alt")) : pct || lines.push("frekvenser = [100 * h / sum(hyppigheder) for h in hyppigheder]  # frekvens i %"), skipped && (info.note = info.note ? skipped + " " + info.note : skipped), lines.push("# Kumuleret frekvens: summen af frekvenserne til og med intervallet"), lines.push("kumuleret = [sum(frekvenser[:i + 1]) for i in range(len(frekvenser))]"), lines.push("# Sumkurven g\xE5r gennem (f\xF8rste venstre endepunkt; 0) og (h\xF8jre endepunkt; kumuleret frekvens), med rette linjestykker imellem"), lines.push("punkter = [(intervaller[0][0], 0)] + [(b, k) for (a, b), k in zip(intervaller, kumuleret)]"), lines.push(frek ? "antal = None  # antallet af observationer kendes ikke" : "antal = sum(hyppigheder)"), lines.push("# Kvartils\xE6ttet afl\xE6st p\xE5 sumkurven: hvor den kumulerede frekvens er 25 %, 50 % og 75 %"), lines.push("kv = kvartils\xE6t_sumkurve(punkter)"), lines.push(f + " = Lambda(" + v + ", Piecewise((0, " + v + " < punkter[0][0]), *[(y0 + (y1 - y0) / (x1 - x0) * (" + v + " - x0), " + v + " <= x1) for (x0, y0), (x1, y1) in zip(punkter, punkter[1:])], (kumuleret[-1], True)))"), (ctx.fns.has(f) || ctx.vals.has(f)) && (info.note = (info.note ? info.note + " " : "") + fDisp + " er allerede defineret ovenfor. Fra tabellen og nedad betyder " + fDisp + " sumkurven."), ctx.bound.add(f), ctx.fns.set(f, { var: v, disp: vDisp, name: fDisp, label: ctx.label, block: block.id, regression: "sum", floaty: !0, dom: [ivs[0][0], ivs[ivs.length - 1][1]] }), ctx.vals.delete(f), info.f = fDisp, info.v = vDisp, info.pct = pct, info.view = R.view, saveStats(block, ctx, info, lines, !0, !1), { info, step: { id: block.id, kind: "table", code: lines.join(`
+    return lines.push("# Grupperede data: intervallerne og " + (pct ? "frekvenserne (i %)" : frek ? "frekvenserne" : "hyppighederne")), lines.push("intervaller = [" + ivs.map(([a, b]) => "(" + fmtNum(a) + ", " + fmtNum(b) + ")").join(", ") + "]"), lines.push((pct ? "frekvenser" : frek ? "tabel_frekvenser" : "hyppigheder") + " = [" + fr.map(fmtNum).join(", ") + "]"), frek && !pct ? lines.push("frekvenser = [100 * f / sum(tabel_frekvenser) for f in tabel_frekvenser]  # " + (unit ? "som procent" : "omregnet, s\xE5 de giver 100 % i alt")) : pct || lines.push("frekvenser = [100 * h / sum(hyppigheder) for h in hyppigheder]  # frekvens i %"), skipped && (info2.note = info2.note ? skipped + " " + info2.note : skipped), lines.push("# Kumuleret frekvens: summen af frekvenserne til og med intervallet"), lines.push("kumuleret = [sum(frekvenser[:i + 1]) for i in range(len(frekvenser))]"), lines.push("# Sumkurven g\xE5r gennem (f\xF8rste venstre endepunkt; 0) og (h\xF8jre endepunkt; kumuleret frekvens), med rette linjestykker imellem"), lines.push("punkter = [(intervaller[0][0], 0)] + [(b, k) for (a, b), k in zip(intervaller, kumuleret)]"), lines.push(frek ? "antal = None  # antallet af observationer kendes ikke" : "antal = sum(hyppigheder)"), lines.push("# Kvartils\xE6ttet afl\xE6st p\xE5 sumkurven: hvor den kumulerede frekvens er 25 %, 50 % og 75 %"), lines.push("kv = kvartils\xE6t_sumkurve(punkter)"), lines.push(f + " = Lambda(" + v + ", Piecewise((0, " + v + " < punkter[0][0]), *[(y0 + (y1 - y0) / (x1 - x0) * (" + v + " - x0), " + v + " <= x1) for (x0, y0), (x1, y1) in zip(punkter, punkter[1:])], (kumuleret[-1], True)))"), (ctx.fns.has(f) || ctx.vals.has(f)) && (info2.note = (info2.note ? info2.note + " " : "") + fDisp + " er allerede defineret ovenfor. Fra tabellen og nedad betyder " + fDisp + " sumkurven."), ctx.bound.add(f), ctx.fns.set(f, { var: v, disp: vDisp, name: fDisp, label: ctx.label, block: block.id, regression: "sum", floaty: !0, dom: [ivs[0][0], ivs[ivs.length - 1][1]] }), ctx.vals.delete(f), info2.f = fDisp, info2.v = vDisp, info2.pct = pct, info2.view = R.view, saveStats(block, ctx, info2, lines, !0, !1), { info: info2, step: { id: block.id, kind: "table", code: lines.join(`
 `), meta: { model: "sum", f, v } } };
   }
   function assignedNames(code) {
@@ -3706,9 +3711,9 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
         let plan = buildSteps(o.blocks, runPythonId || null, { deg });
         for (let st of plan.steps)
           if (st.kind !== "python" && this.timedOut[st.id] === st.sig) {
-            let info = plan.infos[st.id];
+            let info2 = plan.infos[st.id];
             if (st.alt && this.timedOut[st.id + ":alt"] !== st.sig) {
-              st.code = st.alt, st.numeric = !0, info && (info.numeric = !0, info.note = info.note || (st.kind === "solve" ? "Ligningen kunne ikke l\xF8ses eksakt i tide, s\xE5 den er l\xF8st numerisk." : "Udtrykket kunne ikke udregnes eksakt i tide, s\xE5 det er udregnet som decimaltal."));
+              st.code = st.alt, st.numeric = !0, info2 && (info2.numeric = !0, info2.note = info2.note || (st.kind === "solve" ? "Ligningen kunne ikke l\xF8ses eksakt i tide, s\xE5 den er l\xF8st numerisk." : "Udtrykket kunne ikke udregnes eksakt i tide, s\xE5 det er udregnet som decimaltal."));
               continue;
             }
             let syms = st.code.split(`
@@ -3736,11 +3741,11 @@ resultat = simplify(A).evalf(15)`, sig: "2287148227", r: { latex: "9{,}75", py: 
       for (let o of this.opgaver) {
         let p = this.plans[o.id];
         if (p)
-          for (let info of Object.values(p.infos)) {
-            if (!info.error) continue;
-            info.error0 == null && (info.error0 = info.error);
-            let m = /^(\S+) er ikke defineret/.exec(info.error0), other = m && (where[m[1]] || []).filter((n2) => n2 !== o.number);
-            info.error = other && other.length ? m[1] + " er defineret i opgave " + other[0] + ", men hver opgave har sine egne definitioner. Defin\xE9r " + m[1] + " igen her." : info.error0;
+          for (let info2 of Object.values(p.infos)) {
+            if (!info2.error) continue;
+            info2.error0 == null && (info2.error0 = info2.error);
+            let m = /^(\S+) er ikke defineret/.exec(info2.error0), other = m && (where[m[1]] || []).filter((n2) => n2 !== o.number);
+            info2.error = other && other.length ? m[1] + " er defineret i opgave " + other[0] + ", men hver opgave har sine egne definitioner. Defin\xE9r " + m[1] + " igen her." : info2.error0;
           }
       }
     }
@@ -5275,9 +5280,9 @@ print(1 + 1)`, out: null } : {};
     return m ? { f: m[1], v: m[2] } : null;
   }
   var fnLabel = (src, l) => src && isFnCall(src) ? src + "=" + l : l;
-  function solutionsTex(r, info, dec) {
-    let v = nameTex(info.vDisp || "x"), rel = dec || r.approx ? "\\approx " : "=";
-    return r.solutions ? r.solutions.length ? info.system ? r.solutions.map((x) => x.replace(/ = /g, dec || r.approx ? "\\approx " : "=")).join("\\ \\lor\\ ") : r.solutions.map((s) => v + rel + s).join("\\ \\lor\\ ") : null : r.latex;
+  function solutionsTex(r, info2, dec) {
+    let v = nameTex(info2.vDisp || "x"), rel = dec || r.approx ? "\\approx " : "=";
+    return r.solutions ? r.solutions.length ? info2.system ? r.solutions.map((x) => x.replace(/ = /g, dec || r.approx ? "\\approx " : "=")).join("\\ \\lor\\ ") : r.solutions.map((s) => v + rel + s).join("\\ \\lor\\ ") : null : r.latex;
   }
   function hasSum(L) {
     let d = 0, t = String(L || "").replace(/\\left|\\right/g, "");
@@ -5289,55 +5294,55 @@ print(1 + 1)`, out: null } : {};
     }
     return !1;
   }
-  function statement(attrs, info, r) {
-    let L = info && info.trailEq ? String(attrs.latex).replace(/(?:=|\\approx)\s*$/, "") : attrs.latex, dec = (attrs.opts || {}).mode === "decimal", eq = dec || r && r.approx ? "\\approx " : "=";
-    if (!info || info.error || info.empty || info.none) return { full: L };
-    let a = info.action;
-    if (a === "define" && info.point) return { full: info.point, tail: "", sym: "" };
+  function statement(attrs, info2, r) {
+    let L = info2 && info2.trailEq ? String(attrs.latex).replace(/(?:=|\\approx)\s*$/, "") : attrs.latex, dec = (attrs.opts || {}).mode === "decimal", eq = dec || r && r.approx ? "\\approx " : "=";
+    if (!info2 || info2.error || info2.empty || info2.none) return { full: L };
+    let a = info2.action;
+    if (a === "define" && info2.point) return { full: info2.point, tail: "", sym: "" };
     if (a === "define") {
       let tail = "";
-      if (r && !r.error && r.latex && (info.defKind !== "fn" || info.transform)) {
+      if (r && !r.error && r.latex && (info2.defKind !== "fn" || info2.transform)) {
         let rhs = (normalize(L).split(/:=|=/)[1] || "").replace(/\s/g, ""), own = String(L).split(/\\coloneqq?|:=|=/).slice(1).join("=");
         rhs !== r.latex.replace(/[{}\s]/g, "").replace(",", ".") && normTex(own) !== normTex(r.latex) && (tail = r.latex);
       }
       let approx = !!(r && (r.long || r.approx)), sym = tail ? approx ? "\u2248" : "=" : "";
-      return r && !r.error && r.dec && info.defKind === "var" && (tail = (tail ? tail + "\\approx " : "") + r.dec, sym || (sym = "\u2248")), { full: L + (tail ? (sym === "\u2248" ? "\\approx " : "=") + tail : ""), tail, sym };
+      return r && !r.error && r.dec && info2.defKind === "var" && (tail = (tail ? tail + "\\approx " : "") + r.dec, sym || (sym = "\u2248")), { full: L + (tail ? (sym === "\u2248" ? "\\approx " : "=") + tail : ""), tail, sym };
     }
     if (!r || r.error) return { full: L };
-    if (info.lhsName) {
-      let t = nameTex(info.lhsName) + eq + r.latex;
+    if (info2.lhsName) {
+      let t = nameTex(info2.lhsName) + eq + r.latex;
       return { full: L + "\\quad\\Leftrightarrow\\quad " + t, tail: t, sym: "\u21D4" };
     }
-    if (info.eqSides) return { full: L + "\\quad\\Leftrightarrow\\quad " + r.latex, tail: r.latex, sym: "\u21D4" };
+    if (info2.eqSides) return { full: L + "\\quad\\Leftrightarrow\\quad " + r.latex, tail: r.latex, sym: "\u21D4" };
     if (a === "solve") {
-      let sol = solutionsTex(r, info, dec), lhs = info.isEq || info.isRel ? L : L + "=0", none = "\\text{ingen " + (((attrs.opts || {}).dom || "R") === "C" ? "" : "reelle ") + "l\xF8sninger}";
+      let sol = solutionsTex(r, info2, dec), lhs = info2.isEq || info2.isRel ? L : L + "=0", none = "\\text{ingen " + (((attrs.opts || {}).dom || "R") === "C" ? "" : "reelle ") + "l\xF8sninger}";
       return { full: lhs + "\\quad\\Leftrightarrow\\quad " + (sol ?? none), tail: sol ?? none, sym: "\u21D4" };
     }
     if (a === "diff") {
-      let fc = isFnCall(L), lhs = fc && fc.v === info.vDisp ? fc.f + "'(" + fc.v + ")" : "\\frac{\\mathrm{d}}{\\mathrm{d}" + nameTex(info.vDisp) + "}\\left(" + L + "\\right)";
+      let fc = isFnCall(L), lhs = fc && fc.v === info2.vDisp ? fc.f + "'(" + fc.v + ")" : "\\frac{\\mathrm{d}}{\\mathrm{d}" + nameTex(info2.vDisp) + "}\\left(" + L + "\\right)";
       return { full: lhs + eq + r.latex, tail: lhs + eq + r.latex, res: r.latex, sym: "\u27F6", op: !0 };
     }
     if (a === "integrate") {
-      let dv = "\\,\\mathrm{d}" + nameTex(info.vDisp), I = hasSum(L) ? "\\left(" + L + "\\right)" : L, lhs = info.limits ? "\\int_{" + asciiToLatex(info.limits[0]) + "}^{" + asciiToLatex(info.limits[1]) + "}" + I + dv : "\\int " + I + dv, rhs = r.latex + (info.limits ? "" : "+k");
+      let dv = "\\,\\mathrm{d}" + nameTex(info2.vDisp), I = hasSum(L) ? "\\left(" + L + "\\right)" : L, lhs = info2.limits ? "\\int_{" + asciiToLatex(info2.limits[0]) + "}^{" + asciiToLatex(info2.limits[1]) + "}" + I + dv : "\\int " + I + dv, rhs = r.latex + (info2.limits ? "" : "+k");
       return { full: lhs + eq + rhs, tail: lhs + eq + rhs, res: rhs, sym: "\u27F6", op: !0 };
     }
-    let k = info.indefinite ? "+k" : "", same = normTex(L) === normTex(r.latex);
+    let k = info2.indefinite ? "+k" : "", same = normTex(L) === normTex(r.latex);
     if (a === "calc" && r.dec && !k) {
       let t = (same ? "" : r.latex) + (same ? "" : "\\approx ") + r.dec;
       return { full: L + (same ? "\\approx " : eq) + t, tail: same ? r.dec : t, sym: same ? "\u2248" : "=" };
     }
     return { full: L + eq + r.latex + k, tail: r.latex + k, sym: eq === "=" ? "=" : "\u2248", same: same && !k && ["simplify", "factor", "expand"].includes(a) };
   }
-  function inlineDisplay(attrs, info, r) {
+  function inlineDisplay(attrs, info2, r) {
     let L = attrs.latex || "";
-    if (info && info.cas && !info.error) return { latex: statement(attrs, info, r && !r.error ? r : null).full, pending: !r, err: r && r.error };
-    if (!info || info.error || info.action !== "calc" || info.kind !== "inline") return { latex: L };
+    if (info2 && info2.cas && !info2.error) return { latex: statement(attrs, info2, r && !r.error ? r : null).full, pending: !r, err: r && r.error };
+    if (!info2 || info2.error || info2.action !== "calc" || info2.kind !== "inline") return { latex: L };
     if (!r || r.error) return { latex: L, pending: !r, err: r && r.error };
     let base = L.replace(/(=|\\approx)\s*$/, ""), same = normTex(base) === normTex(r.latex);
-    return !info.approx && !same && (r.exact || !r.approx) ? { latex: base + "=" + r.latex } : same && r.integer ? { latex: base } : { latex: base + "\\approx " + r.approx };
+    return !info2.approx && !same && (r.exact || !r.approx) ? { latex: base + "=" + r.latex } : same && r.integer ? { latex: base } : { latex: base + "\\approx " + r.approx };
   }
-  function chipText(a, info) {
-    return a.action ? a.action === "define" ? "Defin\xE9r" : ACTIONS[a.action] || "" : a.latex && info && !info.error && info.action === "define" ? "Defin\xE9r" : a.latex && info && !info.error && info.trailEq ? "Beregn" : "";
+  function chipText(a, info2) {
+    return a.action ? a.action === "define" ? "Defin\xE9r" : ACTIONS[a.action] || "" : a.latex && info2 && !info2.error && info2.action === "define" ? "Defin\xE9r" : a.latex && info2 && !info2.error && info2.trailEq ? "Beregn" : "";
   }
   function qqTex(a, r) {
     return "\\bar{" + nameTex(a.v || "x") + "}\\approx " + numDa(r.mean, a.digits) + ",\\ " + (r.n != null ? "s" : "\\sigma") + "\\approx " + numDa(r.s, a.digits) + (r.n != null ? ",\\ n=" + r.n : "") + "\\quad R^2=" + r2Da(r.R2, a.digits) + "\\text{ for punkterne i plottet}";
@@ -5402,7 +5407,7 @@ print(1 + 1)`, out: null } : {};
   // src/editor/views/casmenu.js
   var ACTION_GROUPS = [[["calc", "Beregn"], ["simplify", "Reduc\xE9r"], ["solve", "L\xF8s"]], [["factor", "Faktoris\xE9r"], ["expand", "Udvid"]], [["diff", "Differenti\xE9r"], ["integrate", "Integr\xE9r"]], [["define", "Defin\xE9r"]]], ACTION_BTNS = ACTION_GROUPS.flat();
   function buildCasMenu(box, host) {
-    let a = host.attrs, opts = a.opts || {}, info = app.session.infoFor(host.id) || {}, cur2 = a.action || (info.action === "define" ? "define" : null), setOpt = (k, v) => host.set({ opts: Object.assign({}, a.opts || {}, { [k]: v }) }), act = document.activeElement, focusKeep = act && box.contains(act) ? act.id || act.dataset.k : null;
+    let a = host.attrs, opts = a.opts || {}, info2 = app.session.infoFor(host.id) || {}, cur2 = a.action || (info2.action === "define" ? "define" : null), setOpt = (k, v) => host.set({ opts: Object.assign({}, a.opts || {}, { [k]: v }) }), act = document.activeElement, focusKeep = act && box.contains(act) ? act.id || act.dataset.k : null;
     box.innerHTML = "";
     let input = (k, ph, cls, label) => {
       let inp = h("input", { class: "mini" + (cls ? " " + cls : ""), value: opts[k] || "", placeholder: ph, "aria-label": label || ph, id: "o-" + k + "-" + host.id, autocomplete: "off", spellcheck: "false" });
@@ -5412,8 +5417,8 @@ print(1 + 1)`, out: null } : {};
       return b.addEventListener("click", () => setOpt(k, v)), b;
     })), row2 = (label, ...kids) => h("div", { class: "opt-row" }, label ? h("span", { class: "opt-l" }, label) : null, ...kids);
     function options() {
-      let rows = [], vPh = info.vDisp || "x";
-      if (cur2 === "solve" && !info.system && rows.push(row2("Variabel", input("v", vPh, "narrow", "L\xF8s for (variabel)"), seg("dom", [["R", "\u211D"], ["C", "\u2102"]], "R", "Talm\xE6ngde"))), cur2 === "solve" && !info.system && !info.conditions && !/;/.test(a.latex || "") && rows.push(h("div", { class: "opt-row" }, h("span", { class: "opt-hint" }, "Kun positive l\xF8sninger? Skriv fx ", h("code", { style: "white-space:nowrap" }, "; " + vPh + " > 0"), " efter ligningen"))), cur2 === "diff" && rows.push(row2("Mht.", input("v", vPh, "narrow", "Differenti\xE9r med hensyn til"))), cur2 === "integrate" && (rows.push(row2("Mht.", input("v", vPh, "narrow", "Integr\xE9r med hensyn til"))), rows.push(row2("Fra", input("a", "", "narrow", "Nedre gr\xE6nse"), h("span", { class: "opt-l" }, "til"), input("b", "", "narrow", "\xD8vre gr\xE6nse")))), (cur2 !== "define" || info.defKind === "var") && rows.push(row2(null, seg("mode", [["exact", "Pr\xE6cist"], ["decimal", "Decimal"]], info.floaty ? "decimal" : "exact", "Svarform"))), rows.push(h("div", { class: "opt-row" }, precisionControl(opts.digits, (v) => setOpt("digits", v), host.id))), /\\(?:arc)?(?:sin|cos|tan)|\\degree|°|\\circ/.test(a.latex || "")) {
+      let rows = [], vPh = info2.vDisp || "x";
+      if (cur2 === "solve" && !info2.system && rows.push(row2("Variabel", input("v", vPh, "narrow", "L\xF8s for (variabel)"), seg("dom", [["R", "\u211D"], ["C", "\u2102"]], "R", "Talm\xE6ngde"))), cur2 === "solve" && !info2.system && !info2.conditions && !/;/.test(a.latex || "") && rows.push(h("div", { class: "opt-row" }, h("span", { class: "opt-hint" }, "Kun positive l\xF8sninger? Skriv fx ", h("code", { style: "white-space:nowrap" }, "; " + vPh + " > 0"), " efter ligningen"))), cur2 === "diff" && rows.push(row2("Mht.", input("v", vPh, "narrow", "Differenti\xE9r med hensyn til"))), cur2 === "integrate" && (rows.push(row2("Mht.", input("v", vPh, "narrow", "Integr\xE9r med hensyn til"))), rows.push(row2("Fra", input("a", "", "narrow", "Nedre gr\xE6nse"), h("span", { class: "opt-l" }, "til"), input("b", "", "narrow", "\xD8vre gr\xE6nse")))), (cur2 !== "define" || info2.defKind === "var") && rows.push(row2(null, seg("mode", [["exact", "Pr\xE6cist"], ["decimal", "Decimal"]], info2.floaty ? "decimal" : "exact", "Svarform"))), rows.push(h("div", { class: "opt-row" }, precisionControl(opts.digits, (v) => setOpt("digits", v), host.id))), /\\(?:arc)?(?:sin|cos|tan)|\\degree|°|\\circ/.test(a.latex || "")) {
         let angle = app.meta.angle === "rad" || app.meta.angle === "deg" ? app.meta.angle : "auto";
         rows.push(row2("Vinkler", h(
           "span",
@@ -5425,11 +5430,11 @@ print(1 + 1)`, out: null } : {};
         )));
       }
       let sub = (n2) => String(n2).replace(/_\{?(\d+)\}?$/, (m, d) => [...d].map((c) => "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"[c]).join(""));
-      if (cur2 === "solve" && info.system && info.vars) {
-        let on2 = !!opts.save, b = h("button", { type: "button", class: "opt-save" + (on2 ? " on" : ""), role: "switch", "aria-checked": String(on2), dataset: { k: "save-sys" } }, h("span", { class: "chk", "aria-hidden": "true" }, on2 ? "\u2713" : "+"), " Gem l\xF8sningen som " + info.vars.join(" og "));
+      if (cur2 === "solve" && info2.system && info2.vars) {
+        let on2 = !!opts.save, b = h("button", { type: "button", class: "opt-save" + (on2 ? " on" : ""), role: "switch", "aria-checked": String(on2), dataset: { k: "save-sys" } }, h("span", { class: "chk", "aria-hidden": "true" }, on2 ? "\u2713" : "+"), " Gem l\xF8sningen som " + info2.vars.join(" og "));
         b.addEventListener("click", () => setOpt("save", on2 ? "" : "1")), rows.push(h("div", { class: "opt-row" }, b));
-      } else if (cur2 !== "define" && !info.system) {
-        let ph = cur2 === "solve" ? info.vDisp || "x" : "A";
+      } else if (cur2 !== "define" && !info2.system) {
+        let ph = cur2 === "solve" ? info2.vDisp || "x" : "A";
         if (opts.save || box._saveOpen) {
           let inp = input("save", ph, "narrow save", "Gem resultatet som");
           inp.addEventListener("keydown", (e) => {
@@ -5792,13 +5797,13 @@ print(1 + 1)`, out: null } : {};
     }
   };
   function pyAsBlock(id2, kind) {
-    let { info, code } = lookup(id2);
+    let { info: info2, code } = lookup(id2);
     if (!code) return;
     let src = `# Kopi af beregningen \u2013 ret i koden og tryk K\xF8r
 ` + code;
     kind === "graph" ? src += `
-print(kurver[0][:5])  # de f\xF8rste fem punkter` : info && info.resVar && (src += `
-print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"), code: src, out: null }));
+print(kurver[0][:5])  # de f\xF8rste fem punkter` : info2 && info2.resVar && (src += `
+print(` + info2.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"), code: src, out: null }));
   }
 
   // src/editor/views/mathline.js
@@ -5934,11 +5939,11 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       this.mf.value !== this.node.attrs.latex && !hasFocus(this.mf) && (this.mf.value = this.node.attrs.latex), this.ph.hidden = !!(this.mf.value || this.mf.mode === "latex");
     }
     refresh() {
-      let a = this.node.attrs, { info, r, stale, fresh } = lookup(this.id), hardErr = info && info.error ? info.error : fresh && fresh.error ? fresh.error : "";
-      this.showErr(hardErr || info && info.note || "", hardErr ? info && info.soft : !0);
-      let shown = fresh || (r && !r.error ? r : null), stm = statement(a, info, shown), resT2 = stm.tail || "";
-      this.sym.innerHTML = resT2 && stm.sym && !(info && info.trailEq && stm.sym === "=") ? tex(SYMTEX[stm.sym] || stm.sym) : "";
-      let degTxt = info && info.deg && !info.degOut && resT2 ? '<span class="m-same">vinkler i grader</span>' : "", savedNames = shown && shown.savedVals ? Object.keys(shown.savedVals) : null, savedTxt = info && info.saved ? '<span class="m-same">' + (savedNames && !savedNames.length ? "intet at gemme" : "gemt som " + (savedNames || info.saved.slice(0, 1)).map((n2) => n2.replace(/_(\d+)$/, (m, d) => [...d].map((c) => "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"[c]).join(""))).join(", ")) + "</span>" : "";
+      let a = this.node.attrs, { info: info2, r, stale, fresh } = lookup(this.id), hardErr = info2 && info2.error ? info2.error : fresh && fresh.error ? fresh.error : "";
+      this.showErr(hardErr || info2 && info2.note || "", hardErr ? info2 && info2.soft : !0);
+      let shown = fresh || (r && !r.error ? r : null), stm = statement(a, info2, shown), resT2 = stm.tail || "";
+      this.sym.innerHTML = resT2 && stm.sym && !(info2 && info2.trailEq && stm.sym === "=") ? tex(SYMTEX[stm.sym] || stm.sym) : "";
+      let degTxt = info2 && info2.deg && !info2.degOut && resT2 ? '<span class="m-same">vinkler i grader</span>' : "", savedNames = shown && shown.savedVals ? Object.keys(shown.savedVals) : null, savedTxt = info2 && info2.saved ? '<span class="m-same">' + (savedNames && !savedNames.length ? "intet at gemme" : "gemt som " + (savedNames || info2.saved.slice(0, 1)).map((n2) => n2.replace(/_(\d+)$/, (m, d) => [...d].map((c) => "\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089"[c]).join(""))).join(", ")) + "</span>" : "";
       this.lastRes = resT2 || "", this.res.innerHTML = resT2 ? tex(resT2) + (stm.same ? '<span class="m-same">kan ikke reduceres yderligere</span>' : "") + savedTxt + degTxt : "", resT2 ? this.res.setAttribute("aria-label", speak(resT2)) : this.res.removeAttribute("aria-label"), this.out.hidden = !resT2, this.out.classList.toggle("stale", !!stale), this.out.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026", this.out.classList.toggle("op", !!stm.op), requestAnimationFrame(() => {
         let o = this.out;
         o.classList.toggle("more", o.scrollWidth > o.clientWidth + 2 && o.scrollLeft + o.clientWidth < o.scrollWidth - 2);
@@ -5946,7 +5951,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         let o = this.out;
         o.classList.toggle("more", o.scrollLeft + o.clientWidth < o.scrollWidth - 2);
       }, { passive: !0 }));
-      let label = chipText(a, info);
+      let label = chipText(a, info2);
       this.chip.firstChild.textContent = label || "CAS", this.chip.classList.toggle("none", !label), this.dom.classList.toggle("has-latex", !!a.latex.trim()), this.hint.textContent = label ? "Enter: tekst \xB7 Shift+Enter: ny formel" : "V\xE6lg CAS-handling: skriv \\ eller tryk Alt+Enter", this.hint.hidden = !a.latex.trim(), this.chip.setAttribute("aria-label", label ? "CAS: " + label + ". Skift handling" : "V\xE6lg hvad CAS skal g\xF8re med formlen"), currentPop() && currentPop()._owner === this && this.menuBody();
     }
     // Med tastaturet får den valgte handling fokus; med musen står menuen bare åben (tasterne virker stadig)
@@ -5985,10 +5990,10 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     refresh() {
       if (this.editing) return;
-      let { info, r, fresh } = lookup(this.id), d = inlineDisplay(this.node.attrs, info, fresh || (r && !r.error ? r : null));
+      let { info: info2, r, fresh } = lookup(this.id), d = inlineDisplay(this.node.attrs, info2, fresh || (r && !r.error ? r : null));
       this.view.innerHTML = d.latex ? tex(d.latex, !0) : '<span class="im-empty">matematik</span>';
-      let live = !!(info && !info.error && (info.cas || info.action === "define"));
-      this.dom.classList.toggle("live", live), this.dom.classList.toggle("bad", !!(info && info.error || d.err)), this.dom.title = info && info.error || d.err || (live ? info.action === "define" && !info.cas ? "Definition \u2013 kan bruges l\xE6ngere nede" : "Regnet af CAS" : "");
+      let live = !!(info2 && !info2.error && (info2.cas || info2.action === "define"));
+      this.dom.classList.toggle("live", live), this.dom.classList.toggle("bad", !!(info2 && info2.error || d.err)), this.dom.title = info2 && info2.error || d.err || (live ? info2.action === "define" && !info2.cas ? "Definition \u2013 kan bruges l\xE6ngere nede" : "Regnet af CAS" : "");
     }
     // ProseMirror kalder selectNode, mens den selv er ved at opdatere DOM'en.
     // Hvis MathLive-feltet monteres her, ser ProseMirror den samtidige DOM-ændring
@@ -6073,7 +6078,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       window.addEventListener("pagehide", keep, !0), document.addEventListener("visibilitychange", vis, !0), cleanup.push(() => {
         window.removeEventListener("pagehide", keep, !0), document.removeEventListener("visibilitychange", vis, !0);
       });
-      let { info, fresh } = lookup(this.id), err = info && info.error || fresh && fresh.error;
+      let { info: info2, fresh } = lookup(this.id), err = info2 && info2.error || fresh && fresh.error;
       err && (this.tip = h("span", { class: "im-tip", role: "status" }, err), slot && slot.append(this.tip)), startKeyBuffer();
       let tries = 0, ready = () => {
         if (!this.editing) {
@@ -6391,32 +6396,32 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${esc(labs.aria || "Graf af en funktion af to variable")}" xmlns="http://www.w3.org/2000/svg">${g}${sf}${txt2}</svg>`;
   }
-  function axisNames(b, info) {
-    return { x: (b.xlab || "").trim() || info && info.v || b.v || "x", y: (b.ylab || "").trim() || info && info.ylab || "y" };
+  function axisNames(b, info2) {
+    return { x: (b.xlab || "").trim() || info2 && info2.v || b.v || "x", y: (b.ylab || "").trim() || info2 && info2.ylab || "y" };
   }
-  function graphSVG(b, r, pal, size, info) {
+  function graphSVG(b, r, pal, size, info2) {
     if (r && !r.error && r.bars) {
       let ks = r.bars.map((q2) => q2[0]), lo = Math.min(...ks) - 0.8, hi = Math.max(...ks) + 0.8;
-      return plotSVG({ series: [], bars: r.bars, xr: [numIn(b.xmin, lo), numIn(b.xmax, hi)], yr: [0, numIn(b.ymax, null)], xlab: (b.xlab || "").trim() || "k", ylab: (b.ylab || "").trim() || info && info.ylab || "P", pal, size, labelPositions: b.labelPositions, digits: b.digits, aria: "S\xF8jlediagram for " + (b.fns || []).join("") });
+      return plotSVG({ series: [], bars: r.bars, xr: [numIn(b.xmin, lo), numIn(b.xmax, hi)], yr: [0, numIn(b.ymax, null)], xlab: (b.xlab || "").trim() || "k", ylab: (b.ylab || "").trim() || info2 && info2.ylab || "P", pal, size, labelPositions: b.labelPositions, digits: b.digits, aria: "S\xF8jlediagram for " + (b.fns || []).join("") });
     }
     if (!r || r.error || !r.curves) return null;
-    let ax = axisNames(b, info);
-    if (r.figs && r.figs.surface) return surfaceSVG(r.figs.surface, pal, size, { x: ax.x, y: ax.y, z: info && info.zlab || "z", aria: "Graf af " + (b.fns || []).filter(Boolean).join(", ") }, numIn(b.az, -120), numIn(b.el, 24));
+    let ax = axisNames(b, info2);
+    if (r.figs && r.figs.surface) return surfaceSVG(r.figs.surface, pal, size, { x: ax.x, y: ax.y, z: info2 && info2.zlab || "z", aria: "Graf af " + (b.fns || []).filter(Boolean).join(", ") }, numIn(b.az, -120), numIn(b.el, 24));
     let series = r.curves.map((ys, i) => ({ pts: r.ts.map((t, j) => [t, ys[j]]), color: pal.s[i % 4] })), marks = (r.marks || []).map((m) => Object.assign({}, m, { color: pal.s[m.i % 4] })), F = r.figs;
     F && F.lines.forEach((l) => series.push({ pts: l.pts, color: pal.s[(r.curves.length + l.i) % 4], dir: !!l.dir }));
     let named = F ? F.points.map(([label, x, y]) => ({ label, x, y })) : null, arrows = F && F.arrows ? F.arrows.map((a) => Object.assign({}, a, { color: pal.s[(r.curves.length + a.i) % 4] })) : null, yr = [numIn(b.ymin, F && F.yr ? F.yr[0] : null), numIn(b.ymax, F && F.yr ? F.yr[1] : null)], x0 = r.ts.length ? r.ts[0] : -10, x1 = r.ts.length ? r.ts[r.ts.length - 1] : 10, areas = (r.areas || []).map((A) => Object.assign({}, A, { color: pal.s[A.c % 4] }));
     return plotSVG({ series, marks, named, arrows, areas, field: F && F.field, equal: !!(F && F.equal) && !(b.ymin || b.ymax), xr: [numIn(b.xmin, x0), numIn(b.xmax, x1)], yr, xlab: ax.x, ylab: ax.y, pal, size, labelPositions: b.labelPositions, digits: b.digits, aria: "Graf af " + (b.fns || []).filter(Boolean).join(", ") });
   }
-  function areaLegend(r, info, digits = "") {
-    return !r || !r.areas || !info || !info.areas ? [] : r.areas.map((A, k) => ({ latex: String(info.areas[k] || "") + (A.value != null && isFinite(A.value) ? "\\approx " + markNum(A.value, digits).replace(",", "{,}").replace("\u2212", "-") : ""), c: A.c }));
+  function areaLegend(r, info2, digits = "") {
+    return !r || !r.areas || !info2 || !info2.areas ? [] : r.areas.map((A, k) => ({ latex: String(info2.areas[k] || "") + (A.value != null && isFinite(A.value) ? "\\approx " + markNum(A.value, digits).replace(",", "{,}").replace("\u2212", "-") : ""), c: A.c }));
   }
-  function distText(r, info, digits = "") {
-    if (!info) return [];
-    if (info.dist && info.dist.kind === "binom" && r && r.bars && r.bars.length) {
+  function distText(r, info2, digits = "") {
+    if (!info2) return [];
+    if (info2.dist && info2.dist.kind === "binom" && r && r.bars && r.bars.length) {
       let ps = r.bars, top = Math.max(...ps.map((q2) => q2[1])), modes = ps.filter((q2) => q2[1] >= top - 1e-12).map((q2) => q2[0]), E = ps.reduce((t, q2) => t + q2[0] * q2[1], 0), sd = Math.sqrt(ps.reduce((t, q2) => t + (q2[0] - E) ** 2 * q2[1], 0));
       return ["Typetal: " + modes.join(" og "), "Middelv\xE6rdi: " + markNum(E, digits), "Spredning: " + markNum(sd, digits)];
     }
-    return info.dists && info.dists.length && (info.kinds || []).filter(Boolean).every((k) => k === "t\xE6thed") ? info.dists.flatMap((d) => [(info.dists.length > 1 ? d.disp + ": " : "") + "Middelv\xE6rdi: " + markNum(d.mu, digits), "Spredning: " + markNum(d.s, digits)]) : [];
+    return info2.dists && info2.dists.length && (info2.kinds || []).filter(Boolean).every((k) => k === "t\xE6thed") ? info2.dists.flatMap((d) => [(info2.dists.length > 1 ? d.disp + ": " : "") + "Middelv\xE6rdi: " + markNum(d.mu, digits), "Spredning: " + markNum(d.s, digits)]) : [];
   }
   function marksText(r, fns, digits = "") {
     return (r && r.marks ? r.marks : []).map((m) => ({ k: m.k, i: m.i, j: m.j, text: MARK_NAME[m.k] + (fns && fns.length > 1 && m.k !== "isect" ? " (" + (fns[m.i] || "") + ")" : "") + ": (" + markNum(m.x, digits) + "; " + markNum(m.y, digits) + ")" }));
@@ -6608,7 +6613,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     // Plot ⇄ 3D-plot: 3D kun, når alle felterne er funktioner af to variable
     modes() {
-      let a = this.node.attrs, is3 = a.dim === "3", info = lookup(this.id).info || {}, filled = a.fns.map((f, i) => [f, i]).filter(([f]) => String(f || "").trim()), flat = filled.length > 0 && filled.every(([, i]) => info.kinds && info.kinds[i] === "flade");
+      let a = this.node.attrs, is3 = a.dim === "3", info2 = lookup(this.id).info || {}, filled = a.fns.map((f, i) => [f, i]).filter(([f]) => String(f || "").trim()), flat = filled.length > 0 && filled.every(([, i]) => info2.kinds && info2.kinds[i] === "flade");
       return [
         { label: "Plot", desc: "Grafer, punkter, vektorer, linjer, cirkler, arealer og h\xE6ldningsfelter", on: !is3, act: () => this.set({ dim: "", az: "", el: "" }) },
         { label: "3D-plot", desc: "Flader z = f(x, y) \u2013 drej med musen", on: is3, disabled: !is3 && !flat, note: "Kun funktioner af to variable, fx f(x, y) eller x\xB2 + y\xB2, kan vises i 3D", act: () => this.set({ dim: "3", marks: [] }) }
@@ -6680,25 +6685,25 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     refresh() {
       if (this.draggingLabel) return;
-      let b = this.node.attrs, { info, r, stale, fresh } = lookup(this.id);
-      this.showErr(info && info.error && !info.soft ? info.error : fresh && fresh.error ? fresh.error : fresh && fresh.warn && fresh.warn.length ? "Ukendte symboler: " + fresh.warn.join("; ") + ". Defin\xE9r dem ovenfor, eller tegn grafen for \xE9n variabel ad gangen." : "", !1), this.err.hidden && info && info.note && this.showErr(info.note, !0);
-      let shown = fresh || (r && !r.error ? r : null), svg2 = graphSVG(b, shown, LIVE, screenSize(this.plot.clientWidth), info), msg = info && info.empty ? "Skriv hvad der skal tegnes ovenfor: en funktion, et punkt, en vektor, en linje eller en cirkel" : app.cas && app.cas.state === "failed" ? "CAS er ikke tilg\xE6ngelig" : "Tegner \u2026", KIND = { funktion: "funktion", punkt: "punkt", vektor: "vektor", linjestykke: "linjestykke", polygon: "polygon", linje: "linje", cirkel: "cirkel", kurve: "kurve", t\u00E6thed: "t\xE6thedsfunktion", bane: "parameterkurve", felt: "h\xE6ldningsfelt", flade: "flade (3D)", areal: "areal" };
+      let b = this.node.attrs, { info: info2, r, stale, fresh } = lookup(this.id);
+      this.showErr(info2 && info2.error && !info2.soft ? info2.error : fresh && fresh.error ? fresh.error : fresh && fresh.warn && fresh.warn.length ? "Ukendte symboler: " + fresh.warn.join("; ") + ". Defin\xE9r dem ovenfor, eller tegn grafen for \xE9n variabel ad gangen." : "", !1), this.err.hidden && info2 && info2.note && this.showErr(info2.note, !0);
+      let shown = fresh || (r && !r.error ? r : null), svg2 = graphSVG(b, shown, LIVE, screenSize(this.plot.clientWidth), info2), msg = info2 && info2.empty ? "Skriv hvad der skal tegnes ovenfor: en funktion, et punkt, en vektor, en linje eller en cirkel" : app.cas && app.cas.state === "failed" ? "CAS er ikke tilg\xE6ngelig" : "Tegner \u2026", KIND = { funktion: "funktion", punkt: "punkt", vektor: "vektor", linjestykke: "linjestykke", polygon: "polygon", linje: "linje", cirkel: "cirkel", kurve: "kurve", t\u00E6thed: "t\xE6thedsfunktion", bane: "parameterkurve", felt: "h\xE6ldningsfelt", flade: "flade (3D)", areal: "areal" };
       (this.kindEls || []).forEach((el2, i) => {
-        let k = info && info.kinds && info.kinds[i];
-        el2.textContent = k && !(info && info.bars) ? KIND[k] || "" : info && info.bars && i === 0 ? "fordeling" : "";
-      }), this.casLbl.setLabel(b.dim === "3" ? "3D-plot" : "Plot"), this.plot.innerHTML = svg2 || '<div class="g-empty">' + (b.dim === "3" && info && info.empty ? "Skriv en funktion af to variable ovenfor, fx f(x,y) eller x^2+y^2" : msg) + "</div>", this.surf = svg2 && shown.figs && shown.figs.surface ? { S: shown.figs.surface, labs: { x: axisNames(b, info).x, y: axisNames(b, info).y, z: info && info.zlab || "z" } } : null, this.hint3.hidden = !(this.surf && b.dim === "3"), this.plot.classList.toggle("rot3", !!this.surf && b.dim === "3");
+        let k = info2 && info2.kinds && info2.kinds[i];
+        el2.textContent = k && !(info2 && info2.bars) ? KIND[k] || "" : info2 && info2.bars && i === 0 ? "fordeling" : "";
+      }), this.casLbl.setLabel(b.dim === "3" ? "3D-plot" : "Plot"), this.plot.innerHTML = svg2 || '<div class="g-empty">' + (b.dim === "3" && info2 && info2.empty ? "Skriv en funktion af to variable ovenfor, fx f(x,y) eller x^2+y^2" : msg) + "</div>", this.surf = svg2 && shown.figs && shown.figs.surface ? { S: shown.figs.surface, labs: { x: axisNames(b, info2).x, y: axisNames(b, info2).y, z: info2 && info2.zlab || "z" } } : null, this.hint3.hidden = !(this.surf && b.dim === "3"), this.plot.classList.toggle("rot3", !!this.surf && b.dim === "3");
       let dp = this.precision.querySelector("input");
       document.activeElement !== dp && (dp.value = b.digits || ""), this.plot.classList.toggle("stale", !!stale), this.plot.dataset.stale = app.cas && app.cas.state === "failed" ? "for\xE6ldet" : "regner \u2026";
-      let own = info && info.labels || [];
-      this.legend.innerHTML = svg2 ? shown.labels.map((l, i) => '<span class="lg"><i style="background:' + LIVE.s[i % 4] + '"></i>' + tex(own[i] || fnLabel((info && info.srcs || b.fns)[i], l), !0) + "</span>").join("") + areaLegend(shown, info, b.digits).map((A) => '<span class="lg"><i class="fill" style="background:' + LIVE.s[A.c % 4] + '"></i>' + tex(A.latex, !0) + "</span>").join("") : "", (this.swEls || []).forEach((sw, i) => {
-        let k = info && info.kinds && info.kinds[i];
-        sw.style.background = k === "areal" && info.areaColor && info.areaColor[i] != null ? COLORS[info.areaColor[i] % 4] : k === "punkt" ? "var(--ink)" : COLORS[i % 4], sw.classList.toggle("fill", k === "areal");
+      let own = info2 && info2.labels || [];
+      this.legend.innerHTML = svg2 ? shown.labels.map((l, i) => '<span class="lg"><i style="background:' + LIVE.s[i % 4] + '"></i>' + tex(own[i] || fnLabel((info2 && info2.srcs || b.fns)[i], l), !0) + "</span>").join("") + areaLegend(shown, info2, b.digits).map((A) => '<span class="lg"><i class="fill" style="background:' + LIVE.s[A.c % 4] + '"></i>' + tex(A.latex, !0) + "</span>").join("") : "", (this.swEls || []).forEach((sw, i) => {
+        let k = info2 && info2.kinds && info2.kinds[i];
+        sw.style.background = k === "areal" && info2.areaColor && info2.areaColor[i] != null ? COLORS[info2.areaColor[i] % 4] : k === "punkt" ? "var(--ink)" : COLORS[i % 4], sw.classList.toggle("fill", k === "areal");
       });
-      let dt = svg2 ? distText(shown, info, b.digits) : [];
+      let dt = svg2 ? distText(shown, info2, b.digits) : [];
       this.readBtn.hidden = b.dim === "3" || dt.length > 0;
-      let mt = dt.length ? [] : svg2 ? marksText(shown, info && info.srcs || b.fns, b.digits) : [];
+      let mt = dt.length ? [] : svg2 ? marksText(shown, info2 && info2.srcs || b.fns, b.digits) : [];
       this.marksEl.innerHTML = dt.length ? dt.map((t) => '<span class="mk dist">' + t + "</span>").join("") : mt.map((m) => '<span class="mk"><i style="background:' + LIVE.s[m.i % 4] + '"></i>' + m.text + "</span>").join(""), this.marksEl.hidden = !mt.length && !dt.length, svg2 && !dt.length && (b.marks || []).length && !mt.length && (this.marksEl.hidden = !1, this.marksEl.innerHTML = '<span class="mk none">Ingen punkter at afl\xE6se i det viste interval</span>'), shown && shown.ts && shown.ts.length && (this.in_xmin.placeholder = markNum(shown.ts[0]), this.in_xmax.placeholder = markNum(shown.ts[shown.ts.length - 1]));
-      let ax = axisNames({}, info);
+      let ax = axisNames({}, info2);
       if (this.in_xlab && (this.in_xlab.placeholder = ax.x), this.axBtn) {
         let A = this.node.attrs;
         this.axBtn.classList.toggle("set", ["xlab", "ylab", "xmin", "xmax", "ymin", "ymax", "digits"].some((k) => A[k] != null && String(A[k]).trim() !== ""));
@@ -6959,7 +6964,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     refresh() {
       if (this.draggingLabel) return;
-      let a = this.node.attrs, { info, r, stale, fresh } = lookup(this.id);
+      let a = this.node.attrs, { info: info2, r, stale, fresh } = lookup(this.id);
       this.models.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(a.model === b.dataset.m))), (a.model !== "none" || ["stat", "sum", "qq", "hist"].includes(a.plot)) && (this.pickReg = !1);
       let plain = a.model === "none", mode2 = this.mode(), choosing = mode2 === "reg" && plain;
       plain || (this.lastModel = a.model);
@@ -6986,8 +6991,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       this.toReg.hidden = this.toStat.hidden = mode2 !== "tabel", this.toReg.disabled = !!(reg && reg.disabled), this.toReg.title = reg && reg.disabled ? reg.note : "Lav regression p\xE5 data: line\xE6r, eksponentiel, potens eller andengrad", this.pointsBtn.setAttribute("aria-checked", String(["points", "line"].includes(a.plot))), this.casLbl.setLabel(mode2 === "reg" ? "Regression" : mode2 === "stat" ? "Statistik" : "Tabel"), this.casLbl.classList.toggle("none", mode2 === "tabel"), this.residBtn.setAttribute("aria-checked", String(!!a.resid)), this.residBtn.textContent = a.resid ? "\u2212 Skjul residualer" : "+ Vis residualer";
       let R = this.showRoles(mode2), view2 = mode2 === "stat" ? R.view : null, grouped = view2 === "sum" || view2 === "hist";
       this.dom.classList.toggle("t-plain", plain && (a.plot || "none") === "none"), this.dom.classList.toggle("t-sum", grouped), this.dom.classList.toggle("t-qq", view2 === "qq"), this.dom.classList.toggle("t-stat", view2 === "stat");
-      let hard = info && info.error && !info.soft ? info.error : fresh && fresh.error ? fresh.error : "";
-      this.showErr(hard || info && (info.error || info.msg || info.note) || "", !hard);
+      let hard = info2 && info2.error && !info2.soft ? info2.error : fresh && fresh.error ? fresh.error : "";
+      this.showErr(hard || info2 && (info2.error || info2.msg || info2.note) || "", !hard);
       let shown = hard ? null : fresh && fresh.params ? fresh : r && r.params ? r : null, pick2 = (k) => fresh && fresh[k] ? fresh : r && r[k] ? r : null, shownSum = hard ? null : grouped ? pick2("ivs") : view2 === "qq" ? pick2("qq") : null, shownStat = view2 === "stat" && !hard && (pick2("stat") || {}).stat || null;
       this.stmt.innerHTML = choosing ? '<span class="t-pick">V\xE6lg modeltype ovenfor: line\xE6r, eksponentiel, potens eller andengrad</span>' : shown ? tableStmtHTML(a, shown) : shownSum ? tableStmtHTML(a, shownSum) : shownStat ? '<span class="t-model">' + tex(statTex(a, shownStat), !0) + "</span>" : "";
       let rr = a.resid && !plain && fresh && fresh.resid ? fresh : null, rw = Math.min(640, Math.max(300, (this.dom.clientWidth || 640) - 40)), kvG = grouped && shownSum && shownSum.kv ? shownSum.kv : null;
@@ -7102,8 +7107,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       let st = plan.steps.find((x) => x.id === b.id), code = st ? st.code : b.type === "python" ? b.code : null;
       if (!code) continue;
       out.push(code);
-      let info = plan.infos[b.id];
-      info && info.resVar && b.type !== "python" && out.push("print(" + info.resVar + ")"), out.push("");
+      let info2 = plan.infos[b.id];
+      info2 && info2.resVar && b.type !== "python" && out.push("print(" + info2.resVar + ")"), out.push("");
     }
     return out.join(`
 `);
@@ -7112,8 +7117,8 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   // src/core/printmodel.js
   function printModel(docJSON, meta, session, { python = !1, pyFresh = () => !0 } = {}) {
     let fresh = (id2) => session.resultFor(id2).fresh, blocks2 = [{ t: "title" }], files = {}, gi = 0, missing = 0, errors = [], check = (id2) => {
-      let info = session.infoFor(id2), r = fresh(id2);
-      (info && info.error && !info.soft || r && r.error) && errors.push(id2);
+      let info2 = session.infoFor(id2), r = fresh(id2);
+      (info2 && info2.error && !info2.soft || r && r.error) && errors.push(id2);
     }, rich = (node) => {
       let parts = [];
       for (let x of node.content || [])
@@ -7153,19 +7158,19 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         if (c.type === "math_line") {
           if (!a.latex) continue;
           check(a.id);
-          let info = session.infoFor(a.id), r = fresh(a.id);
+          let info2 = session.infoFor(a.id), r = fresh(a.id);
           !r && session.codeOf(a.id) && missing++;
-          let stm = statement(a, info, r && !r.error ? r : null), res = stm.res || stm.tail || "", cas = info && info.error && !info.soft || r && r.error ? null : chipText(a, info) || null, split = cas && res && stm.full.endsWith(res) ? { input: stm.full.slice(0, stm.full.length - res.length), res } : null;
+          let stm = statement(a, info2, r && !r.error ? r : null), res = stm.res || stm.tail || "", cas = info2 && info2.error && !info2.soft || r && r.error ? null : chipText(a, info2) || null, split = cas && res && stm.full.endsWith(res) ? { input: stm.full.slice(0, stm.full.length - res.length), res } : null;
           blocks2.push(Object.assign({ t: "m", latex: stm.full, cas, id: a.id }, split));
           continue;
         }
         if (c.type === "graph") {
           check(a.id);
-          let r = fresh(a.id), info = session.infoFor(a.id), svg2 = graphSVG(a, r, PRINT, PRINT_SIZE, info), own = info && info.labels || [];
-          svg2 ? addImg(svg2, "72%", r.labels.map((l, i) => ({ latex: own[i] || fnLabel((info && info.srcs || a.fns)[i], l), color: PRINT.s[i % 4] })).concat(areaLegend(r, info, a.digits).map((A) => ({ latex: A.latex, color: PRINT.s[A.c % 4] }))), a.id, marksText(r, info && info.srcs || a.fns, a.digits).map((m) => {
+          let r = fresh(a.id), info2 = session.infoFor(a.id), svg2 = graphSVG(a, r, PRINT, PRINT_SIZE, info2), own = info2 && info2.labels || [];
+          svg2 ? addImg(svg2, "72%", r.labels.map((l, i) => ({ latex: own[i] || fnLabel((info2 && info2.srcs || a.fns)[i], l), color: PRINT.s[i % 4] })).concat(areaLegend(r, info2, a.digits).map((A) => ({ latex: A.latex, color: PRINT.s[A.c % 4] }))), a.id, marksText(r, info2 && info2.srcs || a.fns, a.digits).map((m) => {
             let i = m.text.lastIndexOf(": (");
             return { k: m.text.slice(0, i), m: mt(m.text.slice(i + 2)).replace(/; /g, ";\\ ") };
-          }).concat(distText(r, info, a.digits).map((t) => {
+          }).concat(distText(r, info2, a.digits).map((t) => {
             let i = t.lastIndexOf(": ");
             return { k: t.slice(0, i), m: mt(t.slice(i + 2)).replace(/ og /g, "\\text{ og }") };
           })), a.dim === "3" ? "3D-plot" : "Plot") : session.codeOf(a.id) && missing++;
@@ -7234,7 +7239,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     };
     scan(docJSON);
     let why = (id2) => {
-      let info = session.infoFor && session.infoFor(id2), r = session.resultFor && session.resultFor(id2).fresh, e = String(info && info.error || r && r.error || "").split(/\.\s/)[0].replace(/\.$/, "");
+      let info2 = session.infoFor && session.infoFor(id2), r = session.resultFor && session.resultFor(id2).fresh, e = String(info2 && info2.error || r && r.error || "").split(/\.\s/)[0].replace(/\.$/, "");
       return e.length > 70 ? e.slice(0, 68) + " \u2026" : e;
     }, errText = (id2) => {
       let f = plainTex(latexOf[id2] || "").replace(/\s*(=|≈|approx)\s*$/, ""), e = why(id2);
@@ -7722,13 +7727,13 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     }
     for (let b of blocks2) {
       if (b.type !== "math" && b.type !== "inline" || b.action) continue;
-      let info = infos[b.id];
-      if (!(!info || info.error || !info.action) && !normalize(b.latex).includes(":="))
-        if (b.type === "inline" && info.action === "calc" && !info.cas) {
+      let info2 = infos[b.id];
+      if (!(!info2 || info2.error || !info2.action) && !normalize(b.latex).includes(":="))
+        if (b.type === "inline" && info2.action === "calc" && !info2.cas) {
           let m = /^(.*?)\s*(=|\\approx)\s*$/.exec(b.latex || "");
           if (!m) continue;
           patch.set(b.id, { latex: m[1], action: "calc", mode: m[2] === "=" ? null : "decimal" });
-        } else patch.set(b.id, { action: info.action });
+        } else patch.set(b.id, { action: info2.action });
     }
     return patch;
   }
@@ -7761,8 +7766,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
 
   // src/lib/store.js
-  var DB = "vismat";
-  var mem = /* @__PURE__ */ new Map(), dirty = /* @__PURE__ */ new Map(), db = null, mode = "local", flushT = 0, req = (r) => new Promise((res, rej) => {
+  var BETA = typeof define_APPINFO_default < "u" && define_APPINFO_default.channel === "beta", DB = BETA ? "vismat-beta" : "vismat", OS = "kv", LP = BETA ? "beta:" : "", mem = /* @__PURE__ */ new Map(), dirty = /* @__PURE__ */ new Map(), db = null, mode = "local", flushT = 0, req = (r) => new Promise((res, rej) => {
     r.onsuccess = () => res(r.result), r.onerror = () => rej(r.error);
   });
   function fromLocal() {
@@ -7770,7 +7774,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     try {
       for (let i = 0; i < localStorage.length; i++) {
         let k = localStorage.key(i);
-        k && k.startsWith("vismat-") && !k.startsWith("vismat-pref-") && out.push([k, localStorage.getItem(k)]);
+        k && k.startsWith(LP + "vismat-") && !k.startsWith(LP + "vismat-pref-") && out.push([k.slice(LP.length), localStorage.getItem(k)]);
       }
     } catch {
     }
@@ -7782,10 +7786,10 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       if (!idb) throw new Error("ingen IndexedDB");
       db = await new Promise((res, rej) => {
         let r = idb.open(DB, 1);
-        r.onupgradeneeded = () => r.result.createObjectStore("kv"), r.onsuccess = () => res(r.result), r.onerror = () => rej(r.error), r.onblocked = () => rej(new Error("blokeret")), setTimeout(() => rej(new Error("IndexedDB svarer ikke")), 4e3);
+        r.onupgradeneeded = () => r.result.createObjectStore(OS), r.onsuccess = () => res(r.result), r.onerror = () => rej(r.error), r.onblocked = () => rej(new Error("blokeret")), setTimeout(() => rej(new Error("IndexedDB svarer ikke")), 4e3);
       });
-      let st = db.transaction("kv", "readonly").objectStore("kv"), [keys2, vals] = await Promise.all([req(st.getAllKeys()), req(st.getAll())]);
-      if (keys2.forEach((k, i) => mem.set(k, vals[i])), mode = "idb", !mem.has("vismat-docs")) {
+      let st = db.transaction(OS, "readonly").objectStore(OS), [keys2, vals] = await Promise.all([req(st.getAllKeys()), req(st.getAll())]);
+      if (keys2.forEach((k, i) => mem.set(k, vals[i])), mode = "idb", !mem.has("vismat-docs") && !BETA) {
         let old = fromLocal();
         for (let [k, v] of old)
           mem.set(k, v), dirty.set(k, v);
@@ -7808,7 +7812,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       if (mem.set(k, v), mode === "idb")
         return dirty.set(k, v), schedule(), !0;
       try {
-        return localStorage.setItem(k, v), !0;
+        return localStorage.setItem(LP + k, v), !0;
       } catch {
         return !1;
       }
@@ -7819,7 +7823,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
         return;
       }
       try {
-        localStorage.removeItem(k);
+        localStorage.removeItem(LP + k);
       } catch {
       }
     },
@@ -7836,12 +7840,12 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
     return dirty.clear(), new Promise((res) => {
       let tx;
       try {
-        tx = db.transaction("kv", "readwrite");
+        tx = db.transaction(OS, "readwrite");
       } catch {
         for (let [k, v] of items) dirty.has(k) || dirty.set(k, v);
         return res(!1);
       }
-      let st = tx.objectStore("kv");
+      let st = tx.objectStore(OS);
       for (let [k, v] of items)
         v === void 0 ? st.delete(k) : st.put(v, k);
       tx.oncomplete = () => res(!0), tx.onerror = tx.onabort = () => {
@@ -8078,7 +8082,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
   }
 
   // src/ui/start.js
-  var docs = null, el = null, listEl = null, q = "", visible = !1, hooks = {};
+  var info = () => app.info || { version: "?", channel: "live" }, docs = null, el = null, listEl = null, q = "", visible = !1, hooks = {};
   function initStart(store2, opts = {}) {
     docs = store2, hooks = opts, el = document.getElementById("start"), el.addEventListener("dragover", (e) => {
       [...e.dataTransfer.types || []].includes("Files") && (e.preventDefault(), el.classList.add("drop"));
@@ -8119,7 +8123,7 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       h(
         "header",
         { class: "st-head" },
-        h("div", { class: "brand st-brand" }, h("span", { class: "mark", "aria-hidden": "true" }, "\u221A"), h("span", null, "VisMat")),
+        h("div", { class: "brand st-brand" }, h("span", { class: "mark", "aria-hidden": "true" }, "\u221A"), h("span", null, "VisMat"), info().channel === "beta" ? h("span", { class: "beta-tag" }, "beta") : null),
         h("span", { class: "spacer" }),
         h("button", { type: "button", class: "ghost st-open", onclick: () => document.getElementById("fileIn").click(), title: "\xC5bn en VisMat-fil (.vismat.json) \u2013 eller tr\xE6k den ind her" }, "\xC5bn fil \u2026")
       ),
@@ -8137,7 +8141,9 @@ print(` + info.resVar + ")"), insertAfterId(id2, S.python.create({ id: uid("p"),
       ),
       h("div", { class: "st-lh" }, h("h2", { class: "st-h" }, "Dine dokumenter"), search),
       listEl,
-      h("p", { class: "st-foot" }, 'Dokumenterne gemmes kun p\xE5 denne enhed. Brug "Gem som fil" for at tage en kopi med eller dele den.')
+      h("p", { class: "st-foot" }, 'Dokumenterne gemmes kun p\xE5 denne enhed. Brug "Gem som fil" for at tage en kopi med eller dele den.'),
+      // hvilken udgave (så en lærer eller elev kan sige, hvilken udgave en fejl gælder)
+      h("p", { class: "st-ver" }, "VisMat " + info().version + (info().channel === "beta" ? " \xB7 beta" + (info().sha ? " \xB7 " + info().sha : "") + " \xB7 egne dokumenter, adskilt fra den almindelige app" : ""))
     )), fillList(all);
   }
   function fillList(all) {
@@ -8911,6 +8917,7 @@ def punkt(fn, t):
         return None
     return v.real
 `;
+  app.info = typeof define_APPINFO_default < "u" ? define_APPINFO_default : { version: "?", channel: "live", sha: "" };
   var planT = null;
   function schedulePlan(delay = 280) {
     clearTimeout(planT), planT = setTimeout(() => replan(), delay);
@@ -9174,10 +9181,12 @@ def punkt(fn, t):
       k.textContent === "Ctrl" && (k.textContent = "\u2318");
     }), document.querySelectorAll('[title*="Ctrl"]').forEach((el2) => {
       el2.title = el2.title.replace(/Ctrl/g, "\u2318");
-    })), mountDoc(docs2.current()), docs2.shown(), docs2.onSaved("ok"), initStart(docs2, { focusTitle: () => setTimeout(() => {
+    })), mountDoc(docs2.current()), docs2.shown(), docs2.onSaved("ok");
+    let focusTitle = () => setTimeout(() => {
       let t = document.querySelector(".doc-title");
       t && t.focus();
-    }, 60), title: () => app.meta.title || "Eksempel" }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
+    }, 60);
+    app.info.channel === "beta" && ($3("navHome").append(h("span", { class: "beta-tag" }, "beta")), document.title = "VisMat beta"), initStart(docs2, { focusTitle, title: () => app.meta.title || "Eksempel" }), showStart(), docs2.render(), $3("navHome").addEventListener("click", () => {
       docs2.saveNow(), closeRails(), showStart();
     }), $3("btnToPdf").addEventListener("click", () => setMode("hand")), $3("btnBack").addEventListener("click", () => setMode("write")), document.addEventListener("keydown", (e) => {
       e.key === "Escape" && app.mode === "hand" && !currentPop() && !startVisible() && !e.defaultPrevented && setMode("write");

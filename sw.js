@@ -3,9 +3,11 @@
    - index.html og de to workers: netværket først (så en ny udgave kommer med det samme), ellers cachen
    - alt andet (Pyodide, Python-pakker, Typst, skrifter, pdf.js): cachen først – de ændrer sig kun med en ny udgave
    - MathLive og Google Fonts (andre servere): fra cachen, og opdateres i baggrunden */
-const VERSION = 'd5562cd2f65f';
+const VERSION = 'b88f0e75441c';
+const CHANNEL = 'live';   // live eller beta: hver sin cache, så de ikke sletter hinandens
 const FILES = ["cas-worker.js","icons/apple-touch-icon.png","icons/icon-192.png","icons/icon-512.png","icons/icon.svg","icons/maskable-512.png","manifest.webmanifest","pdf-worker.js","pdfjs/pdf.min.js","pdfjs/pdf.worker.min.js","py/pkgs-1.json","py/pkgs-2.json","py/stdlib-1.json","pyodide/pyodide-lock.json","pyodide/pyodide.asm.js","pyodide/pyodide.asm.wasm","pyodide/pyodide.js","typst/compiler-1.wasm","typst/compiler-2.wasm","typst/fonts/DejaVuSansMono.ttf","typst/fonts/InstrumentSans-Regular.ttf","typst/fonts/InstrumentSans-Semibold.ttf","typst/fonts/NewCMMath-Regular.otf","typst/fonts/SourceSerif4-Italic.ttf","typst/fonts/SourceSerif4-Regular.ttf","typst/fonts/SourceSerif4-Semibold.ttf","typst/fonts/SourceSerif4-SemiboldItalic.ttf"];
-const CACHE = 'vismat-' + VERSION;
+const PREFIX = CHANNEL === 'beta' ? 'vismat-beta-' : 'vismat-live-';
+const CACHE = PREFIX + VERSION;
 const FRESH = new Set(['', 'index.html', 'cas-worker.js', 'pdf-worker.js', 'manifest.webmanifest']);
 
 self.addEventListener('install', (e) => {
@@ -13,7 +15,7 @@ self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['./', ...FILES])).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith('vismat-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => (k.startsWith(PREFIX) || (CHANNEL === 'live' && /^vismat-[0-9a-f]{12}$/.test(k))) && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
 
 const scope = () => new URL(self.registration.scope);
@@ -23,7 +25,8 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin === location.origin) {
     const rel = url.pathname.startsWith(scope().pathname) ? url.pathname.slice(scope().pathname.length) : null;
-    if (rel === null) return;
+    // (beta-udgaven i beta/ har sin egen service worker)
+    if (rel === null || (CHANNEL === 'live' && rel.startsWith('beta/'))) return;
     if (req.mode === 'navigate' || FRESH.has(rel)) e.respondWith(networkFirst(req, req.mode === 'navigate' ? './' : null));
     else e.respondWith(cacheFirst(req));
   } else if (/(^|\.)(cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com)$/.test(url.hostname)) {
